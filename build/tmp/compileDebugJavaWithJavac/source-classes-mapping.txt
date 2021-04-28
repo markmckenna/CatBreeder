@@ -1,0 +1,2 @@
+com/lantopia/catbreeder/BuildConfig.java
+ com.lantopia.catbreeder.BuildConfig
