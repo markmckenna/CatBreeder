@@ -1,62 +1,136 @@
-android {
-    sourceSets.main {
-        jniLibs.srcDir "$projectDir/libs"
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext {
+        agpVersion = "4.1.3"
+        kotlinVersion = "1.4.32"
+        gdxVersion = "1.10.0"
+        ktxVersion = '1.10.0-b1'
+    }
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$agpVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
-// called every time gradle gets executed, takes the native dependencies of
-// the natives configuration, and extracts them to the proper libs/ folders
-// so they get packed with the APK.
-task copyAndroidNatives {
-    doFirst {
-        file("libs/armeabi/").mkdirs()
-        file("libs/armeabi-v7a/").mkdirs()
-        file("libs/arm64-v8a/").mkdirs()
-        file("libs/x86_64/").mkdirs()
-        file("libs/x86/").mkdirs()
+ext {
+    appName = "CatBreeder"
+}
 
-        configurations.natives.copy().files.each { jar ->
-            def outputDir = null
-            if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
-            if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
-            if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-            if(outputDir != null) {
-                copy {
-                    from zipTree(jar)
-                    into outputDir
-                    include "*.so"
-                }
+allprojects {
+    version "0.0.0"
+
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
+    }
+}
+
+project(':util') {
+    apply plugin: 'java-library'
+    apply plugin: 'kotlin'
+
+    compileKotlin.kotlinOptions.useIR = true
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
+}
+
+project(':core') {
+    apply plugin: 'java-library'
+    apply plugin: 'kotlin'
+
+    compileKotlin.kotlinOptions.useIR = true
+
+    dependencies {
+        api project(':util')
+
+        implementation "io.github.libktx:ktx-scene2d:$ktxVersion"
+        implementation 'org.nield:kotlin-statistics:1.2.1'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testImplementation 'junit:junit:4.12'
+    }
+}
+
+project(':desktop') {
+    apply plugin: 'java-library'
+    apply plugin: 'kotlin'
+
+    compileKotlin.kotlinOptions.useIR = true
+
+    dependencies {
+        implementation project(':core')
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(':android') {
+    apply plugin: 'com.android.application'
+    apply plugin: 'kotlin-android'
+
+    android {
+        compileSdkVersion 30
+
+        defaultConfig {
+            applicationId "com.lantopia.catbreeder"
+
+            minSdkVersion 19
+            targetSdkVersion 30
+
+            versionCode 1
+            versionName project.version
+
+            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             }
         }
-    }
-}
 
-tasks.whenTaskAdded { packageTask ->
-    if (packageTask.name.contains("package")) {
-        packageTask.dependsOn 'copyAndroidNatives'
-    }
-}
-
-task run(type: Exec) {
-    def path
-    def localProperties = project.file("../local.properties")
-    if (localProperties.exists()) {
-        Properties properties = new Properties()
-        localProperties.withInputStream { instr ->
-            properties.load(instr)
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
-        def sdkDir = properties.getProperty('sdk.dir')
-        if (sdkDir) {
-            path = sdkDir
-        } else {
-            path = "$System.env.ANDROID_HOME"
+
+        kotlinOptions {
+            jvmTarget = '1.8'
+            useIR = true
         }
-    } else {
-        path = "$System.env.ANDROID_HOME"
     }
 
-    def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.lantopia.catbreeder/com.lantopia.catbreeder.AndroidLauncher'
+    configurations { natives }
+
+    dependencies {
+        implementation project(':core')
+
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        implementation 'androidx.core:core-ktx:1.3.2'
+        implementation 'androidx.appcompat:appcompat:1.2.0'
+        implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+        api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+    }
 }
