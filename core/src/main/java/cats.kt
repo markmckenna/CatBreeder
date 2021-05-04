@@ -10,7 +10,8 @@ data class Cat(
     constructor(genome: GeneSequence) : this(Color(genome.sliceArray(0 until 3)))
 }
 
-fun Random.cat() = Cat(nextGenes(3))
+fun Random.nextCat() = Cat(nextGenes(3))
+fun Random.nextCatPopulation(size: Int): Population<Cat> = (0 until size).map { nextCat() }
 
 /** An example way to breed cats to arrive at a goal. */
 class CatBreeding(private val rnd: Random) : BreedingProcess<Cat> {

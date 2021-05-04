@@ -4,6 +4,9 @@ package com.lantopia.catbreeder
 typealias FitnessValue = Double
 typealias Population<T> = List<T>
 
+/** Explicit population factory */
+fun <T : Animal> populationOf(vararg animals: T) = listOf(*animals)
+
 /** The kind of thing we're breeding */
 abstract class Animal(
     val genome: GeneSequence
