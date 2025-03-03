@@ -49,6 +49,14 @@ project(':core') {
     apply plugin: 'java-library'
     apply plugin: 'kotlin'
 
+    sourceSets {
+        all {
+            languageSettings {
+                useExperimentalAnnotation('kotlin.ExperimentalUnsignedTypes')
+            }
+        }
+    }
+
     compileKotlin.kotlinOptions.useIR = true
 
     dependencies {
