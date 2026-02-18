@@ -32,7 +32,6 @@ CatBreeder is a React web application built with TypeScript and ESBuild. The pro
 │   ├── index.tsx        # Bootstrap/entry point
 │   └── index.css        # Global styles
 ├── dist/                # Build output (gitignored)
-├── kotlin/              # ARCHIVED - do not modify
 └── [root config files]  # package.json, tsconfig.json, etc.
 ```
 
@@ -41,12 +40,40 @@ CatBreeder is a React web application built with TypeScript and ESBuild. The pro
 | Directory | Purpose |
 |-----------|---------|
 | `src/` | All application source code |
-| `src/app/` | React components and application logic |
+| `src/app/` | React application (organized by feature, not type) |
 | `src/test/` | Test setup, mocks, and utilities |
 | `src/utils/` | Shared helper functions |
 | `config/` | Build and test configuration files |
 | `public/` | Static files copied to dist |
-| `kotlin/` | **ARCHIVED** - Legacy code, do not touch |
+
+### Feature-Based Organization
+
+Code in `src/app/` should be organized by **feature or domain**, not by type. Group related files together to minimize distance between components that work together.
+
+**Do this:**
+```
+src/app/
+├── index.tsx              # App root
+├── catalog/               # Cat catalog feature
+│   ├── CatList.tsx
+│   ├── CatList.test.tsx
+│   ├── CatCard.tsx
+│   └── CatCard.test.tsx
+└── breeding/              # Breeding feature
+    ├── BreedingForm.tsx
+    └── BreedingForm.test.tsx
+```
+
+**Not this:**
+```
+src/app/
+├── components/            # ❌ Don't group by type
+│   ├── CatList.tsx
+│   ├── CatCard.tsx
+│   └── BreedingForm.tsx
+└── tests/                 # ❌ Keep tests with source
+    └── ...
+```
 
 ## Commands
 
@@ -82,7 +109,7 @@ npm run typecheck    # Run TypeScript type checking
 - React components: `PascalCase.tsx` (e.g., `UserProfile.tsx`)
 - Utilities/helpers: `camelCase.ts` (e.g., `helpers.ts`)
 - Tests: `[filename].test.ts` or `[filename].test.tsx`
-- Styles: `camelCase.css` or `kebab-case.css`
+- Non-JS files (HTML, CSS): `kebab-case` (e.g., `index.html`, `main-layout.css`)
 
 ### Component Structure
 ```tsx
@@ -157,6 +184,20 @@ After adding dependencies, verify:
 | `.husky/pre-commit` | Git hook: runs lint before commits |
 | `.husky/pre-push` | Git hook: runs build + tests before push |
 
+### Configuration Location Guidelines
+
+**Use `config/`** for configs explicitly passed via CLI flags:
+- Build configs (esbuild, webpack, etc.)
+- Test configs (vitest, jest, etc.)
+
+**Keep at root** for configs auto-discovered by tools:
+- `.eslintrc.cjs` - ESLint walks up directory tree
+- `tsconfig.json` - TypeScript and editors expect it at root
+- `.husky/` - Git hooks require specific location
+- `.gitignore` - Git requirement
+
+When adding new tooling, prefer `config/` if the tool supports explicit config paths.
+
 ## Git Hooks
 
 The project uses Husky to enforce quality checks:
@@ -169,9 +210,11 @@ To bypass hooks in emergencies: `git commit --no-verify` or `git push --no-verif
 ## Common Tasks
 
 ### Create a New Component
-1. Create `src/app/components/MyComponent.tsx` (or appropriate subdirectory)
-2. Create `src/app/components/MyComponent.test.tsx`
-3. Import and use in parent component
+1. Identify the feature/domain the component belongs to
+2. Create or use an existing feature folder: `src/app/<feature>/`
+3. Create component file: `src/app/<feature>/MyComponent.tsx`
+4. Create test file alongside: `src/app/<feature>/MyComponent.test.tsx`
+5. Import and use in parent component
 
 ### Add a New Utility Function
 1. Add function to `src/utils/helpers.ts` (or create new file)
@@ -207,13 +250,12 @@ Edit `config/esbuild.config.js`. Key options:
 
 ## Notes for Agents
 
-1. **Never modify files in `kotlin/`** - This is archived legacy code
-2. **Always run tests after changes** - Use `npm run test:run`
-3. **Prefer TypeScript** - Don't create `.js` files in `src/`
-4. **Keep dependencies minimal** - Only add what's necessary
-5. **Write tests for new code** - Maintain test coverage
-6. **Use existing patterns** - Follow conventions in existing files
-7. **Update documentation** - Keep AGENTS.md and README.md current (see below)
+1. **Always run tests after changes** - Use `npm run test:run`
+2. **Prefer TypeScript** - Don't create `.js` files in `src/`
+3. **Keep dependencies minimal** - Only add what's necessary
+4. **Write tests for new code** - Maintain test coverage
+5. **Use existing patterns** - Follow conventions in existing files
+6. **Update documentation** - Keep AGENTS.md and README.md current (see below)
 
 ## Documentation Requirements
 

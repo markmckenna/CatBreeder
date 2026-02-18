@@ -1,2 +1,0 @@
-include ':util', ':core', ':android', ':desktop'
-rootProject.name = "Cat Breeder"
