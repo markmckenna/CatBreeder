@@ -10,6 +10,7 @@ import CatSprite from '../../cats/CatSprite';
 import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
 import ShopPanel from '../ShopPanel';
+import CatListPanel from '../CatListPanel';
 import { calculateCatValue, createMarketState, getValueBreakdown } from '../../economy/market.ts';
 import type { MarketCat } from '../../economy/market.ts';
 import { getCollectionProgress } from '../../cats/collection.ts';
@@ -69,6 +70,7 @@ function GameUI() {
   const [showCollection, setShowCollection] = useState(false);
   const [showMarket, setShowMarket] = useState(false);
   const [showShop, setShowShop] = useState(false);
+  const [showCatList, setShowCatList] = useState(false);
 
   const market = useMemo(() => createMarketState(), []);
   const catPositions = useMemo(
@@ -208,7 +210,13 @@ function GameUI() {
             <div className={styles.statValue}>${state.money}</div>
             <div className={styles.statLabel}>Money</div>
           </div>
-          <div className={styles.statTile}>
+          <div 
+            className={`${styles.statTile} ${styles.clickable}`}
+            onClick={() => setShowCatList(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && setShowCatList(true)}
+          >
             <div className={styles.statIcon}>🐱</div>
             <div className={styles.statValue}>{state.cats.length}</div>
             <div className={styles.statLabel}>Cats</div>
@@ -477,6 +485,15 @@ function GameUI() {
           catCount={state.cats.length}
           onBuy={handleBuyFurniture}
           onClose={() => setShowShop(false)}
+        />
+      )}
+
+      {/* Cat List Panel Modal */}
+      {showCatList && (
+        <CatListPanel
+          cats={state.cats}
+          onSelectCat={(cat) => setSelectedCat(cat)}
+          onClose={() => setShowCatList(false)}
         />
       )}
     </div>

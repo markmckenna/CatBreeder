@@ -9,6 +9,7 @@ import type { GameState } from './state.ts';
 import type { TraitCollection, CollectedTrait, TraitKey } from '../cats/collection.ts';
 import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
 import type { Cat } from '../cats/genetics.ts';
+import type { OwnedFurniture } from '../environment/furniture.ts';
 
 export const SAVE_KEY = 'catbreeder_save';
 export const SAVE_VERSION = 1;
@@ -32,6 +33,7 @@ interface SerializedGameState {
   cats: Cat[];
   market: MarketState;
   marketInventory: MarketCat[];
+  furniture?: OwnedFurniture;
   traitCollection: {
     collected: Array<[TraitKey, CollectedTrait]>;
   };
