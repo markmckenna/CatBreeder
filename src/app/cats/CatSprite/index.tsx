@@ -56,35 +56,42 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
   };
 
   // Ear styles depend on ear shape
+  // Pointed ears: triangular, extending upward above the head
+  // Folded ears: rounded, folded forward and down (like Scottish Fold)
+  const isPointedEar = phenotype.earShape === 'pointed';
+  
   const earBaseStyle: CSSProperties = {
     position: 'absolute',
-    top: phenotype.earShape === 'folded' ? '5%' : '-10%',
-    width: '20%',
-    height: '30%',
+    width: isPointedEar ? '22%' : '18%',
+    height: isPointedEar ? '35%' : '22%',
     backgroundColor: bodyColor,
     border: '2px solid #00000022',
+    // Pointed ears extend above head, folded ears sit lower
+    top: isPointedEar ? '-15%' : '8%',
   };
 
   const leftEarStyle: CSSProperties = {
     ...earBaseStyle,
-    left: '30%',
-    borderRadius: phenotype.earShape === 'folded' 
-      ? '50% 50% 50% 50%' 
-      : '50% 50% 0 0',
-    transform: phenotype.earShape === 'folded' 
-      ? 'rotate(-30deg)' 
-      : 'rotate(-15deg)',
+    left: '28%',
+    // Pointed ears are triangular, folded ears are rounded
+    borderRadius: isPointedEar 
+      ? '50% 50% 15% 15%'  // Triangular: rounded top, sharper bottom
+      : '60% 60% 40% 40%',  // Rounded all around
+    // Pointed ears tilt outward, folded ears fold forward
+    transform: isPointedEar 
+      ? 'rotate(-15deg)' 
+      : 'rotate(-40deg) scaleY(0.8)',
   };
 
   const rightEarStyle: CSSProperties = {
     ...earBaseStyle,
-    right: '30%',
-    borderRadius: phenotype.earShape === 'folded' 
-      ? '50% 50% 50% 50%' 
-      : '50% 50% 0 0',
-    transform: phenotype.earShape === 'folded' 
-      ? 'rotate(30deg)' 
-      : 'rotate(15deg)',
+    right: '28%',
+    borderRadius: isPointedEar 
+      ? '50% 50% 15% 15%' 
+      : '60% 60% 40% 40%',
+    transform: isPointedEar 
+      ? 'rotate(15deg)' 
+      : 'rotate(40deg) scaleY(0.8)',
   };
 
   // Tail style depends on tail length
