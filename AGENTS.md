@@ -323,6 +323,7 @@ Edit `config/esbuild.config.js`. Key options:
 4. **Write tests for new code** - Maintain test coverage
 5. **Use existing patterns** - Follow conventions in existing files
 6. **Update documentation** - Keep AGENTS.md, README.md, and GAME_DESIGN.md current (see below)
+7. **Commit after each feature** - When implementing multiple features, test and commit each one separately before moving to the next. This keeps changes atomic and makes it easier to review or revert individual features.
 
 ## Documentation Requirements
 

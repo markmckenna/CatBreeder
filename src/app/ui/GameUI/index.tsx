@@ -366,10 +366,10 @@ function GameUI() {
           )}
 
           {/* Turn Results */}
-          {lastTurnResult && (lastTurnResult.births.length > 0 || lastTurnResult.sales.length > 0) && (
+          {lastTurnResult && (lastTurnResult.births.length > 0 || lastTurnResult.sales.length > 0 || lastTurnResult.foodCost > 0) && (
             <div className={`${styles.panelSection} ${styles.turnResult}`}>
               <div className={`${styles.panelTitle} ${styles.turnResultTitle}`}>
-                📋 Last Turn
+                📋 Last Week
               </div>
               <div className={styles.panelContent}>
                 {lastTurnResult.births.length > 0 && (
@@ -380,6 +380,9 @@ function GameUI() {
                 )}
                 {moneyEarned > 0 && (
                   <div>📈 Earned: ${moneyEarned}</div>
+                )}
+                {lastTurnResult.foodCost > 0 && (
+                  <div>🍽️ Expenses: ${lastTurnResult.foodCost}</div>
                 )}
               </div>
             </div>
