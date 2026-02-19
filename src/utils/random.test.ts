@@ -5,6 +5,7 @@ import {
   pickRandom,
   coinFlip,
   randomInt,
+  normalRandom,
 } from './random.ts';
 
 describe('random utilities', () => {
@@ -171,6 +172,49 @@ describe('random utilities', () => {
       }
       
       expect(seen.size).toBe(6); // All dice values 1-6
+    });
+  });
+
+  describe('normalRandom', () => {
+    it('returns a number', () => {
+      const result = normalRandom();
+      expect(typeof result).toBe('number');
+    });
+
+    it('uses default mean 0 and stdDev 1', () => {
+      const rng = createSeededRandom(42);
+      const samples = Array.from({ length: 1000 }, () => normalRandom(0, 1, rng));
+      
+      const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+      expect(mean).toBeGreaterThan(-0.2);
+      expect(mean).toBeLessThan(0.2);
+    });
+
+    it('respects custom mean', () => {
+      const rng = createSeededRandom(42);
+      const samples = Array.from({ length: 1000 }, () => normalRandom(100, 1, rng));
+      
+      const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+      expect(mean).toBeGreaterThan(99);
+      expect(mean).toBeLessThan(101);
+    });
+
+    it('respects custom stdDev', () => {
+      const rng = createSeededRandom(42);
+      const samples = Array.from({ length: 1000 }, () => normalRandom(0, 10, rng));
+      
+      const stdDev = Math.sqrt(
+        samples.reduce((acc, x) => acc + x * x, 0) / samples.length
+      );
+      expect(stdDev).toBeGreaterThan(8);
+      expect(stdDev).toBeLessThan(12);
+    });
+
+    it('is deterministic with seeded RNG', () => {
+      const rng1 = createSeededRandom(123);
+      const rng2 = createSeededRandom(123);
+      
+      expect(normalRandom(0, 1, rng1)).toBe(normalRandom(0, 1, rng2));
     });
   });
 });

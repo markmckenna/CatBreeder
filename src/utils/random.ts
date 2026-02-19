@@ -79,3 +79,17 @@ export function coinFlip<T>(a: T, b: T, random: RandomFn = defaultRandom): T {
 export function randomInt(min: number, max: number, random: RandomFn = defaultRandom): number {
   return Math.floor(random() * (max - min + 1)) + min;
 }
+
+/**
+ * Returns a random number from a normal distribution using Box-Muller transform.
+ * @param mean - The mean of the distribution (default: 0)
+ * @param stdDev - The standard deviation of the distribution (default: 1)
+ * @param random - Optional random function
+ */
+export function normalRandom(mean = 0, stdDev = 1, random: RandomFn = defaultRandom): number {
+  // Box-Muller transform
+  const u1 = random();
+  const u2 = random();
+  const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  return mean + z * stdDev;
+}

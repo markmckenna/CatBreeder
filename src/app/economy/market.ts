@@ -7,6 +7,7 @@
 
 import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/genetics.ts';
 import { createRandomCat, getRandomCatName } from '../cats/genetics.ts';
+import { defaultRandom, normalRandom } from '@/utils/random.ts';
 
 /**
  * Value modifiers for each trait variant
@@ -86,22 +87,45 @@ export function createMarketState(): MarketState {
 }
 
 /**
- * Calculate value multiplier from phenotype
+ * Calculate value multiplier from phenotype with optional price fluctuation.
+ * When fluctuate is true, each trait gets ±10% variance (normal distribution, stdDev ~3.33%).
  */
-export function getTraitMultiplier(phenotype: CatPhenotype, traitValues: TraitValues): number {
+export function getTraitMultiplier(
+  phenotype: CatPhenotype,
+  traitValues: TraitValues,
+  fluctuate = false,
+  random: RandomFn = defaultRandom
+): number {
+  // Apply fluctuation: ±10% means we use stdDev of ~3.33% so 3σ ≈ 10%
+  const fluctuationStdDev = 0.0333;
+  
+  const applyFluctuation = (baseValue: number): number => {
+    if (!fluctuate) return baseValue;
+    const fluctuation = normalRandom(1, fluctuationStdDev, random);
+    return baseValue * fluctuation;
+  };
+  
   return (
-    traitValues.size[phenotype.size] *
-    traitValues.tailLength[phenotype.tailLength] *
-    traitValues.earShape[phenotype.earShape] *
-    traitValues.tailColor[phenotype.tailColor]
+    applyFluctuation(traitValues.size[phenotype.size]) *
+    applyFluctuation(traitValues.tailLength[phenotype.tailLength]) *
+    applyFluctuation(traitValues.earShape[phenotype.earShape]) *
+    applyFluctuation(traitValues.tailColor[phenotype.tailColor])
   );
 }
 
 /**
- * Calculate a cat's market value
+ * Calculate a cat's market value.
+ * @param cat - The cat to value
+ * @param market - Market state with base price and trait values
+ * @param options - Optional settings for fluctuation and random source
  */
-export function calculateCatValue(cat: Cat, market: MarketState): number {
-  const traitMultiplier = getTraitMultiplier(cat.phenotype, market.traitValues);
+export function calculateCatValue(
+  cat: Cat,
+  market: MarketState,
+  options: { fluctuate?: boolean; random?: RandomFn } = {}
+): number {
+  const { fluctuate = false, random = defaultRandom } = options;
+  const traitMultiplier = getTraitMultiplier(cat.phenotype, market.traitValues, fluctuate, random);
   
   // Happiness affects value slightly
   const happinessMultiplier = 0.8 + (cat.happiness / 100) * 0.4; // 0.8 to 1.2

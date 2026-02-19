@@ -225,12 +225,12 @@ export function processTurn(
     }
   }
 
-  // Process sales (simplified: all listed cats sell at market value)
+  // Process sales (simplified: all listed cats sell at market value with price fluctuation)
   const soldCatIds: string[] = [];
   for (const catId of state.catsForSale) {
     const cat = newState.cats.find(c => c.id === catId);
     if (cat) {
-      const price = calculateCatValue(cat, newState.market);
+      const price = calculateCatValue(cat, newState.market, { fluctuate: true, random: rng });
       result.sales.push({ cat, price });
       soldCatIds.push(catId);
       newState.money += price;

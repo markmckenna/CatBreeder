@@ -132,6 +132,49 @@ describe('market', () => {
       // Base 100 * 1.0 traits * 0.8 happiness = 80
       expect(calculateCatValue(sadCat, market)).toBe(80);
     });
+
+    it('returns same value without fluctuation on repeated calls', () => {
+      const cat = createTestCat({}, 100);
+      const value1 = calculateCatValue(cat, market);
+      const value2 = calculateCatValue(cat, market);
+      expect(value1).toBe(value2);
+    });
+
+    it('returns varying values with fluctuation enabled', () => {
+      const cat = createTestCat({}, 100);
+      // Call multiple times and check we get some variance
+      const values = Array.from({ length: 10 }, () => 
+        calculateCatValue(cat, market, { fluctuate: true })
+      );
+      
+      // With fluctuation, not all values should be identical
+      const uniqueValues = new Set(values);
+      expect(uniqueValues.size).toBeGreaterThan(1);
+    });
+
+    it('fluctuation stays within reasonable bounds', () => {
+      const cat = createTestCat({}, 100);
+      const baseValue = calculateCatValue(cat, market);
+      
+      // Run many trials to check bounds
+      for (let i = 0; i < 100; i++) {
+        const value = calculateCatValue(cat, market, { fluctuate: true });
+        // Should generally stay within ±20% of base (4 traits * ~10% each, worst case)
+        expect(value).toBeGreaterThan(baseValue * 0.7);
+        expect(value).toBeLessThan(baseValue * 1.3);
+      }
+    });
+
+    it('produces deterministic results with seeded RNG', () => {
+      const cat = createTestCat({}, 100);
+      const rng1 = createSeededRandom(42);
+      const rng2 = createSeededRandom(42);
+      
+      const value1 = calculateCatValue(cat, market, { fluctuate: true, random: rng1 });
+      const value2 = calculateCatValue(cat, market, { fluctuate: true, random: rng2 });
+      
+      expect(value1).toBe(value2);
+    });
   });
 
   describe('getValueBreakdown', () => {
