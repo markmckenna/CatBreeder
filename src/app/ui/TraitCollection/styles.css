@@ -1,0 +1,156 @@
+/* TraitCollection modal styles */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #3a4a6a;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #3a4a6a;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #e0e0e0;
+}
+
+.progress {
+  font-size: 1rem;
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.closeButton {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #8892b0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.slot {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #3a4a6a;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  transition: all 0.2s;
+}
+
+.slot.collected {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.slot.uncollected {
+  border-color: #3a4a6a;
+}
+
+.slot.uncollected:hover {
+  border-color: #FFA726;
+  background: rgba(255, 167, 38, 0.1);
+}
+
+.slotInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 32px;
+}
+
+.catName {
+  font-weight: 600;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+}
+
+.dayLabel {
+  font-size: 0.7rem;
+  color: #8892b0;
+}
+
+.uncollectedLabel {
+  color: #5a5a7a;
+  font-size: 0.85rem;
+}
+
+.traitList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #8892b0;
+}
+
+.traitList span {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rareTrait {
+  color: #FFA726 !important;
+  background: rgba(255, 167, 38, 0.15) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal {
+    padding: 12px;
+  }
+}

@@ -7,7 +7,9 @@ import { useState, useMemo } from 'react';
 import { useGame } from '../../game/GameContext.tsx';
 import Room from '../../environment/Room';
 import CatSprite from '../../cats/CatSprite';
+import TraitCollection from '../TraitCollection';
 import { calculateCatValue, createMarketState, getValueBreakdown } from '../../economy/market.ts';
+import { getCollectionProgress } from '../../cats/collection.ts';
 import type { Cat } from '../../cats/genetics.ts';
 import styles from './styles.css';
 
@@ -50,12 +52,14 @@ function GameUI() {
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
   const [breedingFirstCat, setBreedingFirstCat] = useState<Cat | null>(null);
   const [mode, setMode] = useState<'view' | 'breed-select'>('view');
+  const [showCollection, setShowCollection] = useState(false);
 
   const market = useMemo(() => createMarketState(), []);
   const catPositions = useMemo(
     () => getCatPositions(state.cats, state.day),
     [state.cats, state.day]
   );
+  const collectionProgress = getCollectionProgress(state.traitCollection);
 
   const handleCatClick = (cat: Cat) => {
     if (mode === 'breed-select') {
@@ -183,10 +187,16 @@ function GameUI() {
             <div className={styles.statValue}>{state.breedingPairs.length}</div>
             <div className={styles.statLabel}>Breeding</div>
           </div>
-          <div className={styles.statTile}>
-            <div className={styles.statIcon}>🏷️</div>
-            <div className={styles.statValue}>{state.catsForSale.length}</div>
-            <div className={styles.statLabel}>For Sale</div>
+          <div 
+            className={`${styles.statTile} ${styles.clickable}`}
+            onClick={() => setShowCollection(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && setShowCollection(true)}
+          >
+            <div className={styles.statIcon}>🎨</div>
+            <div className={styles.statValue}>{collectionProgress.collected}/16</div>
+            <div className={styles.statLabel}>Collection</div>
           </div>
         </div>
 
@@ -382,6 +392,14 @@ function GameUI() {
           </button>
         </div>
       </div>
+
+      {/* Trait Collection Modal */}
+      {showCollection && (
+        <TraitCollection
+          collection={state.traitCollection}
+          onClose={() => setShowCollection(false)}
+        />
+      )}
     </div>
   );
 }

@@ -6,6 +6,8 @@ import type { Cat } from '../cats/genetics.ts';
 import { breedCats, createRandomCat, getRandomCatName } from '../cats/genetics.ts';
 import type { MarketState, Transaction } from '../economy/market.ts';
 import { createMarketState, calculateCatValue } from '../economy/market.ts';
+import type { TraitCollection } from '../cats/collection.ts';
+import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
 
 /**
  * Planned breeding pair for next turn
@@ -23,6 +25,9 @@ export interface GameState {
   money: number;
   cats: Cat[];
   market: MarketState;
+  
+  // Trait collection - tracks discovered trait combinations
+  traitCollection: TraitCollection;
   
   // Pending actions for next turn
   breedingPairs: BreedingPair[];
@@ -72,6 +77,7 @@ export function createInitialGameState(): GameState {
     money: 500,
     cats: starterCats,
     market: createMarketState(),
+    traitCollection: createTraitCollection(),
     breedingPairs: [],
     catsForSale: [],
     transactions: [],
@@ -168,6 +174,7 @@ export function processTurn(state: GameState): { newState: GameState; result: Tu
   };
 
   const newState = { ...state };
+  const newDiscoveries: string[] = [];
 
   // Process breeding
   for (const pair of state.breedingPairs) {
@@ -179,6 +186,18 @@ export function processTurn(state: GameState): { newState: GameState; result: Tu
       result.births.push(offspring);
       newState.cats = [...newState.cats, offspring];
       newState.totalCatsBred++;
+      
+      // Register in trait collection
+      const { updated, collection } = registerBredCat(
+        newState.traitCollection,
+        offspring,
+        newState.day
+      );
+      newState.traitCollection = collection;
+      
+      if (updated) {
+        newDiscoveries.push(offspring.name);
+      }
     }
   }
 
@@ -220,6 +239,9 @@ export function processTurn(state: GameState): { newState: GameState; result: Tu
   // Generate events
   if (result.births.length > 0) {
     result.events.push(`${result.births.length} kitten(s) were born!`);
+  }
+  if (newDiscoveries.length > 0) {
+    result.events.push(`🎉 New trait discovered by ${newDiscoveries.join(', ')}!`);
   }
   if (result.sales.length > 0) {
     const totalEarned = result.sales.reduce((sum, s) => sum + s.price, 0);
