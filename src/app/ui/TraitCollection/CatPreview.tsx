@@ -22,8 +22,8 @@ function CatPreview({ phenotype, greyed = false }: CatPreviewProps) {
   const tailColor = phenotype.tailColor === 'white' ? '#FFFFFF' : '#FF8C00';
   const bodyColor = phenotype.tailColor === 'white' ? '#F5F5DC' : '#FFB347';
   
-  // Grey filter for uncollected
-  const filter = greyed ? 'grayscale(100%) brightness(0.6)' : 'none';
+  // Grey filter for uncollected - still shows traits clearly
+  const filter = greyed ? 'grayscale(100%) brightness(0.7)' : 'none';
 
   const containerStyle: CSSProperties = {
     position: 'relative',
