@@ -275,6 +275,26 @@ describe('game state', () => {
       const available = getAvailableForBreeding(stateWithPair);
       expect(available).toHaveLength(0);
     });
+
+    it('excludes kittens under 4 weeks old', () => {
+      const state = createInitialGameState();
+      // Add a kitten (age 0)
+      const kitten = { ...state.cats[0], id: 'kitten-1', age: 0 };
+      const stateWithKitten = { ...state, cats: [...state.cats, kitten] };
+      
+      const available = getAvailableForBreeding(stateWithKitten);
+      expect(available).toHaveLength(state.cats.length); // Original cats only, not the kitten
+      expect(available.find(c => c.id === 'kitten-1')).toBeUndefined();
+    });
+
+    it('includes cats that are exactly 4 weeks old', () => {
+      const state = createInitialGameState();
+      const catAt4Weeks = { ...state.cats[0], id: 'cat-4-weeks', age: 4 };
+      const stateWith4WeekCat = { ...state, cats: [...state.cats, catAt4Weeks] };
+      
+      const available = getAvailableForBreeding(stateWith4WeekCat);
+      expect(available.find(c => c.id === 'cat-4-weeks')).toBeDefined();
+    });
   });
 
   describe('getAvailableForSale', () => {

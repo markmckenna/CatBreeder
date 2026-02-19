@@ -337,13 +337,13 @@ export function processTurn(
 }
 
 /**
- * Get cats available for breeding (not already in a pair)
+ * Get cats available for breeding (not already in a pair, at least 4 weeks old)
  */
 export function getAvailableForBreeding(state: GameState): Cat[] {
   const pairedIds = new Set(
     state.breedingPairs.flatMap(p => [p.parent1Id, p.parent2Id])
   );
-  return state.cats.filter(c => !pairedIds.has(c.id));
+  return state.cats.filter(c => !pairedIds.has(c.id) && c.age >= 4);
 }
 
 /**
