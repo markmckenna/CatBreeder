@@ -95,17 +95,19 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
   };
 
   // Tail style depends on tail length
-  const tailLength = phenotype.tailLength === 'short' ? '30%' : '50%';
+  // Long tail: elegant, curved, extends well behind the cat
+  // Short tail: compact bob-style tail
+  const isLongTail = phenotype.tailLength === 'long';
   const tailStyle: CSSProperties = {
     position: 'absolute',
-    bottom: '30%',
-    right: '-5%',
-    width: tailLength,
-    height: '15%',
+    bottom: isLongTail ? '25%' : '30%',
+    right: isLongTail ? '-15%' : '-3%',
+    width: isLongTail ? '55%' : '18%',
+    height: isLongTail ? '12%' : '15%',
     backgroundColor: tailColor,
-    borderRadius: '50%',
+    borderRadius: isLongTail ? '40% 80% 80% 40%' : '50%',
     border: '2px solid #00000022',
-    transform: 'rotate(-20deg)',
+    transform: isLongTail ? 'rotate(-25deg)' : 'rotate(-10deg)',
   };
 
   // Eyes
