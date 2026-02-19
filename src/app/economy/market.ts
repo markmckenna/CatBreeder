@@ -127,8 +127,8 @@ export function calculateCatValue(
   const { fluctuate = false, random = defaultRandom } = options;
   const traitMultiplier = getTraitMultiplier(cat.phenotype, market.traitValues, fluctuate, random);
   
-  // Happiness affects value slightly
-  const happinessMultiplier = 0.8 + (cat.happiness / 100) * 0.4; // 0.8 to 1.2
+  // Happiness directly affects value: 0% happiness = $0, 100% happiness = full price
+  const happinessMultiplier = cat.happiness / 100;
   
   const value = market.basePrice * traitMultiplier * happinessMultiplier;
   

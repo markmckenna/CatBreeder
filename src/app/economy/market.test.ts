@@ -105,8 +105,8 @@ describe('market', () => {
     it('common cat at 100% happiness equals base price', () => {
       const cat = createTestCat({}, 100);
       const value = calculateCatValue(cat, market);
-      // Base 100 * 1.0 traits * 1.2 happiness = 120
-      expect(value).toBe(120);
+      // Base 100 * 1.0 traits * 1.0 happiness = 100
+      expect(value).toBe(100);
     });
 
     it('rare traits increase value', () => {
@@ -127,10 +127,16 @@ describe('market', () => {
       );
     });
 
-    it('unhappy cat is worth 80% of base', () => {
+    it('unhappy cat is worth $0', () => {
       const sadCat = createTestCat({}, 0);
-      // Base 100 * 1.0 traits * 0.8 happiness = 80
-      expect(calculateCatValue(sadCat, market)).toBe(80);
+      // Base 100 * 1.0 traits * 0.0 happiness = 0
+      expect(calculateCatValue(sadCat, market)).toBe(0);
+    });
+
+    it('half-happy cat is worth half price', () => {
+      const halfHappyCat = createTestCat({}, 50);
+      // Base 100 * 1.0 traits * 0.5 happiness = 50
+      expect(calculateCatValue(halfHappyCat, market)).toBe(50);
     });
 
     it('returns same value without fluctuation on repeated calls', () => {
