@@ -39,7 +39,7 @@ describe('TraitCollection', () => {
     
     expect(screen.getByText('1/16 (6%)')).toBeInTheDocument();
     expect(screen.getByText('Snowball')).toBeInTheDocument();
-    expect(screen.getByText('Day 5')).toBeInTheDocument();
+    expect(screen.getByText('Week 5')).toBeInTheDocument();
   });
 
   it('shows ??? for uncollected traits', () => {

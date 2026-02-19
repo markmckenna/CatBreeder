@@ -65,7 +65,7 @@ function TraitCollection({ collection, onClose }: TraitCollectionProps) {
                   {isCollected ? (
                     <>
                       <span className={styles.catName}>{info.catName}</span>
-                      <span className={styles.dayLabel}>Day {info.day}</span>
+                      <span className={styles.dayLabel}>Week {info.day}</span>
                     </>
                   ) : (
                     <span className={styles.uncollectedLabel}>???</span>

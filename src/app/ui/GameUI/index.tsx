@@ -188,7 +188,7 @@ function GameUI() {
         {/* Header */}
         <div className={styles.header}>
           <h1 className={styles.title}>🐱 Cat Breeder</h1>
-          <div className={styles.dayLabel}>Day {state.day}</div>
+          <div className={styles.dayLabel}>Week {state.day}</div>
         </div>
 
         {/* Stats Grid */}
@@ -254,7 +254,7 @@ function GameUI() {
               <div className={styles.catDetails}>
                 <div className={styles.traitRow}>
                   <span className={styles.traitLabel}>Age</span>
-                  <span className={styles.traitValue}>{selectedCat.age} days</span>
+                  <span className={styles.traitValue}>{selectedCat.age} weeks</span>
                 </div>
                 <div className={styles.traitRow}>
                   <span className={styles.traitLabel}>Size</span>

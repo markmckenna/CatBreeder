@@ -21,9 +21,9 @@ describe('GameUI', () => {
     expect(screen.getByText(/Cat Breeder/)).toBeInTheDocument();
   });
 
-  it('displays day counter starting at 1', () => {
+  it('displays week counter starting at 1', () => {
     renderGameUI();
-    expect(screen.getByText('Day 1')).toBeInTheDocument();
+    expect(screen.getByText('Week 1')).toBeInTheDocument();
   });
 
   it('displays starting money', () => {
@@ -43,16 +43,16 @@ describe('GameUI', () => {
     expect(screen.getByText(/End Turn/)).toBeInTheDocument();
   });
 
-  it('advances day when end turn is clicked', () => {
+  it('advances week when end turn is clicked', () => {
     renderGameUI();
     
-    // Day starts at 1
-    expect(screen.getByText('Day 1')).toBeInTheDocument();
+    // Week starts at 1
+    expect(screen.getByText('Week 1')).toBeInTheDocument();
     
     fireEvent.click(screen.getByText(/End Turn/));
     
-    // Day should now be 2
-    expect(screen.getByText('Day 2')).toBeInTheDocument();
+    // Week should now be 2
+    expect(screen.getByText('Week 2')).toBeInTheDocument();
   });
 
   it('renders room component', () => {

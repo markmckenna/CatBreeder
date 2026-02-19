@@ -25,7 +25,7 @@ function MarketPanel({ inventory, playerMoney, onBuy, onClose }: MarketPanelProp
         </div>
         
         <p className={styles.description}>
-          3 new cats available each day. Prices include 20% market premium.
+          3 new cats available each week. Prices include 20% market premium.
         </p>
         
         {inventory.length === 0 ? (
@@ -49,7 +49,7 @@ function MarketPanel({ inventory, playerMoney, onBuy, onClose }: MarketPanelProp
                     <span className={styles.catTraits}>
                       {cat.phenotype.earShape} ears, {cat.phenotype.tailColor} fur
                     </span>
-                    <span className={styles.catAge}>Age: {cat.age} days</span>
+                    <span className={styles.catAge}>Age: {cat.age} weeks</span>
                   </div>
                   <div className={styles.priceSection}>
                     <span className={styles.price}>{formatMoney(price)}</span>

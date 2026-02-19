@@ -11,7 +11,7 @@ describe('App', () => {
   it('provides game context to children', () => {
     render(<App />);
     // If GameProvider wasn't working, these wouldn't render
-    expect(screen.getByText(/Day \d+/)).toBeInTheDocument();
+    expect(screen.getByText(/Week \d+/)).toBeInTheDocument();
     expect(screen.getByText('Money')).toBeInTheDocument();
   });
 
