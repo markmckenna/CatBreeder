@@ -41,3 +41,7 @@ Opens http://localhost:3000
 ## For AI Agents
 
 See [AGENTS.md](AGENTS.md) for detailed development guidelines.
+
+## Game Design
+
+See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) for detailed gameplay mechanics and system documentation.

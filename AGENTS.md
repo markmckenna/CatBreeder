@@ -322,11 +322,27 @@ Edit `config/esbuild.config.js`. Key options:
 3. **Keep dependencies minimal** - Only add what's necessary
 4. **Write tests for new code** - Maintain test coverage
 5. **Use existing patterns** - Follow conventions in existing files
-6. **Update documentation** - Keep AGENTS.md and README.md current (see below)
+6. **Update documentation** - Keep AGENTS.md, README.md, and GAME_DESIGN.md current (see below)
 
 ## Documentation Requirements
 
 **All changes that affect project structure, commands, or workflows MUST include documentation updates.**
+
+### Game Design Documentation
+
+**All gameplay-related features MUST be documented in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md).**
+
+This document serves as the authoritative reference for how game mechanics work. Maintainers should be able to read through it and understand:
+- What each system does
+- The formulas and rules that govern behavior
+- How systems interact with each other
+
+### When to Update docs/GAME_DESIGN.md
+- Adding new game mechanics or systems
+- Modifying existing gameplay behavior
+- Changing formulas, rates, or balance values
+- Adding new traits, items, or currencies
+- Modifying the turn flow or game loop
 
 ### When to Update AGENTS.md
 - Adding or removing directories
@@ -348,3 +364,4 @@ After making structural changes, verify:
 - [ ] File paths in examples are correct
 - [ ] Configuration file locations are current
 - [ ] Any new patterns are documented
+- [ ] Game mechanics are documented in GAME_DESIGN.md
