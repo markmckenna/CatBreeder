@@ -8,7 +8,9 @@ import { useGame } from '../../game/GameContext.tsx';
 import Room from '../../environment/Room';
 import CatSprite from '../../cats/CatSprite';
 import TraitCollection from '../TraitCollection';
+import MarketPanel from '../MarketPanel';
 import { calculateCatValue, createMarketState, getValueBreakdown } from '../../economy/market.ts';
+import type { MarketCat } from '../../economy/market.ts';
 import { getCollectionProgress } from '../../cats/collection.ts';
 import type { Cat } from '../../cats/genetics.ts';
 import styles from './styles.css';
@@ -53,6 +55,7 @@ function GameUI() {
   const [breedingFirstCat, setBreedingFirstCat] = useState<Cat | null>(null);
   const [mode, setMode] = useState<'view' | 'breed-select'>('view');
   const [showCollection, setShowCollection] = useState(false);
+  const [showMarket, setShowMarket] = useState(false);
 
   const market = useMemo(() => createMarketState(), []);
   const catPositions = useMemo(
@@ -95,6 +98,14 @@ function GameUI() {
       });
       setSelectedCat(null);
     }
+  };
+
+  const handleBuyCat = (marketCat: MarketCat) => {
+    dispatch({
+      type: 'BUY_CAT',
+      cat: marketCat.cat,
+      price: marketCat.price,
+    });
   };
 
   const handleEndTurn = () => {
@@ -197,6 +208,17 @@ function GameUI() {
             <div className={styles.statIcon}>🎨</div>
             <div className={styles.statValue}>{collectionProgress.collected}/16</div>
             <div className={styles.statLabel}>Collection</div>
+          </div>
+          <div 
+            className={`${styles.statTile} ${styles.clickable}`}
+            onClick={() => setShowMarket(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && setShowMarket(true)}
+          >
+            <div className={styles.statIcon}>🏪</div>
+            <div className={styles.statValue}>{state.marketInventory.length}</div>
+            <div className={styles.statLabel}>Market</div>
           </div>
         </div>
 
@@ -400,6 +422,16 @@ function GameUI() {
         <TraitCollection
           collection={state.traitCollection}
           onClose={() => setShowCollection(false)}
+        />
+      )}
+
+      {/* Market Panel Modal */}
+      {showMarket && (
+        <MarketPanel
+          inventory={state.marketInventory}
+          playerMoney={state.money}
+          onBuy={handleBuyCat}
+          onClose={() => setShowMarket(false)}
         />
       )}
     </div>

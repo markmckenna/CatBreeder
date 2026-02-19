@@ -4,8 +4,8 @@
 
 import type { Cat, RandomFn } from '../cats/genetics.ts';
 import { breedCats, createRandomCat, getRandomCatName } from '../cats/genetics.ts';
-import type { MarketState, Transaction } from '../economy/market.ts';
-import { createMarketState, calculateCatValue } from '../economy/market.ts';
+import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
+import { createMarketState, calculateCatValue, generateMarketInventory } from '../economy/market.ts';
 import type { TraitCollection } from '../cats/collection.ts';
 import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
 
@@ -25,6 +25,9 @@ export interface GameState {
   money: number;
   cats: Cat[];
   market: MarketState;
+  
+  // Cats available for purchase in the market
+  marketInventory: MarketCat[];
   
   // Trait collection - tracks discovered trait combinations
   traitCollection: TraitCollection;
@@ -72,11 +75,14 @@ export function createInitialGameState(): GameState {
     createRandomCat('Mittens'),
   ];
 
+  const market = createMarketState();
+
   return {
     day: 1,
     money: 500,
     cats: starterCats,
-    market: createMarketState(),
+    market,
+    marketInventory: generateMarketInventory(market),
     traitCollection: createTraitCollection(),
     breedingPairs: [],
     catsForSale: [],
@@ -138,11 +144,17 @@ export function applyAction(state: GameState, action: GameAction): GameState {
 
     case 'BUY_CAT': {
       if (state.money < action.price) return state;
+      
+      // Remove cat from market inventory
+      const newInventory = state.marketInventory.filter(
+        mc => mc.cat.id !== action.cat.id
+      );
 
       return {
         ...state,
         money: state.money - action.price,
         cats: [...state.cats, action.cat],
+        marketInventory: newInventory,
         transactions: [...state.transactions, {
           type: 'buy',
           catId: action.cat.id,
@@ -245,6 +257,9 @@ export function processTurn(
 
   // Advance day
   newState.day++;
+
+  // Generate new market inventory for the next day
+  newState.marketInventory = generateMarketInventory(newState.market, rng);
 
   // Generate events
   if (result.births.length > 0) {

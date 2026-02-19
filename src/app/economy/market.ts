@@ -5,7 +5,8 @@
  * Future: Implement shifting trends, buyer cohorts, supply/demand.
  */
 
-import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype } from '../cats/genetics.ts';
+import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/genetics.ts';
+import { createRandomCat, getRandomCatName } from '../cats/genetics.ts';
 
 /**
  * Value modifiers for each trait variant
@@ -122,7 +123,7 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
     breakdown.push({ trait: `${cat.phenotype.earShape} ears`, multiplier: tv.earShape[cat.phenotype.earShape] });
   }
   if (tv.tailColor[cat.phenotype.tailColor] > 1) {
-    breakdown.push({ trait: `${cat.phenotype.tailColor} tail`, multiplier: tv.tailColor[cat.phenotype.tailColor] });
+    breakdown.push({ trait: `${cat.phenotype.tailColor} fur`, multiplier: tv.tailColor[cat.phenotype.tailColor] });
   }
 
   return breakdown;
@@ -133,4 +134,52 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
  */
 export function formatMoney(amount: number): string {
   return `$${amount.toLocaleString()}`;
+}
+
+/**
+ * Market premium when buying cats (20%)
+ */
+export const MARKET_BUY_PREMIUM = 0.2;
+
+/**
+ * Number of cats available in market each day
+ */
+export const MARKET_INVENTORY_SIZE = 3;
+
+/**
+ * A cat available for purchase in the market
+ */
+export interface MarketCat {
+  cat: Cat;
+  price: number;
+}
+
+/**
+ * Calculate purchase price for a cat (includes market premium)
+ */
+export function calculatePurchasePrice(cat: Cat, market: MarketState): number {
+  const baseValue = calculateCatValue(cat, market);
+  const withPremium = baseValue * (1 + MARKET_BUY_PREMIUM);
+  return Math.round(withPremium);
+}
+
+/**
+ * Generate cats available for purchase in the market
+ * @param market - Current market state
+ * @param rng - Optional random function for deterministic generation
+ */
+export function generateMarketInventory(
+  market: MarketState,
+  rng?: RandomFn
+): MarketCat[] {
+  const inventory: MarketCat[] = [];
+  
+  for (let i = 0; i < MARKET_INVENTORY_SIZE; i++) {
+    const name = getRandomCatName(rng);
+    const cat = createRandomCat(name, { random: rng });
+    const price = calculatePurchasePrice(cat, market);
+    inventory.push({ cat, price });
+  }
+  
+  return inventory;
 }

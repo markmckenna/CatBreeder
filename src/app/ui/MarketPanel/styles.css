@@ -1,0 +1,155 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.panel {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #eee;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.balance {
+  margin-left: auto;
+  font-weight: 600;
+  color: #27ae60;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #95a5a6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: #f1f1f1;
+  color: #7f8c8d;
+}
+
+.description {
+  color: #7f8c8d;
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 40px;
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.catGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.catCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.catPreview {
+  flex-shrink: 0;
+  width: 70px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.catName {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.catTraits {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
+.catAge {
+  color: #95a5a6;
+  font-size: 0.8rem;
+}
+
+.priceSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e67e22;
+}
+
+.buyButton {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.buyButton:hover:not(.disabled) {
+  background: #219a52;
+  transform: translateY(-1px);
+}
+
+.buyButton.disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}

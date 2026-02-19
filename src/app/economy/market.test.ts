@@ -2,12 +2,17 @@ import { describe, it, expect } from 'vitest';
 import {
   createMarketState,
   calculateCatValue,
+  calculatePurchasePrice,
   getTraitMultiplier,
   getValueBreakdown,
   formatMoney,
+  generateMarketInventory,
   DEFAULT_TRAIT_VALUES,
+  MARKET_BUY_PREMIUM,
+  MARKET_INVENTORY_SIZE,
 } from './market.ts';
 import type { Cat, CatPhenotype } from '../cats/genetics.ts';
+import { createSeededRandom } from '@/utils/random.ts';
 
 describe('market', () => {
   const createTestCat = (phenotype: Partial<CatPhenotype>, happiness = 100): Cat => ({
@@ -158,6 +163,64 @@ describe('market', () => {
     it('adds thousand separators', () => {
       expect(formatMoney(1000)).toBe('$1,000');
       expect(formatMoney(1000000)).toBe('$1,000,000');
+    });
+  });
+
+  describe('calculatePurchasePrice', () => {
+    const market = createMarketState();
+
+    it('includes 20% premium over sale value', () => {
+      const cat = createTestCat({}, 100);
+      const sellValue = calculateCatValue(cat, market);
+      const buyPrice = calculatePurchasePrice(cat, market);
+      
+      expect(buyPrice).toBe(Math.round(sellValue * (1 + MARKET_BUY_PREMIUM)));
+    });
+
+    it('premium is 20%', () => {
+      expect(MARKET_BUY_PREMIUM).toBe(0.2);
+    });
+  });
+
+  describe('generateMarketInventory', () => {
+    const market = createMarketState();
+
+    it('generates 3 cats by default', () => {
+      const inventory = generateMarketInventory(market);
+      expect(inventory).toHaveLength(MARKET_INVENTORY_SIZE);
+      expect(MARKET_INVENTORY_SIZE).toBe(3);
+    });
+
+    it('each entry has cat and price', () => {
+      const inventory = generateMarketInventory(market);
+      for (const entry of inventory) {
+        expect(entry).toHaveProperty('cat');
+        expect(entry).toHaveProperty('price');
+        expect(entry.cat).toHaveProperty('id');
+        expect(entry.cat).toHaveProperty('name');
+        expect(entry.cat).toHaveProperty('genotype');
+        expect(entry.price).toBeGreaterThan(0);
+      }
+    });
+
+    it('prices include market premium', () => {
+      const inventory = generateMarketInventory(market);
+      for (const { cat, price } of inventory) {
+        const expectedPrice = calculatePurchasePrice(cat, market);
+        expect(price).toBe(expectedPrice);
+      }
+    });
+
+    it('produces deterministic results with seeded RNG', () => {
+      const rng1 = createSeededRandom(12345);
+      const rng2 = createSeededRandom(12345);
+      
+      const inventory1 = generateMarketInventory(market, rng1);
+      const inventory2 = generateMarketInventory(market, rng2);
+      
+      expect(inventory1[0].cat.id).toBe(inventory2[0].cat.id);
+      expect(inventory1[0].cat.name).toBe(inventory2[0].cat.name);
+      expect(inventory1[1].price).toBe(inventory2[1].price);
     });
   });
 });
