@@ -195,6 +195,17 @@ describe('game state', () => {
         expect(cat.age).toBe(originalAges[i] + 1);
       });
     });
+
+    it('deducts daily food cost of $1 per cat', () => {
+      const state = createInitialGameState();
+      const startMoney = state.money;
+      const catCount = state.cats.length;
+
+      const { newState, result } = processTurn(state);
+
+      expect(newState.money).toBe(startMoney - catCount);
+      expect(result.foodCost).toBe(catCount);
+    });
   });
 
   describe('getAvailableForBreeding', () => {

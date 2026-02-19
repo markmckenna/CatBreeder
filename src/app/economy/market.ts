@@ -71,6 +71,11 @@ export const DEFAULT_TRAIT_VALUES: TraitValues = {
 };
 
 /**
+ * Daily food cost per cat
+ */
+export const FOOD_COST_PER_CAT = 1;
+
+/**
  * Create initial market state
  */
 export function createMarketState(): MarketState {

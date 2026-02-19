@@ -5,7 +5,7 @@
 import type { Cat, RandomFn } from '../cats/genetics.ts';
 import { breedCats, createRandomCat, getRandomCatName } from '../cats/genetics.ts';
 import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
-import { createMarketState, calculateCatValue, generateMarketInventory } from '../economy/market.ts';
+import { createMarketState, calculateCatValue, generateMarketInventory, FOOD_COST_PER_CAT } from '../economy/market.ts';
 import type { TraitCollection } from '../cats/collection.ts';
 import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
 
@@ -62,6 +62,7 @@ export interface TurnResult {
   day: number;
   births: Cat[];
   sales: { cat: Cat; price: number }[];
+  foodCost: number;
   events: string[];
 }
 
@@ -187,6 +188,7 @@ export function processTurn(
     day: state.day,
     births: [],
     sales: [],
+    foodCost: 0,
     events: [],
   };
 
@@ -251,6 +253,11 @@ export function processTurn(
     age: cat.age + 1,
   }));
 
+  // Deduct daily food costs
+  const foodCost = newState.cats.length * FOOD_COST_PER_CAT;
+  newState.money -= foodCost;
+  result.foodCost = foodCost;
+
   // Clear pending actions
   newState.breedingPairs = [];
   newState.catsForSale = [];
@@ -271,6 +278,9 @@ export function processTurn(
   if (result.sales.length > 0) {
     const totalEarned = result.sales.reduce((sum, s) => sum + s.price, 0);
     result.events.push(`Sold ${result.sales.length} cat(s) for $${totalEarned}!`);
+  }
+  if (foodCost > 0) {
+    result.events.push(`Food expenses: $${foodCost}`);
   }
 
   return { newState, result };
