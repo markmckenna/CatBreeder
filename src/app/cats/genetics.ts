@@ -11,7 +11,7 @@
  * deterministic testing and savegame stability.
  */
 
-import { type RandomFn, defaultRandom, coinFlip, randomInt, pickRandom } from '@/utils/random.ts';
+import { type RandomFn, defaultRandom, coinFlip, randomInt, pickRandom } from '@/base/random.ts';
 
 // Size: Small (s) is recessive, Large (L) is dominant
 export type SizeAllele = 'S' | 's';

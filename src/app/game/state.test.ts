@@ -5,6 +5,7 @@ import {
   processTurn,
   getAvailableForBreeding,
   getAvailableForSale,
+  ActionType,
 } from './state.ts';
 
 describe('game state', () => {
@@ -38,7 +39,7 @@ describe('game state', () => {
         const [cat1, cat2] = state.cats;
 
         const newState = applyAction(state, {
-          type: 'ADD_BREEDING_PAIR',
+          type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: cat1.id,
           parent2Id: cat2.id,
         });
@@ -55,14 +56,14 @@ describe('game state', () => {
         const [cat1, cat2] = state.cats;
 
         let newState = applyAction(state, {
-          type: 'ADD_BREEDING_PAIR',
+          type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: cat1.id,
           parent2Id: cat2.id,
         });
 
         // Try to add same pair again
         newState = applyAction(newState, {
-          type: 'ADD_BREEDING_PAIR',
+          type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: cat1.id,
           parent2Id: cat2.id,
         });
@@ -79,14 +80,14 @@ describe('game state', () => {
         const [cat1, cat2] = stateWith3Cats.cats;
 
         let newState = applyAction(stateWith3Cats, {
-          type: 'ADD_BREEDING_PAIR',
+          type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: cat1.id,
           parent2Id: cat2.id,
         });
 
         // Try to pair cat1 with cat3
         newState = applyAction(newState, {
-          type: 'ADD_BREEDING_PAIR',
+          type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: cat1.id,
           parent2Id: thirdCat.id,
         });
@@ -101,7 +102,7 @@ describe('game state', () => {
         const cat = state.cats[0];
 
         const newState = applyAction(state, {
-          type: 'LIST_FOR_SALE',
+          type: ActionType.LIST_FOR_SALE,
           catId: cat.id,
         });
 
@@ -113,12 +114,12 @@ describe('game state', () => {
         const cat = state.cats[0];
 
         let newState = applyAction(state, {
-          type: 'LIST_FOR_SALE',
+          type: ActionType.LIST_FOR_SALE,
           catId: cat.id,
         });
 
         newState = applyAction(newState, {
-          type: 'LIST_FOR_SALE',
+          type: ActionType.LIST_FOR_SALE,
           catId: cat.id,
         });
 
@@ -139,7 +140,7 @@ describe('game state', () => {
       const [cat1, cat2] = state.cats;
 
       const stateWithPair = applyAction(state, {
-        type: 'ADD_BREEDING_PAIR',
+        type: ActionType.ADD_BREEDING_PAIR,
         parent1Id: cat1.id,
         parent2Id: cat2.id,
       });
@@ -157,7 +158,7 @@ describe('game state', () => {
       const initialMoney = state.money;
 
       const stateWithSale = applyAction(state, {
-        type: 'LIST_FOR_SALE',
+        type: ActionType.LIST_FOR_SALE,
         catId: cat.id,
       });
 
@@ -174,7 +175,7 @@ describe('game state', () => {
       const [cat1, cat2] = state.cats;
 
       const stateWithActions = applyAction(state, {
-        type: 'ADD_BREEDING_PAIR',
+        type: ActionType.ADD_BREEDING_PAIR,
         parent1Id: cat1.id,
         parent2Id: cat2.id,
       });
@@ -267,7 +268,7 @@ describe('game state', () => {
       const [cat1, cat2] = state.cats;
 
       const stateWithPair = applyAction(state, {
-        type: 'ADD_BREEDING_PAIR',
+        type: ActionType.ADD_BREEDING_PAIR,
         parent1Id: cat1.id,
         parent2Id: cat2.id,
       });
@@ -309,7 +310,7 @@ describe('game state', () => {
       const cat = state.cats[0];
 
       const stateWithListing = applyAction(state, {
-        type: 'LIST_FOR_SALE',
+        type: ActionType.LIST_FOR_SALE,
         catId: cat.id,
       });
 
@@ -324,7 +325,7 @@ describe('game state', () => {
       const state = createInitialGameState();
       const initialMoney = state.money;
 
-      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+      const newState = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
 
       expect(newState.money).toBe(initialMoney - 50);
       expect(newState.furniture.toys).toBe(1);
@@ -335,7 +336,7 @@ describe('game state', () => {
       const state = createInitialGameState();
       const initialMoney = state.money;
 
-      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'bed' });
+      const newState = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'bed' });
 
       expect(newState.money).toBe(initialMoney - 100);
       expect(newState.furniture.toys).toBe(0);
@@ -345,7 +346,7 @@ describe('game state', () => {
     it('does not buy if not enough money', () => {
       const state = { ...createInitialGameState(), money: 30 };
 
-      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+      const newState = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
 
       expect(newState.money).toBe(30);
       expect(newState.furniture.toys).toBe(0);
@@ -353,9 +354,9 @@ describe('game state', () => {
 
     it('can buy multiple furniture items', () => {
       let state = createInitialGameState();
-      state = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
-      state = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
-      state = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'bed' });
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'bed' });
 
       expect(state.furniture.toys).toBe(2);
       expect(state.furniture.beds).toBe(1);
@@ -364,7 +365,7 @@ describe('game state', () => {
     it('records transaction when buying furniture', () => {
       const state = createInitialGameState();
 
-      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+      const newState = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
 
       expect(newState.transactions).toHaveLength(1);
       expect(newState.transactions[0].type).toBe('buy');

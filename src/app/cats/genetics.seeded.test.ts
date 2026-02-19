@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { createSeededRandom } from '@/utils/random.ts';
+import { createSeededRandom } from '@/base/random.ts';
 import {
   breedCats,
   createRandomCat,

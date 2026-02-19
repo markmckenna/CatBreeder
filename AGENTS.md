@@ -50,7 +50,7 @@ The game runs on a day-by-day turn system:
 │   │   ├── environment/ # Rooms, furniture, decorations
 │   │   └── ui/          # Shared UI components
 │   ├── test/            # Test setup and utilities
-│   ├── utils/           # Shared utility functions
+│   ├── base/            # Central platform code (randomness, common utilities)
 │   ├── index.tsx        # Bootstrap/entry point
 │   └── index.css        # Global styles
 ├── dist/                # Build output (gitignored)
@@ -69,7 +69,7 @@ The game runs on a day-by-day turn system:
 | `src/app/environment/` | Room/furniture system |
 | `src/app/ui/` | Reusable UI components |
 | `src/test/` | Test setup, mocks, and utilities |
-| `src/utils/` | Shared helper functions |
+| `src/base/` | Central platform code (randomness, common utilities) |
 | `config/` | Build and test configuration files |
 | `public/` | Static files copied to dist |
 
@@ -106,6 +106,31 @@ src/app/
 └── tests/                 # ❌ Keep tests with source
     └── ...
 ```
+
+### UI/Game Logic Separation
+
+The codebase maintains a clean separation between rendering (UI) and non-rendered game logic:
+
+| Layer | Directory | Purpose |
+|-------|-----------|---------|
+| **UI** | `src/app/ui/` | Visual components (CatSprite, panels, overlays) |
+| **Game Logic** | `src/app/game/` | State management, turn processing, save/load |
+| **Domain Logic** | `src/app/cats/`, `economy/`, `environment/` | Pure game mechanics (no React) |
+
+**Design Intent**: Game logic should be able to run in a Node.js environment without any UI dependencies. Data flows from game logic to UI via `useGame()` hook, which is the primary entry point for UI components to access game state.
+
+### Dependency Direction
+
+**UI modules may import from non-UI modules, but never the reverse.**
+
+```
+✅ ui/CatSprite → cats/genetics (UI imports logic)
+✅ ui/GameUI → game/GameContext (UI imports state)
+✅ game/state → cats/genetics (logic imports logic)
+❌ cats/genetics → ui/CatSprite (logic must NOT import UI)
+```
+
+This ensures game logic remains testable and portable without UI dependencies.
 
 ## Commands
 
@@ -271,7 +296,7 @@ export default MyComponent;
 ### Import Aliases
 The `@/` alias maps to `src/`:
 ```tsx
-import { helper } from '@/utils/helpers';
+import { createSeededRandom } from '@/base/random';
 ```
 
 ## Workflow Guidelines
@@ -348,7 +373,7 @@ To bypass hooks in emergencies: `git commit --no-verify` or `git push --no-verif
 5. Import and use in parent component
 
 ### Add a New Utility Function
-1. Add function to `src/utils/helpers.ts` (or create new file)
+1. Add function to `src/base/` (or create new file)
 2. Add tests to corresponding `.test.ts` file
 3. Export from the module
 
@@ -388,6 +413,7 @@ Edit `config/esbuild.config.js`. Key options:
 5. **Use existing patterns** - Follow conventions in existing files
 6. **Update documentation** - Keep AGENTS.md, README.md, and GAME_DESIGN.md current (see below)
 7. **Commit after each feature** - When implementing multiple features, test and commit each one separately before moving to the next. This keeps changes atomic and makes it easier to review or revert individual features.
+8. **Bump save version on compatibility changes** - When changing saved game state structure (adding/removing fields, changing types), increment `SAVE_VERSION` in `src/app/game/save.ts` to invalidate old saves.
 
 ## Documentation Requirements
 

@@ -7,7 +7,7 @@
 
 import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/genetics.ts';
 import { createRandomCat, getRandomCatName } from '../cats/genetics.ts';
-import { defaultRandom, normalRandom } from '@/utils/random.ts';
+import { defaultRandom, normalRandom } from '@/base/random.ts';
 
 /**
  * Value modifiers for each trait variant

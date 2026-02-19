@@ -12,7 +12,7 @@ import {
   MARKET_INVENTORY_SIZE,
 } from './market.ts';
 import type { Cat, CatPhenotype } from '../cats/genetics.ts';
-import { createSeededRandom } from '@/utils/random.ts';
+import { createSeededRandom } from '@/base/random.ts';
 
 describe('market', () => {
   const createTestCat = (phenotype: Partial<CatPhenotype>, happiness = 100): Cat => ({

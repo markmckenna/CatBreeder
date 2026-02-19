@@ -4,7 +4,7 @@
 
 import type { MarketCat } from '../../economy/market.ts';
 import { formatMoney } from '../../economy/market.ts';
-import CatSprite from '../../cats/CatSprite';
+import CatSprite from '../CatSprite';
 import styles from './styles.css';
 
 interface MarketPanelProps {

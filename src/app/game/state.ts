@@ -50,16 +50,27 @@ export interface GameState {
 }
 
 /**
- * Actions the player can take
+ * Actions the player can take.
+ * Each action type maps to a handler function.
  */
+export enum ActionType {
+  ADD_BREEDING_PAIR = 'ADD_BREEDING_PAIR',
+  REMOVE_BREEDING_PAIR = 'REMOVE_BREEDING_PAIR',
+  LIST_FOR_SALE = 'LIST_FOR_SALE',
+  UNLIST_FROM_SALE = 'UNLIST_FROM_SALE',
+  BUY_CAT = 'BUY_CAT',
+  BUY_FURNITURE = 'BUY_FURNITURE',
+  END_TURN = 'END_TURN',
+}
+
 export type GameAction =
-  | { type: 'ADD_BREEDING_PAIR'; parent1Id: string; parent2Id: string }
-  | { type: 'REMOVE_BREEDING_PAIR'; parent1Id: string; parent2Id: string }
-  | { type: 'LIST_FOR_SALE'; catId: string }
-  | { type: 'UNLIST_FROM_SALE'; catId: string }
-  | { type: 'BUY_CAT'; cat: Cat; price: number }
-  | { type: 'BUY_FURNITURE'; itemType: FurnitureItemType }
-  | { type: 'END_TURN' };
+  | { type: ActionType.ADD_BREEDING_PAIR; parent1Id: string; parent2Id: string }
+  | { type: ActionType.REMOVE_BREEDING_PAIR; parent1Id: string; parent2Id: string }
+  | { type: ActionType.LIST_FOR_SALE; catId: string }
+  | { type: ActionType.UNLIST_FROM_SALE; catId: string }
+  | { type: ActionType.BUY_CAT; cat: Cat; price: number }
+  | { type: ActionType.BUY_FURNITURE; itemType: FurnitureItemType }
+  | { type: ActionType.END_TURN };
 
 /**
  * Turn results to show the player
@@ -74,12 +85,14 @@ export interface TurnResult {
 
 /**
  * Create initial game state
+ * 
+ * @param rng - Optional random function for deterministic generation
  */
-export function createInitialGameState(): GameState {
-  // Start with 2 random cats
+export function createInitialGameState(rng?: RandomFn): GameState {
+  // Start with 2 cats
   const starterCats = [
-    createRandomCat('Whiskers'),
-    createRandomCat('Mittens'),
+    createRandomCat('Whiskers', { random: rng }),
+    createRandomCat('Mittens', { random: rng }),
   ];
 
   const market = createMarketState();
@@ -89,7 +102,7 @@ export function createInitialGameState(): GameState {
     money: 500,
     cats: starterCats,
     market,
-    marketInventory: generateMarketInventory(market),
+    marketInventory: generateMarketInventory(market, rng),
     traitCollection: createTraitCollection(),
     furniture: createInitialFurniture(),
     breedingPairs: [],
@@ -100,108 +113,138 @@ export function createInitialGameState(): GameState {
   };
 }
 
+// ============= Action Handlers =============
+// Each handler is a pure function: (state, actionPayload) => newState
+
+function addBreedingPair(
+  state: GameState, 
+  parent1Id: string, 
+  parent2Id: string
+): GameState {
+  // Check cats exist and aren't already paired
+  const cat1 = state.cats.find(c => c.id === parent1Id);
+  const cat2 = state.cats.find(c => c.id === parent2Id);
+  if (!cat1 || !cat2) return state;
+
+  const alreadyPaired = state.breedingPairs.some(
+    p => p.parent1Id === parent1Id || p.parent2Id === parent1Id ||
+         p.parent1Id === parent2Id || p.parent2Id === parent2Id
+  );
+  if (alreadyPaired) return state;
+
+  return {
+    ...state,
+    breedingPairs: [...state.breedingPairs, { parent1Id, parent2Id }],
+  };
+}
+
+function removeBreedingPair(
+  state: GameState, 
+  parent1Id: string, 
+  parent2Id: string
+): GameState {
+  return {
+    ...state,
+    breedingPairs: state.breedingPairs.filter(
+      p => !(p.parent1Id === parent1Id && p.parent2Id === parent2Id)
+    ),
+  };
+}
+
+function listForSale(state: GameState, catId: string): GameState {
+  if (state.catsForSale.includes(catId)) return state;
+  const cat = state.cats.find(c => c.id === catId);
+  if (!cat) return state;
+
+  return {
+    ...state,
+    catsForSale: [...state.catsForSale, catId],
+  };
+}
+
+function unlistFromSale(state: GameState, catId: string): GameState {
+  return {
+    ...state,
+    catsForSale: state.catsForSale.filter(id => id !== catId),
+  };
+}
+
+function buyCat(state: GameState, cat: Cat, price: number): GameState {
+  if (state.money < price) return state;
+  
+  // Remove cat from market inventory
+  const newInventory = state.marketInventory.filter(
+    mc => mc.cat.id !== cat.id
+  );
+
+  return {
+    ...state,
+    money: state.money - price,
+    cats: [...state.cats, cat],
+    marketInventory: newInventory,
+    transactions: [...state.transactions, {
+      type: 'buy',
+      catId: cat.id,
+      amount: price,
+      day: state.day,
+    }],
+  };
+}
+
+function buyFurniture(state: GameState, itemType: FurnitureItemType): GameState {
+  const item = SHOP_ITEMS[itemType];
+  if (!item || state.money < item.price) {
+    return state;
+  }
+
+  const newFurniture = { ...state.furniture };
+  if (itemType === 'toy') {
+    newFurniture.toys += 1;
+  } else if (itemType === 'bed') {
+    newFurniture.beds += 1;
+  }
+
+  return {
+    ...state,
+    money: state.money - item.price,
+    furniture: newFurniture,
+    transactions: [...state.transactions, {
+      type: 'buy',
+      catId: `furniture-${itemType}-${Date.now()}`,
+      amount: item.price,
+      day: state.day,
+    }],
+  };
+}
+
+// ============= Action Dispatcher =============
+
 /**
  * Apply an action to game state (immutable)
  */
 export function applyAction(state: GameState, action: GameAction): GameState {
   switch (action.type) {
-    case 'ADD_BREEDING_PAIR': {
-      // Check cats exist and aren't already paired
-      const cat1 = state.cats.find(c => c.id === action.parent1Id);
-      const cat2 = state.cats.find(c => c.id === action.parent2Id);
-      if (!cat1 || !cat2) return state;
-
-      const alreadyPaired = state.breedingPairs.some(
-        p => p.parent1Id === action.parent1Id || p.parent2Id === action.parent1Id ||
-             p.parent1Id === action.parent2Id || p.parent2Id === action.parent2Id
-      );
-      if (alreadyPaired) return state;
-
-      return {
-        ...state,
-        breedingPairs: [...state.breedingPairs, { parent1Id: action.parent1Id, parent2Id: action.parent2Id }],
-      };
-    }
-
-    case 'REMOVE_BREEDING_PAIR': {
-      return {
-        ...state,
-        breedingPairs: state.breedingPairs.filter(
-          p => !(p.parent1Id === action.parent1Id && p.parent2Id === action.parent2Id)
-        ),
-      };
-    }
-
-    case 'LIST_FOR_SALE': {
-      if (state.catsForSale.includes(action.catId)) return state;
-      const cat = state.cats.find(c => c.id === action.catId);
-      if (!cat) return state;
-
-      return {
-        ...state,
-        catsForSale: [...state.catsForSale, action.catId],
-      };
-    }
-
-    case 'UNLIST_FROM_SALE': {
-      return {
-        ...state,
-        catsForSale: state.catsForSale.filter(id => id !== action.catId),
-      };
-    }
-
-    case 'BUY_CAT': {
-      if (state.money < action.price) return state;
-      
-      // Remove cat from market inventory
-      const newInventory = state.marketInventory.filter(
-        mc => mc.cat.id !== action.cat.id
-      );
-
-      return {
-        ...state,
-        money: state.money - action.price,
-        cats: [...state.cats, action.cat],
-        marketInventory: newInventory,
-        transactions: [...state.transactions, {
-          type: 'buy',
-          catId: action.cat.id,
-          amount: action.price,
-          day: state.day,
-        }],
-      };
-    }
-
-    case 'BUY_FURNITURE': {
-      const item = SHOP_ITEMS[action.itemType];
-      if (!item || state.money < item.price) {
-        return state;
-      }
-
-      const newFurniture = { ...state.furniture };
-      if (action.itemType === 'toy') {
-        newFurniture.toys += 1;
-      } else if (action.itemType === 'bed') {
-        newFurniture.beds += 1;
-      }
-
-      return {
-        ...state,
-        money: state.money - item.price,
-        furniture: newFurniture,
-        transactions: [...state.transactions, {
-          type: 'buy',
-          catId: `furniture-${action.itemType}-${Date.now()}`,
-          amount: item.price,
-          day: state.day,
-        }],
-      };
-    }
-
-    case 'END_TURN': {
+    case ActionType.ADD_BREEDING_PAIR:
+      return addBreedingPair(state, action.parent1Id, action.parent2Id);
+    
+    case ActionType.REMOVE_BREEDING_PAIR:
+      return removeBreedingPair(state, action.parent1Id, action.parent2Id);
+    
+    case ActionType.LIST_FOR_SALE:
+      return listForSale(state, action.catId);
+    
+    case ActionType.UNLIST_FROM_SALE:
+      return unlistFromSale(state, action.catId);
+    
+    case ActionType.BUY_CAT:
+      return buyCat(state, action.cat, action.price);
+    
+    case ActionType.BUY_FURNITURE:
+      return buyFurniture(state, action.itemType);
+    
+    case ActionType.END_TURN:
       // Turn processing is handled by processTurn
       return state;
-    }
 
     default:
       return state;

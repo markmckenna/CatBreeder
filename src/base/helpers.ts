@@ -1,14 +1,6 @@
 /**
- * Example utility functions demonstrating unit-testable code.
+ * Common utility functions used across the application.
  */
-
-export function add(a: number, b: number): number {
-  return a + b;
-}
-
-export function multiply(a: number, b: number): number {
-  return a * b;
-}
 
 export function capitalize(str: string): string {
   if (!str) return '';

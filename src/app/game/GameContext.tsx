@@ -8,7 +8,13 @@ import { createContext, useContext, useReducer, useCallback, ReactNode } from 'r
 import type { GameState, GameAction, TurnResult } from './state.ts';
 import { createInitialGameState, applyAction, processTurn } from './state.ts';
 import { saveGame, loadGame, deleteSave } from './save.ts';
-import { createSeededRandom } from '@/utils/random.ts';
+import { createSeededRandom } from '@/base/random.ts';
+
+/** 
+ * Fixed seed for new games - ensures consistent starting conditions.
+ * All new games start with the same cats, market, etc.
+ */
+const DEFAULT_GAME_SEED = 12345;
 
 interface GameContextValue {
   state: GameState;
@@ -68,14 +74,8 @@ function reducer(state: ReducerState, action: ReducerAction): ReducerState {
 }
 
 /**
- * Generate a new random seed
- */
-function generateSeed(): number {
-  return Math.floor(Math.random() * 2147483647);
-}
-
-/**
- * Initialize state - load from save or create new
+ * Initialize state - load from save or create new.
+ * New games use a fixed seed for consistent starting conditions.
  */
 function initializeState(): ReducerState {
   const saved = loadGame();
@@ -88,10 +88,12 @@ function initializeState(): ReducerState {
     };
   }
   
-  const seed = generateSeed();
+  // Use fixed seed for new games so all players start with same conditions
+  const seed = DEFAULT_GAME_SEED;
+  const rng = createSeededRandom(seed);
   console.log('Starting new game with seed', seed);
   return {
-    gameState: createInitialGameState(),
+    gameState: createInitialGameState(rng),
     lastTurnResult: null,
     seed,
   };
@@ -128,12 +130,13 @@ export function GameProvider({ children }: GameProviderProps) {
 
   const resetGame = useCallback(() => {
     deleteSave();
-    const newSeed = generateSeed();
-    console.log('Starting new game with seed', newSeed);
+    // New games are deterministic - use fixed seed
+    const rng = createSeededRandom(DEFAULT_GAME_SEED);
+    console.log('Starting new game with seed', DEFAULT_GAME_SEED);
     internalDispatch({ 
       type: 'RESET', 
-      newState: createInitialGameState(), 
-      seed: newSeed 
+      newState: createInitialGameState(rng), 
+      seed: DEFAULT_GAME_SEED 
     });
   }, []);
 

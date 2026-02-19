@@ -15,10 +15,10 @@ function createMockCat(overrides: Partial<Cat> = {}): Cat {
     age: 10,
     happiness: 80,
     genotype: {
-      size: 'LL',
-      tailLength: 'TT',
-      earShape: 'EE',
-      tailColor: 'CC',
+      size: ['S', 'S'],
+      tailLength: ['T', 'T'],
+      earShape: ['E', 'E'],
+      tailColor: ['O', 'O'],
     },
     phenotype: {
       size: 'large',

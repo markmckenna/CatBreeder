@@ -3,7 +3,7 @@
  */
 
 import type { Cat } from '../../cats/genetics.ts';
-import CatSprite from '../../cats/CatSprite';
+import CatSprite from '../CatSprite';
 import styles from './styles.css';
 
 interface CatListPanelProps {

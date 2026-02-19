@@ -5,8 +5,9 @@
 
 import { useState, useMemo } from 'react';
 import { useGame } from '../../game/GameContext.tsx';
+import { ActionType } from '../../game/state.ts';
 import Room from '../../environment/Room';
-import CatSprite from '../../cats/CatSprite';
+import CatSprite from '../CatSprite';
 import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
 import ShopPanel from '../ShopPanel';
@@ -15,6 +16,7 @@ import { calculateCatValue, createMarketState, getValueBreakdown } from '../../e
 import type { MarketCat } from '../../economy/market.ts';
 import { getCollectionProgress } from '../../cats/collection.ts';
 import { calculateCapacity, FurnitureItemType } from '../../environment/furniture.ts';
+import { assignCatPositions } from '../../environment/positions.ts';
 import type { Cat } from '../../cats/genetics.ts';
 import styles from './styles.css';
 
@@ -33,35 +35,6 @@ function getBreedingStatus(alleles: [string, string]): 'pure' | 'carrier' | 'dom
   return 'dominant';                                 // e.g., 'SS' - both dominant
 }
 
-// Pre-defined cat positions at cozy spots in the room
-// These are percentage coordinates (x, y) where cats will be placed
-const PREDEFINED_CAT_POSITIONS = [
-  { x: 50, y: 75 },   // Center on fireplace rug
-  { x: 40, y: 78 },   // Left side of fireplace rug
-  { x: 60, y: 78 },   // Right side of fireplace rug
-  { x: 45, y: 72 },   // Upper left rug
-  { x: 55, y: 72 },   // Upper right rug
-  { x: 18, y: 82 },   // Near left cat bed
-  { x: 82, y: 82 },   // Near right cat bed
-  { x: 70, y: 65 },   // Near bookshelf
-  { x: 25, y: 70 },   // Near plant
-  { x: 35, y: 85 },   // Lower left floor
-  { x: 65, y: 85 },   // Lower right floor
-  { x: 30, y: 90 },   // Far left back
-  { x: 70, y: 90 },   // Far right back
-  { x: 50, y: 92 },   // Center back
-  { x: 15, y: 75 },   // Far left middle
-];
-
-// Assign cats to predefined positions
-function getCatPositions(cats: Cat[]) {
-  return cats.map((cat, index) => {
-    // Use predefined positions, wrapping around if we have more cats
-    const pos = PREDEFINED_CAT_POSITIONS[index % PREDEFINED_CAT_POSITIONS.length];
-    return { catId: cat.id, x: pos.x, y: pos.y };
-  });
-}
-
 function GameUI() {
   const { state, dispatch, endTurn, lastTurnResult } = useGame();
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
@@ -74,8 +47,8 @@ function GameUI() {
 
   const market = useMemo(() => createMarketState(), []);
   const catPositions = useMemo(
-    () => getCatPositions(state.cats),
-    [state.cats]
+    () => assignCatPositions(state.cats.map(c => c.id), state.furniture),
+    [state.cats, state.furniture]
   );
   const collectionProgress = getCollectionProgress(state.traitCollection);
 
@@ -84,7 +57,7 @@ function GameUI() {
       // Selecting second cat for breeding
       if (breedingFirstCat && cat.id !== breedingFirstCat.id) {
         dispatch({
-          type: 'ADD_BREEDING_PAIR',
+          type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: breedingFirstCat.id,
           parent2Id: cat.id,
         });
@@ -108,7 +81,7 @@ function GameUI() {
   const handleSellClick = () => {
     if (selectedCat) {
       dispatch({
-        type: 'LIST_FOR_SALE',
+        type: ActionType.LIST_FOR_SALE,
         catId: selectedCat.id,
       });
       setSelectedCat(null);
@@ -117,7 +90,7 @@ function GameUI() {
 
   const handleBuyCat = (marketCat: MarketCat) => {
     dispatch({
-      type: 'BUY_CAT',
+      type: ActionType.BUY_CAT,
       cat: marketCat.cat,
       price: marketCat.price,
     });
@@ -125,7 +98,7 @@ function GameUI() {
 
   const handleBuyFurniture = (itemType: FurnitureItemType) => {
     dispatch({
-      type: 'BUY_FURNITURE',
+      type: ActionType.BUY_FURNITURE,
       itemType,
     });
   };

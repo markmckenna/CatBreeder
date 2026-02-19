@@ -5,7 +5,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CatSprite from '.';
-import type { Cat } from '../genetics.ts';
+import type { Cat } from '../../cats/genetics.ts';
 
 const mockCat: Cat = {
   id: 'test-cat-1',
