@@ -32,22 +32,32 @@ function getBreedingStatus(alleles: [string, string]): 'pure' | 'carrier' | 'dom
   return 'dominant';                                 // e.g., 'SS' - both dominant
 }
 
-// Simple seeded random for consistent positions within a day
-function seededRandom(seed: number) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
+// Pre-defined cat positions at cozy spots in the room
+// These are percentage coordinates (x, y) where cats will be placed
+const PREDEFINED_CAT_POSITIONS = [
+  { x: 50, y: 75 },   // Center on fireplace rug
+  { x: 40, y: 78 },   // Left side of fireplace rug
+  { x: 60, y: 78 },   // Right side of fireplace rug
+  { x: 45, y: 72 },   // Upper left rug
+  { x: 55, y: 72 },   // Upper right rug
+  { x: 18, y: 82 },   // Near left cat bed
+  { x: 82, y: 82 },   // Near right cat bed
+  { x: 70, y: 65 },   // Near bookshelf
+  { x: 25, y: 70 },   // Near plant
+  { x: 35, y: 85 },   // Lower left floor
+  { x: 65, y: 85 },   // Lower right floor
+  { x: 30, y: 90 },   // Far left back
+  { x: 70, y: 90 },   // Far right back
+  { x: 50, y: 92 },   // Center back
+  { x: 15, y: 75 },   // Far left middle
+];
 
-// Generate random positions for cats based on day
-function getCatPositions(cats: Cat[], day: number) {
+// Assign cats to predefined positions
+function getCatPositions(cats: Cat[]) {
   return cats.map((cat, index) => {
-    const seed = day * 1000 + index * 137 + cat.id.charCodeAt(0);
-    // Position cats in the lower portion of the room (floor area)
-    // X: 5% to 85% of room width
-    // Y: 60% to 85% of room height (on the floor/rug area)
-    const x = 5 + seededRandom(seed) * 80;
-    const y = 60 + seededRandom(seed + 1) * 25;
-    return { catId: cat.id, x, y };
+    // Use predefined positions, wrapping around if we have more cats
+    const pos = PREDEFINED_CAT_POSITIONS[index % PREDEFINED_CAT_POSITIONS.length];
+    return { catId: cat.id, x: pos.x, y: pos.y };
   });
 }
 
@@ -62,8 +72,8 @@ function GameUI() {
 
   const market = useMemo(() => createMarketState(), []);
   const catPositions = useMemo(
-    () => getCatPositions(state.cats, state.day),
-    [state.cats, state.day]
+    () => getCatPositions(state.cats),
+    [state.cats]
   );
   const collectionProgress = getCollectionProgress(state.traitCollection);
 
