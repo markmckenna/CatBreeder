@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node config/esbuild.config.js --watch --open",
     "dev": "node config/esbuild.config.js --watch",
+    "dev:restart": "lsof -ti:3000 | xargs kill -9 2>/dev/null; node config/esbuild.config.js --watch --open",
     "build": "node config/esbuild.config.js",
     "preview": "npx serve dist",
     "test": "vitest --config config/vitest.config.ts",
@@ -29,6 +30,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^2.1.6",
     "esbuild": "^0.24.0",
+    "esbuild-css-modules-plugin": "^3.1.5",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
