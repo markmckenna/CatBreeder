@@ -1,10 +1,11 @@
 /**
  * Room component - displays a cozy background for cats.
- * Uses an SVG-generated background of a warm room with fireplace.
+ * Composed from individual SVG objects that can be positioned via CSS.
  */
 
-import { ReactNode, CSSProperties } from 'react';
+import { ReactNode } from 'react';
 import type { OwnedFurniture } from '../furniture.ts';
+import styles from './styles.css';
 
 export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
 
@@ -31,20 +32,12 @@ interface RoomProps {
   children?: ReactNode;
 }
 
-// SVG background of a cozy room with fireplace
-function CozyRoomBackground() {
+// ============= Individual SVG Components =============
+
+/** Wall and floor background */
+function WallFloor() {
   return (
-    <svg
-      viewBox="0 0 800 600"
-      preserveAspectRatio="xMidYMid slice"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-      }}
-    >
+    <svg viewBox="0 0 800 600" preserveAspectRatio="none" className={styles.backgroundLayer}>
       {/* Wall */}
       <rect x="0" y="0" width="800" height="400" fill="#F5E6D3" />
       
@@ -71,10 +64,17 @@ function CozyRoomBackground() {
       
       {/* Baseboard */}
       <rect x="0" y="395" width="800" height="15" fill="#5C4033" />
-      
-      {/* Fireplace - stone surround */}
-      <rect x="280" y="200" width="240" height="210" fill="#696969" rx="8" />
-      <rect x="290" y="210" width="220" height="190" fill="#2F2F2F" rx="4" />
+    </svg>
+  );
+}
+
+/** Fireplace with animated flames */
+function Fireplace() {
+  return (
+    <svg viewBox="0 0 240 210" preserveAspectRatio="xMidYMid meet" className={styles.fireplace}>
+      {/* Stone surround */}
+      <rect x="0" y="15" width="240" height="195" fill="#696969" rx="8" />
+      <rect x="10" y="25" width="220" height="175" fill="#2F2F2F" rx="4" />
       
       {/* Fire glow */}
       <defs>
@@ -84,12 +84,12 @@ function CozyRoomBackground() {
           <stop offset="100%" stopColor="#FF4500" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <ellipse cx="400" cy="400" rx="120" ry="80" fill="url(#fireGlow)" />
+      <ellipse cx="120" cy="200" rx="100" ry="60" fill="url(#fireGlow)" />
       
       {/* Logs */}
-      <ellipse cx="370" cy="385" rx="35" ry="12" fill="#4A3728" />
-      <ellipse cx="430" cy="385" rx="35" ry="12" fill="#3D2E22" />
-      <ellipse cx="400" cy="375" rx="30" ry="10" fill="#5C4033" />
+      <ellipse cx="90" cy="185" rx="35" ry="12" fill="#4A3728" />
+      <ellipse cx="150" cy="185" rx="35" ry="12" fill="#3D2E22" />
+      <ellipse cx="120" cy="175" rx="30" ry="10" fill="#5C4033" />
       
       {/* Fire flames */}
       <defs>
@@ -105,171 +105,153 @@ function CozyRoomBackground() {
         </linearGradient>
       </defs>
       
-      {/* Animated flame shapes */}
-      <path d="M380 380 Q370 340 385 310 Q395 330 390 360 Q400 340 395 380 Z" fill="url(#flame1)" opacity="0.9">
+      <path d="M100 180 Q90 140 105 110 Q115 130 110 160 Q120 140 115 180 Z" fill="url(#flame1)" opacity="0.9">
         <animate attributeName="d" dur="0.8s" repeatCount="indefinite"
-          values="M380 380 Q370 340 385 310 Q395 330 390 360 Q400 340 395 380 Z;
-                  M380 380 Q375 345 388 315 Q392 335 388 358 Q398 342 395 380 Z;
-                  M380 380 Q370 340 385 310 Q395 330 390 360 Q400 340 395 380 Z" />
+          values="M100 180 Q90 140 105 110 Q115 130 110 160 Q120 140 115 180 Z;
+                  M100 180 Q95 145 108 115 Q112 135 108 158 Q118 142 115 180 Z;
+                  M100 180 Q90 140 105 110 Q115 130 110 160 Q120 140 115 180 Z" />
       </path>
-      <path d="M400 380 Q390 330 405 290 Q415 320 410 350 Q420 320 415 380 Z" fill="url(#flame2)" opacity="0.95">
+      <path d="M120 180 Q110 130 125 90 Q135 120 130 150 Q140 120 135 180 Z" fill="url(#flame2)" opacity="0.95">
         <animate attributeName="d" dur="1s" repeatCount="indefinite"
-          values="M400 380 Q390 330 405 290 Q415 320 410 350 Q420 320 415 380 Z;
-                  M400 380 Q395 335 408 295 Q412 325 408 355 Q418 325 415 380 Z;
-                  M400 380 Q390 330 405 290 Q415 320 410 350 Q420 320 415 380 Z" />
+          values="M120 180 Q110 130 125 90 Q135 120 130 150 Q140 120 135 180 Z;
+                  M120 180 Q115 135 128 95 Q132 125 128 155 Q138 125 135 180 Z;
+                  M120 180 Q110 130 125 90 Q135 120 130 150 Q140 120 135 180 Z" />
       </path>
-      <path d="M420 380 Q410 345 425 320 Q432 340 428 360 Q438 345 432 380 Z" fill="url(#flame1)" opacity="0.85">
+      <path d="M140 180 Q130 145 145 120 Q152 140 148 160 Q158 145 152 180 Z" fill="url(#flame1)" opacity="0.85">
         <animate attributeName="d" dur="0.7s" repeatCount="indefinite"
-          values="M420 380 Q410 345 425 320 Q432 340 428 360 Q438 345 432 380 Z;
-                  M420 380 Q415 348 427 325 Q430 342 426 358 Q436 348 432 380 Z;
-                  M420 380 Q410 345 425 320 Q432 340 428 360 Q438 345 432 380 Z" />
+          values="M140 180 Q130 145 145 120 Q152 140 148 160 Q158 145 152 180 Z;
+                  M140 180 Q135 148 147 125 Q150 142 146 158 Q156 148 152 180 Z;
+                  M140 180 Q130 145 145 120 Q152 140 148 160 Q158 145 152 180 Z" />
       </path>
       
       {/* Mantle */}
-      <rect x="260" y="185" width="280" height="25" fill="#5C4033" rx="4" />
-      
-      {/* Window on left */}
-      <rect x="60" y="100" width="120" height="150" fill="#87CEEB" rx="4" />
-      <rect x="60" y="100" width="120" height="150" fill="none" stroke="#5C4033" strokeWidth="12" rx="4" />
-      <line x1="120" y1="100" x2="120" y2="250" stroke="#5C4033" strokeWidth="6" />
-      <line x1="60" y1="175" x2="180" y2="175" stroke="#5C4033" strokeWidth="6" />
-      
-      {/* Curtains */}
-      <path d="M50 90 Q55 180 45 260 L65 260 Q60 180 70 90 Z" fill="#8B4513" opacity="0.7" />
-      <path d="M190 90 Q185 180 195 260 L175 260 Q180 180 170 90 Z" fill="#8B4513" opacity="0.7" />
-      
-      {/* Window on right */}
-      <rect x="620" y="100" width="120" height="150" fill="#87CEEB" rx="4" />
-      <rect x="620" y="100" width="120" height="150" fill="none" stroke="#5C4033" strokeWidth="12" rx="4" />
-      <line x1="680" y1="100" x2="680" y2="250" stroke="#5C4033" strokeWidth="6" />
-      <line x1="620" y1="175" x2="740" y2="175" stroke="#5C4033" strokeWidth="6" />
-      
-      {/* Curtains right */}
-      <path d="M610 90 Q615 180 605 260 L625 260 Q620 180 630 90 Z" fill="#8B4513" opacity="0.7" />
-      <path d="M750 90 Q745 180 755 260 L735 260 Q740 180 730 90 Z" fill="#8B4513" opacity="0.7" />
-      
-      {/* Cozy rug in front of fireplace */}
-      <ellipse cx="400" cy="520" rx="180" ry="60" fill="#A0522D" />
-      <ellipse cx="400" cy="520" rx="160" ry="50" fill="#CD853F" />
-      <ellipse cx="400" cy="520" rx="140" ry="40" fill="#DEB887" />
-      
-      {/* Cat bed on left */}
-      <ellipse cx="150" cy="500" rx="60" ry="25" fill="#FF6B6B" />
-      <ellipse cx="150" cy="495" rx="50" ry="18" fill="#FF8E8E" />
-      
-      {/* Cat bed on right */}
-      <ellipse cx="650" cy="500" rx="60" ry="25" fill="#6B9FFF" />
-      <ellipse cx="650" cy="495" rx="50" ry="18" fill="#8EB8FF" />
-      
-      {/* Bookshelf on wall */}
-      <rect x="550" y="280" width="80" height="110" fill="#5C4033" />
-      <rect x="555" y="285" width="70" height="25" fill="#3D2E22" />
-      <rect x="555" y="315" width="70" height="25" fill="#3D2E22" />
-      <rect x="555" y="345" width="70" height="25" fill="#3D2E22" />
-      <rect x="555" y="375" width="70" height="10" fill="#3D2E22" />
-      
-      {/* Books */}
-      <rect x="560" y="287" width="8" height="20" fill="#C41E3A" />
-      <rect x="570" y="289" width="6" height="18" fill="#228B22" />
-      <rect x="578" y="286" width="10" height="21" fill="#4169E1" />
-      <rect x="590" y="288" width="7" height="19" fill="#DAA520" />
-      
-      <rect x="558" y="317" width="12" height="20" fill="#8B4513" />
-      <rect x="572" y="319" width="8" height="18" fill="#800080" />
-      <rect x="582" y="316" width="10" height="21" fill="#2F4F4F" />
-      
-      {/* Plant */}
-      <rect x="170" y="330" width="40" height="60" fill="#B87333" rx="4" />
-      <ellipse cx="190" cy="330" rx="35" ry="20" fill="#228B22" />
-      <ellipse cx="180" cy="320" rx="25" ry="15" fill="#32CD32" />
-      <ellipse cx="200" cy="315" rx="20" ry="12" fill="#228B22" />
+      <rect x="-20" y="0" width="280" height="25" fill="#5C4033" rx="4" />
     </svg>
   );
 }
 
-const roomContainerStyle: CSSProperties = {
-  position: 'relative',
-  width: '100%',
-  height: '100%',
-  minHeight: '300px',
-  overflow: 'hidden',
-  borderRadius: '12px',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-  backgroundColor: '#2F2F2F',
-};
+/** Window with curtains */
+function Window({ side }: { side: 'left' | 'right' }) {
+  const className = side === 'left' ? styles.windowLeft : styles.windowRight;
+  return (
+    <svg viewBox="0 0 120 150" preserveAspectRatio="xMidYMid meet" className={className}>
+      {/* Window glass */}
+      <rect x="0" y="0" width="120" height="150" fill="#87CEEB" rx="4" />
+      {/* Frame */}
+      <rect x="0" y="0" width="120" height="150" fill="none" stroke="#5C4033" strokeWidth="12" rx="4" />
+      {/* Cross bars */}
+      <line x1="60" y1="0" x2="60" y2="150" stroke="#5C4033" strokeWidth="6" />
+      <line x1="0" y1="75" x2="120" y2="75" stroke="#5C4033" strokeWidth="6" />
+      
+      {/* Curtains */}
+      <path d={side === 'left' 
+        ? "M-10 -10 Q-5 80 -15 160 L5 160 Q0 80 10 -10 Z"
+        : "M130 -10 Q125 80 135 160 L115 160 Q120 80 110 -10 Z"
+      } fill="#8B4513" opacity="0.7" />
+    </svg>
+  );
+}
 
-const contentStyle: CSSProperties = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  display: 'flex',
-  flexDirection: 'column',
-  zIndex: 1,
-};
+/** Bookshelf with books */
+function Bookshelf() {
+  return (
+    <svg viewBox="0 0 80 110" preserveAspectRatio="xMidYMid meet" className={styles.bookshelf}>
+      {/* Shelf frame */}
+      <rect x="0" y="0" width="80" height="110" fill="#5C4033" />
+      <rect x="5" y="5" width="70" height="25" fill="#3D2E22" />
+      <rect x="5" y="35" width="70" height="25" fill="#3D2E22" />
+      <rect x="5" y="65" width="70" height="25" fill="#3D2E22" />
+      <rect x="5" y="95" width="70" height="10" fill="#3D2E22" />
+      
+      {/* Books - top shelf */}
+      <rect x="10" y="7" width="8" height="20" fill="#C41E3A" />
+      <rect x="20" y="9" width="6" height="18" fill="#228B22" />
+      <rect x="28" y="6" width="10" height="21" fill="#4169E1" />
+      <rect x="40" y="8" width="7" height="19" fill="#DAA520" />
+      
+      {/* Books - middle shelf */}
+      <rect x="8" y="37" width="12" height="20" fill="#8B4513" />
+      <rect x="22" y="39" width="8" height="18" fill="#800080" />
+      <rect x="32" y="36" width="10" height="21" fill="#2F4F4F" />
+    </svg>
+  );
+}
 
-// Fixed positions for furniture items (percentage of room size)
+/** Potted plant */
+function Plant() {
+  return (
+    <svg viewBox="0 0 40 60" preserveAspectRatio="xMidYMid meet" className={styles.plant}>
+      {/* Pot */}
+      <rect x="0" y="30" width="40" height="30" fill="#B87333" rx="4" />
+      {/* Leaves */}
+      <ellipse cx="20" cy="30" rx="30" ry="18" fill="#228B22" />
+      <ellipse cx="12" cy="22" rx="20" ry="12" fill="#32CD32" />
+      <ellipse cx="28" cy="18" rx="16" ry="10" fill="#228B22" />
+    </svg>
+  );
+}
+
+/** Cozy rug */
+function Rug() {
+  return (
+    <svg viewBox="0 0 360 120" preserveAspectRatio="xMidYMid meet" className={styles.rug}>
+      <ellipse cx="180" cy="60" rx="180" ry="60" fill="#A0522D" />
+      <ellipse cx="180" cy="60" rx="160" ry="50" fill="#CD853F" />
+      <ellipse cx="180" cy="60" rx="140" ry="40" fill="#DEB887" />
+    </svg>
+  );
+}
+
+/** Cat bed */
+function CatBed({ side, color }: { side: 'left' | 'right'; color: string }) {
+  const className = side === 'left' ? styles.catBedLeft : styles.catBedRight;
+  const lightColor = color === '#FF6B6B' ? '#FF8E8E' : '#8EB8FF';
+  return (
+    <svg viewBox="0 0 120 50" preserveAspectRatio="xMidYMid meet" className={className}>
+      <ellipse cx="60" cy="30" rx="60" ry="25" fill={color} />
+      <ellipse cx="60" cy="25" rx="50" ry="18" fill={lightColor} />
+    </svg>
+  );
+}
+
+// ============= Furniture Layer =============
+
 const TOY_POSITIONS = [
-  { x: 25, y: 80 },  // Near left cat bed
-  { x: 75, y: 80 },  // Near right cat bed
-  { x: 50, y: 70 },  // Center on rug
-  { x: 15, y: 75 },  // Far left
-  { x: 85, y: 75 },  // Far right
+  { x: 25, y: 80 },
+  { x: 75, y: 80 },
+  { x: 50, y: 70 },
+  { x: 15, y: 75 },
+  { x: 85, y: 75 },
 ];
 
 const BED_POSITIONS = [
-  { x: 35, y: 82 },  // Left of fireplace
-  { x: 65, y: 82 },  // Right of fireplace
-  { x: 20, y: 90 },  // Far left back
-  { x: 80, y: 90 },  // Far right back
-  { x: 50, y: 88 },  // Center back
+  { x: 35, y: 82 },
+  { x: 65, y: 82 },
+  { x: 20, y: 90 },
+  { x: 80, y: 90 },
+  { x: 50, y: 88 },
 ];
 
-// Toy item (simple ball)
 function ToyItem({ x, y }: { x: number; y: number }) {
   return (
     <div
-      style={{
-        position: 'absolute',
-        left: `${x}%`,
-        top: `${y}%`,
-        transform: 'translate(-50%, -50%)',
-        width: '20px',
-        height: '20px',
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #FF6B6B 0%, #C62828 100%)',
-        boxShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-        zIndex: 2,
-      }}
+      className={styles.furnitureToy}
+      style={{ left: `${x}%`, top: `${y}%` }}
       data-testid="furniture-toy"
     />
   );
 }
 
-// Bed item (cushion shape)
 function BedItem({ x, y }: { x: number; y: number }) {
   return (
     <div
-      style={{
-        position: 'absolute',
-        left: `${x}%`,
-        top: `${y}%`,
-        transform: 'translate(-50%, -50%)',
-        width: '45px',
-        height: '25px',
-        borderRadius: '50%',
-        background: 'linear-gradient(180deg, #9C27B0 0%, #6A1B9A 100%)',
-        boxShadow: '2px 2px 6px rgba(0,0,0,0.3)',
-        border: '2px solid #7B1FA2',
-        zIndex: 2,
-      }}
+      className={styles.furnitureBed}
+      style={{ left: `${x}%`, top: `${y}%` }}
       data-testid="furniture-bed"
     />
   );
 }
 
-// Generate furniture elements based on owned counts
 function FurnitureLayer({ furniture }: { furniture: OwnedFurniture }) {
   const toys = [];
   const beds = [];
@@ -292,12 +274,29 @@ function FurnitureLayer({ furniture }: { furniture: OwnedFurniture }) {
   );
 }
 
+// ============= Main Room Component =============
+
 function Room({ furniture, children }: RoomProps) {
   return (
-    <div style={roomContainerStyle} data-testid="room">
-      <CozyRoomBackground />
+    <div className={styles.roomContainer} data-testid="room">
+      {/* Background layer */}
+      <WallFloor />
+      
+      {/* Room objects - positioned via CSS */}
+      <Window side="left" />
+      <Window side="right" />
+      <Fireplace />
+      <Bookshelf />
+      <Plant />
+      <Rug />
+      <CatBed side="left" color="#FF6B6B" />
+      <CatBed side="right" color="#6B9FFF" />
+      
+      {/* Player-owned furniture */}
       {furniture && <FurnitureLayer furniture={furniture} />}
-      <div style={contentStyle}>
+      
+      {/* Content (cats, UI overlays) */}
+      <div className={styles.content}>
         {children}
       </div>
     </div>

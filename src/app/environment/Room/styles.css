@@ -1,0 +1,129 @@
+.roomContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: #2F2F2F;
+}
+
+.backgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+/* SVG object positioning - using percentage-based layout */
+.svgObject {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Fireplace - centered */
+.fireplace {
+  composes: svgObject;
+  top: 33%;
+  left: 35%;
+  width: 30%;
+  height: 35%;
+}
+
+/* Windows */
+.windowLeft {
+  composes: svgObject;
+  top: 16%;
+  left: 7.5%;
+  width: 15%;
+  height: 25%;
+}
+
+.windowRight {
+  composes: svgObject;
+  top: 16%;
+  right: 7.5%;
+  width: 15%;
+  height: 25%;
+}
+
+/* Bookshelf */
+.bookshelf {
+  composes: svgObject;
+  top: 46%;
+  left: 68.75%;
+  width: 10%;
+  height: 18%;
+}
+
+/* Plant */
+.plant {
+  composes: svgObject;
+  top: 55%;
+  left: 21.25%;
+  width: 5%;
+  height: 10%;
+}
+
+/* Rug */
+.rug {
+  composes: svgObject;
+  top: 76%;
+  left: 27.5%;
+  width: 45%;
+  height: 20%;
+}
+
+/* Cat beds */
+.catBedLeft {
+  composes: svgObject;
+  top: 79%;
+  left: 11.25%;
+  width: 15%;
+  height: 8%;
+}
+
+.catBedRight {
+  composes: svgObject;
+  top: 79%;
+  right: 11.25%;
+  width: 15%;
+  height: 8%;
+}
+
+/* Furniture items */
+.furnitureToy {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B6B 0%, #C62828 100%);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.furnitureBed {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 45px;
+  height: 25px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #9C27B0 0%, #6A1B9A 100%);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  border: 2px solid #7B1FA2;
+  z-index: 2;
+}

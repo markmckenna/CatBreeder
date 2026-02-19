@@ -178,6 +178,70 @@ CSS Module benefits:
 
 For simple components without styles, use a single file (e.g., `CatCard.tsx`) instead of a folder.
 
+### Styling Architecture Rules
+
+**Prefer CSS Modules over inline styles.** Move static styles to adjacent `styles.css` files rather than using `CSSProperties` objects or inline `style` props. This keeps styling concerns in CSS where they belong.
+
+**Exception: Highly dynamic styles.** When every style property depends on props/state (e.g., CatSprite where colors, sizes, and positions all derive from cat phenotype), inline styles are acceptable. The rule of thumb: if a style would be static for most instances, it belongs in CSS.
+
+**Do this:**
+```tsx
+import styles from './styles.css';
+
+function Card({ highlighted }: Props) {
+  return (
+    <div className={highlighted ? styles.highlighted : styles.card}>
+      Content
+    </div>
+  );
+}
+```
+
+**Not this:**
+```tsx
+const cardStyle: CSSProperties = {  // ❌ Move to CSS
+  padding: '16px',
+  borderRadius: '8px',
+};
+
+function Card() {
+  return <div style={cardStyle}>Content</div>;
+}
+```
+
+### SVG Componentization
+
+For complex SVG visuals (rooms, backgrounds, detailed graphics), compose from individual SVG components rather than one monolithic SVG:
+
+```tsx
+// ✅ Composable SVG components
+function Room() {
+  return (
+    <div className={styles.container}>
+      <WallFloor />       {/* Base background */}
+      <Window side="left" />
+      <Fireplace />
+      <Furniture />
+      {children}
+    </div>
+  );
+}
+
+function Fireplace() {
+  return (
+    <svg viewBox="0 0 240 210" className={styles.fireplace}>
+      {/* Fireplace SVG content */}
+    </svg>
+  );
+}
+```
+
+Benefits:
+- Individual elements can be positioned via CSS
+- Easier to maintain and modify individual pieces
+- Better code organization and reusability
+- Animations and interactions can target specific elements
+
 ### Component Structure
 ```tsx
 // Imports
