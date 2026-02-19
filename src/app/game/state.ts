@@ -9,7 +9,7 @@ import { createMarketState, calculateCatValue, generateMarketInventory, FOOD_COS
 import type { TraitCollection } from '../cats/collection.ts';
 import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
 import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture.ts';
-import { createInitialFurniture, SHOP_ITEMS } from '../environment/furniture.ts';
+import { createInitialFurniture, SHOP_ITEMS, calculateCapacity } from '../environment/furniture.ts';
 
 /**
  * Planned breeding pair for next turn
@@ -284,6 +284,23 @@ export function processTurn(
   newState.cats = newState.cats.map(cat => ({
     ...cat,
     age: cat.age + 1,
+  }));
+
+  // Update cat happiness based on carrying capacity
+  const optimalCapacity = calculateCapacity(newState.furniture);
+  const catCount = newState.cats.length;
+  
+  // Z-Score: how far over/under capacity we are (in units of 25% of capacity)
+  const zScore = (catCount - optimalCapacity) / (optimalCapacity * 0.25);
+  
+  // Daily happiness change: -5 * Z + 5
+  // At optimal: +5, 25% over: 0, 50% over: -5, 75% over: -10
+  // 25% under: +10
+  const happinessChange = -5 * zScore + 5;
+  
+  newState.cats = newState.cats.map(cat => ({
+    ...cat,
+    happiness: Math.max(0, Math.min(100, cat.happiness + happinessChange)),
   }));
 
   // Deduct daily food costs

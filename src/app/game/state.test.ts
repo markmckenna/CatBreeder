@@ -206,6 +206,53 @@ describe('game state', () => {
       expect(newState.money).toBe(startMoney - catCount);
       expect(result.foodCost).toBe(catCount);
     });
+
+    it('increases happiness when at optimal capacity', () => {
+      // Base capacity is 2, start with 2 cats = optimal
+      const state = createInitialGameState();
+      const initialHappiness = state.cats[0].happiness;
+
+      const { newState } = processTurn(state);
+
+      // At optimal capacity, happiness should increase by 5
+      expect(newState.cats[0].happiness).toBe(Math.min(100, initialHappiness + 5));
+    });
+
+    it('decreases happiness when overcrowded', () => {
+      // Create a state with more cats than capacity (base is 2)
+      const state = createInitialGameState();
+      // Add more cats to exceed capacity
+      const extraCats = [
+        { ...state.cats[0], id: 'extra1', name: 'Extra1', happiness: 50 },
+        { ...state.cats[0], id: 'extra2', name: 'Extra2', happiness: 50 },
+        { ...state.cats[0], id: 'extra3', name: 'Extra3', happiness: 50 },
+      ];
+      const overcrowdedState = {
+        ...state,
+        cats: [...state.cats, ...extraCats],
+      };
+
+      const { newState } = processTurn(overcrowdedState);
+
+      // 5 cats with capacity 2 = 3 over = Z-score of 6 = -25 happiness change
+      // Should decrease significantly
+      const extraCat = newState.cats.find(c => c.id === 'extra1');
+      expect(extraCat!.happiness).toBeLessThan(50);
+    });
+
+    it('clamps happiness between 0 and 100', () => {
+      const state = createInitialGameState();
+      // Set cats to max happiness
+      const maxHappyState = {
+        ...state,
+        cats: state.cats.map(c => ({ ...c, happiness: 100 })),
+      };
+
+      const { newState } = processTurn(maxHappyState);
+
+      // Should not exceed 100
+      expect(newState.cats[0].happiness).toBeLessThanOrEqual(100);
+    });
   });
 
   describe('getAvailableForBreeding', () => {

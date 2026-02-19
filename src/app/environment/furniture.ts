@@ -70,3 +70,33 @@ export function calculateCapacity(furniture: OwnedFurniture): number {
 export function getTotalFurniture(furniture: OwnedFurniture): number {
   return furniture.toys + furniture.beds;
 }
+
+/**
+ * Calculate the daily happiness change based on current cat count and capacity.
+ * Formula: DailyChange = -5 × Z + 5
+ * where Z = (CatCount - OptimalCapacity) / (OptimalCapacity × 0.25)
+ */
+export function calculateHappinessChange(catCount: number, furniture: OwnedFurniture): number {
+  const optimalCapacity = calculateCapacity(furniture);
+  const zScore = (catCount - optimalCapacity) / (optimalCapacity * 0.25);
+  return -5 * zScore + 5;
+}
+
+/**
+ * Get happiness status description based on change rate
+ */
+export function getHappinessStatus(catCount: number, furniture: OwnedFurniture): {
+  status: 'happy' | 'neutral' | 'stressed';
+  change: number;
+  description: string;
+} {
+  const change = calculateHappinessChange(catCount, furniture);
+  
+  if (change > 2) {
+    return { status: 'happy', change, description: 'Your cats are thriving!' };
+  } else if (change >= -2) {
+    return { status: 'neutral', change, description: 'Your cats are content.' };
+  } else {
+    return { status: 'stressed', change, description: 'Your cats are stressed from overcrowding!' };
+  }
+}

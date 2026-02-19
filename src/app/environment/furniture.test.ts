@@ -4,6 +4,8 @@ import {
   createInitialFurniture,
   calculateCapacity,
   getTotalFurniture,
+  calculateHappinessChange,
+  getHappinessStatus,
   BASE_CAPACITY,
 } from './furniture.ts';
 
@@ -59,6 +61,54 @@ describe('furniture system', () => {
       expect(getTotalFurniture({ toys: 0, beds: 0 })).toBe(0);
       expect(getTotalFurniture({ toys: 2, beds: 3 })).toBe(5);
       expect(getTotalFurniture({ toys: 5, beds: 0 })).toBe(5);
+    });
+  });
+
+  describe('calculateHappinessChange', () => {
+    it('returns +5 at optimal capacity', () => {
+      const furniture = { toys: 0, beds: 0 }; // capacity = 2
+      expect(calculateHappinessChange(2, furniture)).toBe(5);
+    });
+
+    it('returns 0 at 25% over capacity', () => {
+      const furniture = { toys: 2, beds: 0 }; // capacity = 4
+      // 5 cats = 25% over (4 + 4*0.25 = 5)
+      expect(calculateHappinessChange(5, furniture)).toBe(0);
+    });
+
+    it('returns -5 at 50% over capacity', () => {
+      const furniture = { toys: 2, beds: 0 }; // capacity = 4
+      // 6 cats = 50% over
+      expect(calculateHappinessChange(6, furniture)).toBe(-5);
+    });
+
+    it('returns +10 at 25% under capacity', () => {
+      const furniture = { toys: 2, beds: 0 }; // capacity = 4
+      // 3 cats = 25% under
+      expect(calculateHappinessChange(3, furniture)).toBe(10);
+    });
+  });
+
+  describe('getHappinessStatus', () => {
+    it('returns happy status when cats are thriving', () => {
+      const furniture = { toys: 0, beds: 0 }; // capacity = 2
+      const result = getHappinessStatus(2, furniture); // at optimal
+      expect(result.status).toBe('happy');
+      expect(result.change).toBe(5);
+    });
+
+    it('returns neutral status at slight overcrowding', () => {
+      const furniture = { toys: 2, beds: 0 }; // capacity = 4
+      const result = getHappinessStatus(5, furniture); // 25% over
+      expect(result.status).toBe('neutral');
+      expect(result.change).toBe(0);
+    });
+
+    it('returns stressed status when heavily overcrowded', () => {
+      const furniture = { toys: 0, beds: 0 }; // capacity = 2
+      const result = getHappinessStatus(4, furniture); // 100% over
+      expect(result.status).toBe('stressed');
+      expect(result.change).toBeLessThan(-2);
     });
   });
 });
