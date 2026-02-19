@@ -2,7 +2,7 @@
  * Core game logic and state management.
  */
 
-import type { Cat } from '../cats/genetics.ts';
+import type { Cat, RandomFn } from '../cats/genetics.ts';
 import { breedCats, createRandomCat, getRandomCatName } from '../cats/genetics.ts';
 import type { MarketState, Transaction } from '../economy/market.ts';
 import { createMarketState, calculateCatValue } from '../economy/market.ts';
@@ -164,8 +164,13 @@ export function applyAction(state: GameState, action: GameAction): GameState {
 
 /**
  * Process end of turn - breeding, sales, aging
+ * @param state - Current game state
+ * @param rng - Optional random function for deterministic results
  */
-export function processTurn(state: GameState): { newState: GameState; result: TurnResult } {
+export function processTurn(
+  state: GameState,
+  rng?: RandomFn
+): { newState: GameState; result: TurnResult } {
   const result: TurnResult = {
     day: state.day,
     births: [],
@@ -182,7 +187,12 @@ export function processTurn(state: GameState): { newState: GameState; result: Tu
     const parent2 = state.cats.find(c => c.id === pair.parent2Id);
     
     if (parent1 && parent2) {
-      const offspring = breedCats(parent1, parent2, getRandomCatName());
+      const offspring = breedCats(
+        parent1, 
+        parent2, 
+        getRandomCatName(rng),
+        rng ? { random: rng } : undefined
+      );
       result.births.push(offspring);
       newState.cats = [...newState.cats, offspring];
       newState.totalCatsBred++;
