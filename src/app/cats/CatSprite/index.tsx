@@ -14,8 +14,12 @@ interface CatSpriteProps {
 function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
   const { phenotype } = cat;
   
+  // Kittens (under 4 weeks) are smaller
+  const isKitten = cat.age < 4;
+  const kittenScale = isKitten ? 0.7 : 1;
+  
   // Size affects overall scale
-  const scale = phenotype.size === 'small' ? 0.8 : 1;
+  const scale = (phenotype.size === 'small' ? 0.8 : 1) * kittenScale;
   
   // Tail color
   const tailColor = phenotype.tailColor === 'white' ? '#FFFFFF' : '#FF8C00';
@@ -110,13 +114,14 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
     transform: isLongTail ? 'rotate(-25deg)' : 'rotate(-10deg)',
   };
 
-  // Eyes
+  // Eyes - kittens have proportionally bigger eyes
+  const eyeScale = isKitten ? 1.4 : 1;
   const eyeStyle: (left: string) => CSSProperties = (left) => ({
     position: 'absolute',
-    top: '35%',
+    top: isKitten ? '30%' : '35%',
     left,
-    width: '15%',
-    height: '20%',
+    width: `${15 * eyeScale}%`,
+    height: `${20 * eyeScale}%`,
     backgroundColor: '#228B22',
     borderRadius: '50%',
     border: '1px solid #000',
@@ -165,9 +170,9 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
         <div style={leftEarStyle} />
         <div style={rightEarStyle} />
         
-        {/* Eyes */}
-        <div style={eyeStyle('25%')} />
-        <div style={eyeStyle('60%')} />
+        {/* Eyes - adjusted position for kitten's bigger eyes */}
+        <div style={eyeStyle(isKitten ? '20%' : '25%')} />
+        <div style={eyeStyle(isKitten ? '55%' : '60%')} />
         
         {/* Nose */}
         <div style={noseStyle} />
