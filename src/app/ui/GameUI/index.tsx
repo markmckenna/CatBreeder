@@ -149,7 +149,7 @@ function GameUI() {
       <div className={styles.roomViewport}>
         <div className={styles.roomContainer}>
           <div className={styles.roomInner}>
-            <Room>
+            <Room furniture={state.furniture}>
               {mode === 'breed-select' && (
                 <div className={styles.modeHint}>
                   💕 Select a mate for {breedingFirstCat?.name}

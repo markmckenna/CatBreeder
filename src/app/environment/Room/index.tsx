@@ -4,6 +4,7 @@
  */
 
 import { ReactNode, CSSProperties } from 'react';
+import type { OwnedFurniture } from '../furniture.ts';
 
 export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
 
@@ -26,6 +27,7 @@ export interface Furniture {
 
 interface RoomProps {
   style?: RoomStyle;
+  furniture?: OwnedFurniture;
   children?: ReactNode;
 }
 
@@ -207,10 +209,94 @@ const contentStyle: CSSProperties = {
   zIndex: 1,
 };
 
-function Room({ children }: RoomProps) {
+// Fixed positions for furniture items (percentage of room size)
+const TOY_POSITIONS = [
+  { x: 25, y: 80 },  // Near left cat bed
+  { x: 75, y: 80 },  // Near right cat bed
+  { x: 50, y: 70 },  // Center on rug
+  { x: 15, y: 75 },  // Far left
+  { x: 85, y: 75 },  // Far right
+];
+
+const BED_POSITIONS = [
+  { x: 35, y: 82 },  // Left of fireplace
+  { x: 65, y: 82 },  // Right of fireplace
+  { x: 20, y: 90 },  // Far left back
+  { x: 80, y: 90 },  // Far right back
+  { x: 50, y: 88 },  // Center back
+];
+
+// Toy item (simple ball)
+function ToyItem({ x, y }: { x: number; y: number }) {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: `${x}%`,
+        top: `${y}%`,
+        transform: 'translate(-50%, -50%)',
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        background: 'linear-gradient(135deg, #FF6B6B 0%, #C62828 100%)',
+        boxShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+        zIndex: 2,
+      }}
+      data-testid="furniture-toy"
+    />
+  );
+}
+
+// Bed item (cushion shape)
+function BedItem({ x, y }: { x: number; y: number }) {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: `${x}%`,
+        top: `${y}%`,
+        transform: 'translate(-50%, -50%)',
+        width: '45px',
+        height: '25px',
+        borderRadius: '50%',
+        background: 'linear-gradient(180deg, #9C27B0 0%, #6A1B9A 100%)',
+        boxShadow: '2px 2px 6px rgba(0,0,0,0.3)',
+        border: '2px solid #7B1FA2',
+        zIndex: 2,
+      }}
+      data-testid="furniture-bed"
+    />
+  );
+}
+
+// Generate furniture elements based on owned counts
+function FurnitureLayer({ furniture }: { furniture: OwnedFurniture }) {
+  const toys = [];
+  const beds = [];
+  
+  for (let i = 0; i < Math.min(furniture.toys, TOY_POSITIONS.length); i++) {
+    const pos = TOY_POSITIONS[i];
+    toys.push(<ToyItem key={`toy-${i}`} x={pos.x} y={pos.y} />);
+  }
+  
+  for (let i = 0; i < Math.min(furniture.beds, BED_POSITIONS.length); i++) {
+    const pos = BED_POSITIONS[i];
+    beds.push(<BedItem key={`bed-${i}`} x={pos.x} y={pos.y} />);
+  }
+  
+  return (
+    <>
+      {beds}
+      {toys}
+    </>
+  );
+}
+
+function Room({ furniture, children }: RoomProps) {
   return (
     <div style={roomContainerStyle} data-testid="room">
       <CozyRoomBackground />
+      {furniture && <FurnitureLayer furniture={furniture} />}
       <div style={contentStyle}>
         {children}
       </div>
