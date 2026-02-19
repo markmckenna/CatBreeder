@@ -130,7 +130,10 @@ export function calculateCatValue(
   // Happiness directly affects value: 0% happiness = $0, 100% happiness = full price
   const happinessMultiplier = cat.happiness / 100;
   
-  const value = market.basePrice * traitMultiplier * happinessMultiplier;
+  // Kittens (under 4 weeks) have a 20% premium
+  const kittenPremium = cat.age < 4 ? 1.2 : 1;
+  
+  const value = market.basePrice * traitMultiplier * happinessMultiplier * kittenPremium;
   
   return Math.round(value);
 }
@@ -153,6 +156,10 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
   }
   if (tv.tailColor[cat.phenotype.tailColor] > 1) {
     breakdown.push({ trait: `${cat.phenotype.tailColor} fur`, multiplier: tv.tailColor[cat.phenotype.tailColor] });
+  }
+  // Kitten premium
+  if (cat.age < 4) {
+    breakdown.push({ trait: 'kitten', multiplier: 1.2 });
   }
 
   return breakdown;

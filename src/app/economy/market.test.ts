@@ -181,6 +181,30 @@ describe('market', () => {
       
       expect(value1).toBe(value2);
     });
+
+    it('applies 20% premium for kittens under 4 weeks', () => {
+      const adultCat = createTestCat({}, 100);
+      adultCat.age = 10;
+      const kittenCat = createTestCat({}, 100);
+      kittenCat.age = 2;
+      
+      const adultValue = calculateCatValue(adultCat, market);
+      const kittenValue = calculateCatValue(kittenCat, market);
+      
+      expect(kittenValue).toBe(Math.round(adultValue * 1.2));
+    });
+
+    it('does not apply kitten premium at exactly 4 weeks', () => {
+      const cat4Weeks = createTestCat({}, 100);
+      cat4Weeks.age = 4;
+      const catAdult = createTestCat({}, 100);
+      catAdult.age = 10;
+      
+      const value4Weeks = calculateCatValue(cat4Weeks, market);
+      const valueAdult = calculateCatValue(catAdult, market);
+      
+      expect(value4Weeks).toBe(valueAdult);
+    });
   });
 
   describe('getValueBreakdown', () => {
@@ -201,6 +225,22 @@ describe('market', () => {
 
       expect(breakdown).toContainEqual({ trait: 'small size', multiplier: 1.5 });
       expect(breakdown).toContainEqual({ trait: 'folded ears', multiplier: 2.0 });
+    });
+
+    it('includes kitten premium in breakdown', () => {
+      const kitten = createTestCat({});
+      kitten.age = 2;
+      const breakdown = getValueBreakdown(kitten, market);
+      
+      expect(breakdown).toContainEqual({ trait: 'kitten', multiplier: 1.2 });
+    });
+
+    it('does not include kitten for cats 4+ weeks', () => {
+      const adult = createTestCat({});
+      adult.age = 5;
+      const breakdown = getValueBreakdown(adult, market);
+      
+      expect(breakdown.find(b => b.trait === 'kitten')).toBeUndefined();
     });
   });
 
