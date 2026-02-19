@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Room from '.';
+import type { FurniturePosition } from '../positions.ts';
 
 describe('Room', () => {
   it('renders room container', () => {
@@ -34,19 +35,33 @@ describe('Room', () => {
   });
 
   it('renders owned toys', () => {
-    render(<Room furniture={{ toys: 2, beds: 0 }} />);
+    const toyPositions: FurniturePosition[] = [
+      { type: 'toy', index: 0, x: 25, y: 80 },
+      { type: 'toy', index: 1, x: 75, y: 80 },
+    ];
+    render(<Room furniturePositions={toyPositions} />);
     const toys = screen.getAllByTestId('furniture-toy');
     expect(toys).toHaveLength(2);
   });
 
   it('renders owned beds', () => {
-    render(<Room furniture={{ toys: 0, beds: 3 }} />);
+    const bedPositions: FurniturePosition[] = [
+      { type: 'bed', index: 0, x: 30, y: 83 },
+      { type: 'bed', index: 1, x: 70, y: 83 },
+      { type: 'bed', index: 2, x: 50, y: 90 },
+    ];
+    render(<Room furniturePositions={bedPositions} />);
     const beds = screen.getAllByTestId('furniture-bed');
     expect(beds).toHaveLength(3);
   });
 
   it('renders both toys and beds', () => {
-    render(<Room furniture={{ toys: 1, beds: 2 }} />);
+    const positions: FurniturePosition[] = [
+      { type: 'toy', index: 0, x: 25, y: 80 },
+      { type: 'bed', index: 0, x: 30, y: 83 },
+      { type: 'bed', index: 1, x: 70, y: 83 },
+    ];
+    render(<Room furniturePositions={positions} />);
     expect(screen.getAllByTestId('furniture-toy')).toHaveLength(1);
     expect(screen.getAllByTestId('furniture-bed')).toHaveLength(2);
   });

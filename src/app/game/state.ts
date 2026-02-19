@@ -10,6 +10,7 @@ import type { TraitCollection } from '../cats/collection.ts';
 import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
 import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture.ts';
 import { createInitialFurniture, SHOP_ITEMS, calculateCapacity } from '../environment/furniture.ts';
+import { assignCatPositions, type SpotType } from '../environment/positions.ts';
 
 /**
  * Planned breeding pair for next turn
@@ -329,22 +330,58 @@ export function processTurn(
     age: cat.age + 1,
   }));
 
-  // Update cat happiness based on carrying capacity
-  const optimalCapacity = calculateCapacity(newState.furniture);
+  // Update cat happiness based on their daily experience
+  // First, assign positions to get each cat's spot type
+  const catPositions = assignCatPositions(
+    newState.cats.map(c => c.id),
+    newState.furniture,
+    rng
+  );
+  const spotsByCat = new Map(catPositions.map(p => [p.catId, p.spotType]));
+  
+  // Calculate capacity and overcrowding
+  const capacity = calculateCapacity(newState.furniture);
   const catCount = newState.cats.length;
+  const overcrowdCount = Math.max(0, catCount - capacity);
+  const isAlone = catCount === 1;
   
-  // Z-Score: how far over/under capacity we are (in units of 25% of capacity)
-  const zScore = (catCount - optimalCapacity) / (optimalCapacity * 0.25);
-  
-  // Daily happiness change: -5 * Z + 5
-  // At optimal: +5, 25% over: 0, 50% over: -5, 75% over: -10
-  // 25% under: +10
-  const happinessChange = -5 * zScore + 5;
-  
-  newState.cats = newState.cats.map(cat => ({
-    ...cat,
-    happiness: Math.max(0, Math.min(100, cat.happiness + happinessChange)),
-  }));
+  // Apply happiness changes to each cat
+  newState.cats = newState.cats.map(cat => {
+    // Base daily decay: -5%
+    let change = -5;
+    
+    // Get cat's spot type
+    const spotType: SpotType | undefined = spotsByCat.get(cat.id);
+    
+    // Toy access: +5% happiness
+    if (spotType === 'toy') {
+      change += 5;
+    }
+    
+    // Bed access: +8% happiness
+    if (spotType === 'bed') {
+      change += 8;
+    }
+    
+    // Comfort spot (rug or bookshelf): no penalty
+    // No comfort spot (floor): -5% extra
+    if (spotType === 'floor') {
+      change -= 5;
+    }
+    
+    // Alone penalty: -5% extra
+    if (isAlone) {
+      change -= 5;
+    }
+    
+    // Overcrowding penalty: -1% per cat over capacity
+    change -= overcrowdCount;
+    
+    return {
+      ...cat,
+      happiness: Math.max(0, Math.min(100, cat.happiness + change)),
+    };
+  });
 
   // Deduct daily food costs
   const foodCost = newState.cats.length * FOOD_COST_PER_CAT;

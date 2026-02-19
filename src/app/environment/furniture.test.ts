@@ -4,9 +4,9 @@ import {
   createInitialFurniture,
   calculateCapacity,
   getTotalFurniture,
-  calculateHappinessChange,
   getHappinessStatus,
   BASE_CAPACITY,
+  HAPPINESS_RULES,
 } from './furniture.ts';
 
 describe('furniture system', () => {
@@ -64,51 +64,49 @@ describe('furniture system', () => {
     });
   });
 
-  describe('calculateHappinessChange', () => {
-    it('returns +5 at optimal capacity', () => {
-      const furniture = { toys: 0, beds: 0 }; // capacity = 2
-      expect(calculateHappinessChange(2, furniture)).toBe(5);
+  describe('HAPPINESS_RULES', () => {
+    it('defines base daily decay', () => {
+      expect(HAPPINESS_RULES.BASE_DECAY).toBe(-5);
     });
 
-    it('returns 0 at 25% over capacity', () => {
-      const furniture = { toys: 2, beds: 0 }; // capacity = 4
-      // 5 cats = 25% over (4 + 4*0.25 = 5)
-      expect(calculateHappinessChange(5, furniture)).toBe(0);
+    it('defines toy bonus', () => {
+      expect(HAPPINESS_RULES.TOY_BONUS).toBe(5);
     });
 
-    it('returns -5 at 50% over capacity', () => {
-      const furniture = { toys: 2, beds: 0 }; // capacity = 4
-      // 6 cats = 50% over
-      expect(calculateHappinessChange(6, furniture)).toBe(-5);
+    it('defines bed bonus', () => {
+      expect(HAPPINESS_RULES.BED_BONUS).toBe(8);
     });
 
-    it('returns +10 at 25% under capacity', () => {
-      const furniture = { toys: 2, beds: 0 }; // capacity = 4
-      // 3 cats = 25% under
-      expect(calculateHappinessChange(3, furniture)).toBe(10);
+    it('defines no comfort penalty', () => {
+      expect(HAPPINESS_RULES.NO_COMFORT_PENALTY).toBe(-5);
+    });
+
+    it('defines alone penalty', () => {
+      expect(HAPPINESS_RULES.ALONE_PENALTY).toBe(-5);
+    });
+
+    it('defines overcrowd penalty per cat', () => {
+      expect(HAPPINESS_RULES.OVERCROWD_PENALTY_PER_CAT).toBe(-1);
     });
   });
 
   describe('getHappinessStatus', () => {
-    it('returns happy status when cats are thriving', () => {
-      const furniture = { toys: 0, beds: 0 }; // capacity = 2
-      const result = getHappinessStatus(2, furniture); // at optimal
+    it('returns happy status when cats have comfort items and company', () => {
+      const furniture = { toys: 1, beds: 1 }; // capacity = 4
+      const result = getHappinessStatus(2, furniture);
       expect(result.status).toBe('happy');
-      expect(result.change).toBe(5);
     });
 
-    it('returns neutral status at slight overcrowding', () => {
-      const furniture = { toys: 2, beds: 0 }; // capacity = 4
-      const result = getHappinessStatus(5, furniture); // 25% over
-      expect(result.status).toBe('neutral');
-      expect(result.change).toBe(0);
-    });
-
-    it('returns stressed status when heavily overcrowded', () => {
+    it('returns neutral status when no comfort items', () => {
       const furniture = { toys: 0, beds: 0 }; // capacity = 2
-      const result = getHappinessStatus(4, furniture); // 100% over
+      const result = getHappinessStatus(2, furniture);
+      expect(result.status).toBe('neutral');
+    });
+
+    it('returns stressed status when overcrowded', () => {
+      const furniture = { toys: 0, beds: 0 }; // capacity = 2
+      const result = getHappinessStatus(4, furniture); // over capacity
       expect(result.status).toBe('stressed');
-      expect(result.change).toBeLessThan(-2);
     });
   });
 });

@@ -208,18 +208,21 @@ describe('game state', () => {
       expect(result.foodCost).toBe(catCount);
     });
 
-    it('increases happiness when at optimal capacity', () => {
-      // Base capacity is 2, start with 2 cats = optimal
+    it('decreases happiness from base daily decay', () => {
+      // With 2 cats on rug spots (comfort spots):
+      // Base decay: -5%
+      // Not alone (2 cats): no penalty
+      // Comfort spot: no penalty
+      // Result: -5% change
       const state = createInitialGameState();
       const initialHappiness = state.cats[0].happiness;
 
       const { newState } = processTurn(state);
 
-      // At optimal capacity, happiness should increase by 5
-      expect(newState.cats[0].happiness).toBe(Math.min(100, initialHappiness + 5));
+      expect(newState.cats[0].happiness).toBe(initialHappiness - 5);
     });
 
-    it('decreases happiness when overcrowded', () => {
+    it('decreases happiness more when overcrowded', () => {
       // Create a state with more cats than capacity (base is 2)
       const state = createInitialGameState();
       // Add more cats to exceed capacity
@@ -235,8 +238,9 @@ describe('game state', () => {
 
       const { newState } = processTurn(overcrowdedState);
 
-      // 5 cats with capacity 2 = 3 over = Z-score of 6 = -25 happiness change
-      // Should decrease significantly
+      // 5 cats with capacity 2 = 3 over capacity
+      // Base: -5, overcrowd: -3 = -8 minimum
+      // Some cats on floor (no comfort): additional -5
       const extraCat = newState.cats.find(c => c.id === 'extra1');
       expect(extraCat!.happiness).toBeLessThan(50);
     });

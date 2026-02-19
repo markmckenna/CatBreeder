@@ -185,28 +185,33 @@ The room has an optimal number of cats based on furniture:
 
 `OptimalCapacity = 2 + ToyCount + BedCount`
 
+### Cat Spots and Comfort
+
+Each cat is assigned to a spot in the room. Spots are prioritized:
+
+1. **Beds** (player purchases) - highest comfort, +8% happiness
+2. **Toys** (player purchases) - +5% happiness
+3. **Rug / Bookshelf** (built-in) - standard comfort, no bonus
+4. **Floor** (fallback) - no comfort, -5% happiness penalty
+
 ### Happiness Change Formula
 
-Happiness changes daily based on how close cat count is to optimal capacity.
+Each cat's happiness changes daily based on their experience:
 
-**Z-Score Calculation**:
-```
-Z = (CatCount - OptimalCapacity) / (OptimalCapacity × 0.25)
-```
+| Factor | Change |
+|--------|--------|
+| Base daily decay | -5% |
+| On a bed spot | +8% |
+| On a toy spot | +5% |
+| On floor (no comfort spot) | -5% |
+| Single cat (alone) | -5% |
+| Overcrowded (per cat over capacity) | -1% each |
 
-**Daily Happiness Change**:
-```
-DailyChange = -5 × Z + 5
-```
+**Example**: A cat on a bed with company and no overcrowding:
+`-5 (base) + 8 (bed) = +3% happiness/day`
 
-This means:
-| Z-Score | Cat Count vs Optimal | Daily Change |
-|---------|---------------------|--------------|
-| 0 | At optimal | +5% |
-| 1 | 25% over optimal | ±0% (neutral) |
-| 2 | 50% over optimal | -5% |
-| 3 | 75% over optimal | -10% |
-| -1 | 25% under optimal | +10% |
+**Example**: A cat on the floor, alone:
+`-5 (base) - 5 (floor) - 5 (alone) = -15% happiness/day`
 
 **Bounds**: Happiness is clamped to 0-100%.
 

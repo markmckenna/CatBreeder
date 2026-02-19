@@ -16,7 +16,7 @@ import { calculateCatValue, createMarketState, getValueBreakdown } from '../../e
 import type { MarketCat } from '../../economy/market.ts';
 import { getCollectionProgress } from '../../cats/collection.ts';
 import { calculateCapacity, FurnitureItemType } from '../../environment/furniture.ts';
-import { assignCatPositions } from '../../environment/positions.ts';
+import { assignCatPositions, getFurniturePositions } from '../../environment/positions.ts';
 import type { Cat } from '../../cats/genetics.ts';
 import styles from './styles.css';
 
@@ -49,6 +49,10 @@ function GameUI() {
   const catPositions = useMemo(
     () => assignCatPositions(state.cats.map(c => c.id), state.furniture),
     [state.cats, state.furniture]
+  );
+  const furniturePositions = useMemo(
+    () => getFurniturePositions(catPositions, state.furniture),
+    [catPositions, state.furniture]
   );
   const collectionProgress = getCollectionProgress(state.traitCollection);
 
@@ -134,7 +138,7 @@ function GameUI() {
       <div className={styles.roomViewport}>
         <div className={styles.roomContainer}>
           <div className={styles.roomInner}>
-            <Room furniture={state.furniture}>
+            <Room furniture={state.furniture} furniturePositions={furniturePositions}>
               {mode === 'breed-select' && (
                 <div className={styles.modeHint}>
                   💕 Select a mate for {breedingFirstCat?.name}

@@ -154,16 +154,17 @@ function Head({ phenotype, isKitten, bodyColor }: Omit<BodyPartProps, 'tailColor
   );
 }
 
-function NameTag({ name, scale }: { name: string; scale: number }) {
+function NameTag({ name }: { name: string }) {
   const style: CSSProperties = {
     position: 'absolute',
-    bottom: '-20px',
+    bottom: '-22px',
     left: '50%',
     transform: 'translateX(-50%)',
-    fontSize: `${10 * scale}px`,
+    fontSize: '11px',
     fontWeight: 'bold',
     whiteSpace: 'nowrap',
-    textShadow: '1px 1px 2px white',
+    textShadow: '1px 1px 2px white, -1px -1px 2px white',
+    color: '#333',
   };
   
   return <div style={style}>{name}</div>;
@@ -184,10 +185,11 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
   // Derive colors from body color phenotype
   const { bodyColor, tailColor } = deriveColors(phenotype);
   
+  // Base size is larger (80x66) for better visibility in room
   const containerStyle: CSSProperties = {
     position: 'relative',
-    width: `${60 * scale}px`,
-    height: `${50 * scale}px`,
+    width: `${80 * scale}px`,
+    height: `${66 * scale}px`,
     cursor: onClick ? 'pointer' : 'default',
     transition: 'transform 0.2s',
     transform: selected ? 'scale(1.1)' : 'scale(1)',
@@ -205,7 +207,7 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
       <Tail phenotype={phenotype} tailColor={tailColor} />
       <Body bodyColor={bodyColor} />
       <Head phenotype={phenotype} isKitten={isKitten} bodyColor={bodyColor} />
-      <NameTag name={cat.name} scale={scale} />
+      <NameTag name={cat.name} />
     </div>
   );
 }

@@ -43,48 +43,48 @@
   height: 35%;
 }
 
-/* Windows */
+/* Windows - sized to include curtains */
 .windowLeft {
   composes: svgObject;
-  top: 16%;
-  left: 7.5%;
-  width: 15%;
-  height: 25%;
+  top: 14%;
+  left: 5%;
+  width: 18%;
+  height: 28%;
 }
 
 .windowRight {
   composes: svgObject;
-  top: 16%;
-  right: 7.5%;
-  width: 15%;
-  height: 25%;
+  top: 14%;
+  right: 5%;
+  width: 18%;
+  height: 28%;
 }
 
-/* Bookshelf */
+/* Bookshelf - positioned on floor */
 .bookshelf {
   composes: svgObject;
-  top: 46%;
+  top: 48%;
   left: 68.75%;
   width: 10%;
-  height: 18%;
+  height: 19%;
 }
 
-/* Plant */
+/* Plant - sized to include leaves */
 .plant {
   composes: svgObject;
-  top: 55%;
-  left: 21.25%;
-  width: 5%;
-  height: 10%;
+  top: 52%;
+  left: 18%;
+  width: 9%;
+  height: 14%;
 }
 
-/* Rug */
+/* Rug - centered in room on floor */
 .rug {
   composes: svgObject;
-  top: 76%;
-  left: 27.5%;
-  width: 45%;
-  height: 20%;
+  top: 72%;
+  left: 25%;
+  width: 50%;
+  height: 22%;
 }
 
 /* Cat beds */
@@ -104,26 +104,24 @@
   height: 8%;
 }
 
-/* Furniture items */
+/* Furniture items - player purchased toys and beds */
 .furnitureToy {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B6B 0%, #C62828 100%);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 2;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3),
+              inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+              inset 2px 2px 4px rgba(255, 255, 255, 0.3);
+  z-index: 3;
 }
 
 .furnitureBed {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 45px;
-  height: 25px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #9C27B0 0%, #6A1B9A 100%);
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-  border: 2px solid #7B1FA2;
-  z-index: 2;
+  width: 80px;
+  height: 35px;
+  z-index: 1;
+  pointer-events: none;
 }

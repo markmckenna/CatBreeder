@@ -5,6 +5,7 @@
 
 import { ReactNode } from 'react';
 import type { OwnedFurniture } from '../furniture.ts';
+import { getToyColor, getBedColor, type FurniturePosition } from '../positions.ts';
 import styles from './styles.css';
 
 export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
@@ -29,6 +30,7 @@ export interface Furniture {
 interface RoomProps {
   style?: RoomStyle;
   furniture?: OwnedFurniture;
+  furniturePositions?: FurniturePosition[];
   children?: ReactNode;
 }
 
@@ -134,7 +136,13 @@ function Fireplace() {
 function Window({ side }: { side: 'left' | 'right' }) {
   const className = side === 'left' ? styles.windowLeft : styles.windowRight;
   return (
-    <svg viewBox="0 0 120 150" preserveAspectRatio="xMidYMid meet" className={className}>
+    <svg viewBox="-20 -15 160 180" preserveAspectRatio="xMidYMid meet" className={className}>
+      {/* Curtains - behind window */}
+      <path d={side === 'left' 
+        ? "M-15 -10 Q-10 75 -15 165 L10 165 Q5 75 15 -10 Z"
+        : "M145 -10 Q140 75 145 165 L120 165 Q125 75 115 -10 Z"
+      } fill="#8B4513" opacity="0.85" />
+      
       {/* Window glass */}
       <rect x="0" y="0" width="120" height="150" fill="#87CEEB" rx="4" />
       {/* Frame */}
@@ -142,12 +150,6 @@ function Window({ side }: { side: 'left' | 'right' }) {
       {/* Cross bars */}
       <line x1="60" y1="0" x2="60" y2="150" stroke="#5C4033" strokeWidth="6" />
       <line x1="0" y1="75" x2="120" y2="75" stroke="#5C4033" strokeWidth="6" />
-      
-      {/* Curtains */}
-      <path d={side === 'left' 
-        ? "M-10 -10 Q-5 80 -15 160 L5 160 Q0 80 10 -10 Z"
-        : "M130 -10 Q125 80 135 160 L115 160 Q120 80 110 -10 Z"
-      } fill="#8B4513" opacity="0.7" />
     </svg>
   );
 }
@@ -180,7 +182,7 @@ function Bookshelf() {
 /** Potted plant */
 function Plant() {
   return (
-    <svg viewBox="0 0 40 60" preserveAspectRatio="xMidYMid meet" className={styles.plant}>
+    <svg viewBox="-15 0 70 60" preserveAspectRatio="xMidYMid meet" className={styles.plant}>
       {/* Pot */}
       <rect x="0" y="30" width="40" height="30" fill="#B87333" rx="4" />
       {/* Leaves */}
@@ -216,67 +218,61 @@ function CatBed({ side, color }: { side: 'left' | 'right'; color: string }) {
 
 // ============= Furniture Layer =============
 
-const TOY_POSITIONS = [
-  { x: 25, y: 80 },
-  { x: 75, y: 80 },
-  { x: 50, y: 70 },
-  { x: 15, y: 75 },
-  { x: 85, y: 75 },
-];
-
-const BED_POSITIONS = [
-  { x: 35, y: 82 },
-  { x: 65, y: 82 },
-  { x: 20, y: 90 },
-  { x: 80, y: 90 },
-  { x: 50, y: 88 },
-];
-
-function ToyItem({ x, y }: { x: number; y: number }) {
+function ToyItem({ x, y, index }: { x: number; y: number; index: number }) {
+  const colors = getToyColor(index);
   return (
     <div
       className={styles.furnitureToy}
-      style={{ left: `${x}%`, top: `${y}%` }}
+      style={{ 
+        left: `${x}%`, 
+        top: `${y}%`,
+        background: `linear-gradient(135deg, ${colors.main} 0%, ${colors.accent} 100%)`,
+      }}
       data-testid="furniture-toy"
     />
   );
 }
 
-function BedItem({ x, y }: { x: number; y: number }) {
+function BedItem({ x, y, index }: { x: number; y: number; index: number }) {
+  const colors = getBedColor(index);
   return (
-    <div
+    <svg 
+      viewBox="0 0 80 35"
       className={styles.furnitureBed}
       style={{ left: `${x}%`, top: `${y}%` }}
       data-testid="furniture-bed"
-    />
+    >
+      {/* Bed frame */}
+      <ellipse cx="40" cy="22" rx="40" ry="15" fill={colors.main} />
+      <ellipse cx="40" cy="20" rx="36" ry="12" fill={colors.accent} />
+      {/* Cushion */}
+      <ellipse cx="40" cy="17" rx="30" ry="9" fill={colors.cushion} />
+    </svg>
   );
 }
 
-function FurnitureLayer({ furniture }: { furniture: OwnedFurniture }) {
-  const toys = [];
-  const beds = [];
-  
-  for (let i = 0; i < Math.min(furniture.toys, TOY_POSITIONS.length); i++) {
-    const pos = TOY_POSITIONS[i];
-    toys.push(<ToyItem key={`toy-${i}`} x={pos.x} y={pos.y} />);
-  }
-  
-  for (let i = 0; i < Math.min(furniture.beds, BED_POSITIONS.length); i++) {
-    const pos = BED_POSITIONS[i];
-    beds.push(<BedItem key={`bed-${i}`} x={pos.x} y={pos.y} />);
-  }
+function FurnitureLayer({ positions }: { positions: FurniturePosition[] }) {
+  // Sort so beds render first (under cats)
+  const sorted = [...positions].sort((a, b) => {
+    if (a.type === 'bed' && b.type !== 'bed') return -1;
+    if (a.type !== 'bed' && b.type === 'bed') return 1;
+    return 0;
+  });
   
   return (
     <>
-      {beds}
-      {toys}
+      {sorted.map((pos) => (
+        pos.type === 'toy' 
+          ? <ToyItem key={`toy-${pos.index}`} x={pos.x} y={pos.y} index={pos.index} />
+          : <BedItem key={`bed-${pos.index}`} x={pos.x} y={pos.y} index={pos.index} />
+      ))}
     </>
   );
 }
 
 // ============= Main Room Component =============
 
-function Room({ furniture, children }: RoomProps) {
+function Room({ furniturePositions, children }: RoomProps) {
   return (
     <div className={styles.roomContainer} data-testid="room">
       {/* Background layer */}
@@ -292,8 +288,10 @@ function Room({ furniture, children }: RoomProps) {
       <CatBed side="left" color="#FF6B6B" />
       <CatBed side="right" color="#6B9FFF" />
       
-      {/* Player-owned furniture */}
-      {furniture && <FurnitureLayer furniture={furniture} />}
+      {/* Player-owned furniture - positioned from cat positions */}
+      {furniturePositions && furniturePositions.length > 0 && (
+        <FurnitureLayer positions={furniturePositions} />
+      )}
       
       {/* Content (cats, UI overlays) */}
       <div className={styles.content}>

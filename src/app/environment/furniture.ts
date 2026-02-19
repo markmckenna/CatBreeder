@@ -72,31 +72,49 @@ export function getTotalFurniture(furniture: OwnedFurniture): number {
 }
 
 /**
- * Calculate the daily happiness change based on current cat count and capacity.
- * Formula: DailyChange = -5 × Z + 5
- * where Z = (CatCount - OptimalCapacity) / (OptimalCapacity × 0.25)
+ * Happiness change constants (percentages)
+ * Each cat's happiness changes daily based on their experience.
  */
-export function calculateHappinessChange(catCount: number, furniture: OwnedFurniture): number {
-  const optimalCapacity = calculateCapacity(furniture);
-  const zScore = (catCount - optimalCapacity) / (optimalCapacity * 0.25);
-  return -5 * zScore + 5;
-}
+export const HAPPINESS_RULES = {
+  /** Base daily decay when no special conditions */
+  BASE_DECAY: -5,
+  /** Bonus for having access to a toy */
+  TOY_BONUS: 5,
+  /** Bonus for having access to a bed */
+  BED_BONUS: 8,
+  /** Penalty for being on floor (no comfort spot) */
+  NO_COMFORT_PENALTY: -5,
+  /** Penalty for being the only cat */
+  ALONE_PENALTY: -5,
+  /** Penalty per cat over capacity (applied to ALL cats) */
+  OVERCROWD_PENALTY_PER_CAT: -1,
+};
 
 /**
- * Get happiness status description based on change rate
+ * Get happiness status description for UI display
  */
 export function getHappinessStatus(catCount: number, furniture: OwnedFurniture): {
   status: 'happy' | 'neutral' | 'stressed';
-  change: number;
   description: string;
 } {
-  const change = calculateHappinessChange(catCount, furniture);
+  const capacity = calculateCapacity(furniture);
+  const overcrowded = catCount > capacity;
+  const hasComfortItems = furniture.toys > 0 || furniture.beds > 0;
   
-  if (change > 2) {
-    return { status: 'happy', change, description: 'Your cats are thriving!' };
-  } else if (change >= -2) {
-    return { status: 'neutral', change, description: 'Your cats are content.' };
+  if (overcrowded) {
+    return { 
+      status: 'stressed', 
+      description: 'Your cats are stressed from overcrowding!' 
+    };
+  } else if (hasComfortItems && catCount >= 2) {
+    return { 
+      status: 'happy', 
+      description: 'Your cats are thriving!' 
+    };
   } else {
-    return { status: 'stressed', change, description: 'Your cats are stressed from overcrowding!' };
+    return { 
+      status: 'neutral', 
+      description: 'Your cats are content.' 
+    };
   }
 }
