@@ -219,13 +219,15 @@ function GameUI() {
                 </div>
                 <div className={styles.traitRow}>
                   <span className={styles.traitLabel}>Tail</span>
-                  <span className={styles.traitValue}>
-                    {selectedCat.phenotype.tailLength}, {selectedCat.phenotype.tailColor}
-                  </span>
+                  <span className={styles.traitValue}>{selectedCat.phenotype.tailLength}</span>
                 </div>
                 <div className={styles.traitRow}>
                   <span className={styles.traitLabel}>Ears</span>
                   <span className={styles.traitValue}>{selectedCat.phenotype.earShape}</span>
+                </div>
+                <div className={styles.traitRow}>
+                  <span className={styles.traitLabel}>Fur</span>
+                  <span className={styles.traitValue}>{selectedCat.phenotype.tailColor}</span>
                 </div>
                 <div className={styles.traitRow}>
                   <span className={styles.traitLabel}>Happiness</span>
@@ -239,7 +241,7 @@ function GameUI() {
                       { label: 'Size', alleles: selectedCat.genotype.size, recessive: 'small' },
                       { label: 'Tail', alleles: selectedCat.genotype.tailLength, recessive: 'short' },
                       { label: 'Ears', alleles: selectedCat.genotype.earShape, recessive: 'folded' },
-                      { label: 'Color', alleles: selectedCat.genotype.tailColor, recessive: 'white' },
+                      { label: 'Fur', alleles: selectedCat.genotype.tailColor, recessive: 'white' },
                     ].map(({ label, alleles, recessive }) => {
                       const status = getBreedingStatus(alleles as [string, string]);
                       return (
