@@ -1,0 +1,195 @@
+/**
+ * GameUI component styles
+ */
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  background-color: #4A90A4;
+  border-radius: 12px;
+  color: white;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statLabel {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #4A90A4;
+  padding-bottom: 5px;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.buttonPrimary {
+  composes: button;
+  background-color: #4A90A4;
+  color: white;
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  background-color: #3d7a8a;
+}
+
+.buttonSecondary {
+  composes: button;
+  background-color: #E8E8E8;
+  color: #333;
+}
+
+.buttonSecondary:hover:not(:disabled) {
+  background-color: #d8d8d8;
+}
+
+.buttonDanger {
+  composes: button;
+  background-color: #D9534F;
+  color: white;
+}
+
+.buttonDanger:hover:not(:disabled) {
+  background-color: #c9433f;
+}
+
+.button:disabled {
+  background-color: #CCC;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Breeding Panel */
+.breedingPanel {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 15px;
+  background-color: #FFF5E6;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.catSelection {
+  flex: 1;
+  padding: 10px;
+  background-color: white;
+  border-radius: 8px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #CCC;
+}
+
+.catSelectionActive {
+  composes: catSelection;
+  border-color: #4A90A4;
+  border-style: solid;
+}
+
+.heartIcon {
+  font-size: 24px;
+}
+
+.placeholder {
+  color: #999;
+}
+
+/* Turn Results */
+.turnResult {
+  padding: 15px;
+  background-color: #E8F5E9;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #A5D6A7;
+}
+
+.turnResultTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #2E7D32;
+}
+
+/* Cat List */
+.catList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+/* Queue/Listing info */
+.infoText {
+  color: #666;
+  font-size: 14px;
+}
+
+.sellModeHint {
+  color: #D9534F;
+  margin-bottom: 10px;
+}

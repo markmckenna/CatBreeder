@@ -4,7 +4,25 @@ This document provides guidelines for AI agents and automated tools working with
 
 ## Project Overview
 
-CatBreeder is a React web application built with TypeScript and ESBuild. The project follows modern web development practices with a focus on type safety, testing, and fast builds.
+CatBreeder is an idle/incremental game about cat breeding, built with React and TypeScript. Players breed cats to discover genetic variations, sell cats in a dynamic market economy, and create cozy environments for their feline empire.
+
+### Game Systems
+
+| System | Purpose |
+|--------|---------|
+| **Genetics** | Cat traits, inheritance rules, breeding outcomes |
+| **Economy** | Market trends, pricing, buying/selling cats |
+| **Environment** | Rooms, furniture, toys, cat happiness |
+| **Simulation** | Day/turn progression, events, cat needs |
+| **Collection** | Discovered variations, achievements, completion tracking |
+
+### Turn-Based Flow
+
+The game runs on a day-by-day turn system:
+1. Player makes decisions (breed, sell, decorate)
+2. Player ends turn
+3. Game simulates results (births, sales, events)
+4. Next day begins
 
 ## Tech Stack
 
@@ -25,8 +43,12 @@ CatBreeder is a React web application built with TypeScript and ESBuild. The pro
 │   └── index.html       # HTML entry point
 ├── src/
 │   ├── app/             # React application root
-│   │   ├── index.tsx    # App component
-│   │   └── index.test.tsx
+│   │   ├── index.tsx    # App shell
+│   │   ├── game/        # Core game state & turn loop
+│   │   ├── cats/        # Cat genetics, breeding, display
+│   │   ├── economy/     # Market, pricing, transactions
+│   │   ├── environment/ # Rooms, furniture, decorations
+│   │   └── ui/          # Shared UI components
 │   ├── test/            # Test setup and utilities
 │   ├── utils/           # Shared utility functions
 │   ├── index.tsx        # Bootstrap/entry point
@@ -41,6 +63,11 @@ CatBreeder is a React web application built with TypeScript and ESBuild. The pro
 |-----------|---------|
 | `src/` | All application source code |
 | `src/app/` | React application (organized by feature, not type) |
+| `src/app/game/` | Game state, turn system, save/load |
+| `src/app/cats/` | Cat types, genetics, breeding logic |
+| `src/app/economy/` | Market simulation, pricing |
+| `src/app/environment/` | Room/furniture system |
+| `src/app/ui/` | Reusable UI components |
 | `src/test/` | Test setup, mocks, and utilities |
 | `src/utils/` | Shared helper functions |
 | `config/` | Build and test configuration files |
@@ -54,23 +81,28 @@ Code in `src/app/` should be organized by **feature or domain**, not by type. Gr
 ```
 src/app/
 ├── index.tsx              # App root
-├── catalog/               # Cat catalog feature
-│   ├── CatList.tsx
-│   ├── CatList.test.tsx
+├── cats/                  # Cat domain
+│   ├── types.ts           # Cat type definitions
+│   ├── genetics.ts        # Breeding/inheritance logic
+│   ├── genetics.test.ts
 │   ├── CatCard.tsx
 │   └── CatCard.test.tsx
-└── breeding/              # Breeding feature
-    ├── BreedingForm.tsx
-    └── BreedingForm.test.tsx
+└── economy/               # Economy domain
+    ├── types.ts
+    ├── market.ts          # Market simulation
+    ├── market.test.ts
+    └── MarketView.tsx
 ```
 
 **Not this:**
 ```
 src/app/
 ├── components/            # ❌ Don't group by type
-│   ├── CatList.tsx
 │   ├── CatCard.tsx
-│   └── BreedingForm.tsx
+│   └── MarketView.tsx
+├── logic/                 # ❌ Don't separate logic from UI
+│   ├── genetics.ts
+│   └── market.ts
 └── tests/                 # ❌ Keep tests with source
     └── ...
 ```
@@ -106,10 +138,45 @@ npm run typecheck    # Run TypeScript type checking
 ## Coding Conventions
 
 ### File Naming
-- React components: `PascalCase.tsx` (e.g., `UserProfile.tsx`)
+- React components with styles: Use folder-per-component (see below)
+- Simple React components: `PascalCase.tsx` (e.g., `UserProfile.tsx`)
 - Utilities/helpers: `camelCase.ts` (e.g., `helpers.ts`)
-- Tests: `[filename].test.ts` or `[filename].test.tsx`
+- Tests: `index.test.tsx` (in component folder) or `[filename].test.ts`
 - Non-JS files (HTML, CSS): `kebab-case` (e.g., `index.html`, `main-layout.css`)
+
+### Folder-per-Component Structure
+Components with styles use a folder structure for cleaner organization:
+
+```
+src/app/ui/GameUI/
+├── index.tsx        # Component
+├── styles.css       # CSS Module (scoped automatically)
+└── index.test.tsx   # Tests
+```
+
+This pattern:
+- Avoids verbose `.module.css` naming
+- Keeps related files together
+- Allows clean imports: `import GameUI from './ui/GameUI'`
+
+### Styling with CSS Modules
+CSS files named `styles.css` in component folders are treated as CSS Modules:
+
+```tsx
+import styles from './styles.css';
+
+function GameUI() {
+  return <div className={styles.container}>...</div>;
+}
+```
+
+CSS Module benefits:
+- Scoped class names (no collisions)
+- Full CSS features (`:hover`, media queries, transitions)
+- Co-located with components
+- Type-safe imports via `src/css-modules.d.ts`
+
+For simple components without styles, use a single file (e.g., `CatCard.tsx`) instead of a folder.
 
 ### Component Structure
 ```tsx

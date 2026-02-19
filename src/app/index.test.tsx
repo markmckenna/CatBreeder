@@ -1,34 +1,23 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import App from './index.tsx';
 
 describe('App', () => {
-  it('renders the heading', () => {
+  it('renders the game UI', () => {
     render(<App />);
-    expect(screen.getByRole('heading', { name: /catbreeder/i })).toBeInTheDocument();
+    expect(screen.getByText(/Cat Breeder/)).toBeInTheDocument();
   });
 
-  it('renders the welcome message', () => {
+  it('provides game context to children', () => {
     render(<App />);
-    expect(screen.getByText(/welcome to your new react application/i)).toBeInTheDocument();
+    // If GameProvider wasn't working, these wouldn't render
+    expect(screen.getByText('Day')).toBeInTheDocument();
+    expect(screen.getByText('Money')).toBeInTheDocument();
   });
 
-  it('starts counter at 0', () => {
+  it('renders initial cats', () => {
     render(<App />);
-    expect(screen.getByText('0')).toBeInTheDocument();
-  });
-
-  it('increments counter when + button is clicked', () => {
-    render(<App />);
-    const incrementButton = screen.getByRole('button', { name: '+' });
-    fireEvent.click(incrementButton);
-    expect(screen.getByText('1')).toBeInTheDocument();
-  });
-
-  it('decrements counter when - button is clicked', () => {
-    render(<App />);
-    const decrementButton = screen.getByRole('button', { name: '-' });
-    fireEvent.click(decrementButton);
-    expect(screen.getByText('-1')).toBeInTheDocument();
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    expect(catSprites.length).toBe(2);
   });
 });
