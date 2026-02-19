@@ -12,9 +12,10 @@ describe('Room', () => {
     expect(screen.getByTestId('room')).toBeInTheDocument();
   });
 
-  it('renders cat bed furniture', () => {
+  it('renders SVG background', () => {
     render(<Room />);
-    expect(screen.getByTestId('cat-bed')).toBeInTheDocument();
+    const room = screen.getByTestId('room');
+    expect(room.querySelector('svg')).toBeInTheDocument();
   });
 
   it('renders children inside room', () => {
@@ -27,17 +28,8 @@ describe('Room', () => {
     expect(screen.getByText('Whiskers')).toBeInTheDocument();
   });
 
-  it('accepts different room styles', () => {
-    const { rerender } = render(<Room style="cozy" />);
-    expect(screen.getByTestId('room')).toBeInTheDocument();
-    
-    rerender(<Room style="modern" />);
-    expect(screen.getByTestId('room')).toBeInTheDocument();
-    
-    rerender(<Room style="rustic" />);
-    expect(screen.getByTestId('room')).toBeInTheDocument();
-    
-    rerender(<Room style="luxury" />);
+  it('renders with default cozy style', () => {
+    render(<Room />);
     expect(screen.getByTestId('room')).toBeInTheDocument();
   });
 });

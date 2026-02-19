@@ -1,5 +1,6 @@
 /**
  * Room component - displays a cozy background for cats.
+ * Uses an SVG-generated background of a warm room with fireplace.
  */
 
 import { ReactNode, CSSProperties } from 'react';
@@ -11,8 +12,8 @@ export type FurnitureType = 'bed' | 'scratcher' | 'window' | 'plant' | 'toy';
 export interface RoomData {
   id: string;
   name: string;
-  capacity: number; // Max cats
-  comfort: number; // 0-100, affects cat happiness
+  capacity: number;
+  comfort: number;
   style: RoomStyle;
 }
 
@@ -28,218 +29,188 @@ interface RoomProps {
   children?: ReactNode;
 }
 
-const ROOM_COLORS: Record<RoomStyle, { wall: string; floor: string; accent: string }> = {
-  cozy: {
-    wall: '#FFF5E6',
-    floor: '#D4A574',
-    accent: '#8B4513',
-  },
-  modern: {
-    wall: '#F5F5F5',
-    floor: '#808080',
-    accent: '#333333',
-  },
-  rustic: {
-    wall: '#F0E6D3',
-    floor: '#8B7355',
-    accent: '#5C4033',
-  },
-  luxury: {
-    wall: '#FDF5E6',
-    floor: '#C4A35A',
-    accent: '#8B008B',
-  },
-};
+// SVG background of a cozy room with fireplace
+function CozyRoomBackground() {
+  return (
+    <svg
+      viewBox="0 0 800 600"
+      preserveAspectRatio="xMidYMid slice"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+      }}
+    >
+      {/* Wall */}
+      <rect x="0" y="0" width="800" height="400" fill="#F5E6D3" />
+      
+      {/* Wallpaper pattern */}
+      <defs>
+        <pattern id="wallpaper" patternUnits="userSpaceOnUse" width="40" height="40">
+          <circle cx="20" cy="20" r="2" fill="#E8D5C4" opacity="0.5" />
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="800" height="400" fill="url(#wallpaper)" />
+      
+      {/* Floor */}
+      <rect x="0" y="400" width="800" height="200" fill="#8B7355" />
+      
+      {/* Floor boards pattern */}
+      <defs>
+        <pattern id="floorboards" patternUnits="userSpaceOnUse" width="100" height="200">
+          <rect x="0" y="0" width="100" height="200" fill="#8B7355" />
+          <line x1="0" y1="0" x2="0" y2="200" stroke="#7A6548" strokeWidth="2" />
+          <line x1="50" y1="100" x2="50" y2="200" stroke="#7A6548" strokeWidth="1" />
+        </pattern>
+      </defs>
+      <rect x="0" y="400" width="800" height="200" fill="url(#floorboards)" />
+      
+      {/* Baseboard */}
+      <rect x="0" y="395" width="800" height="15" fill="#5C4033" />
+      
+      {/* Fireplace - stone surround */}
+      <rect x="280" y="200" width="240" height="210" fill="#696969" rx="8" />
+      <rect x="290" y="210" width="220" height="190" fill="#2F2F2F" rx="4" />
+      
+      {/* Fire glow */}
+      <defs>
+        <radialGradient id="fireGlow" cx="50%" cy="100%" r="60%">
+          <stop offset="0%" stopColor="#FF6B35" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="#FF4500" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#FF4500" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="400" cy="400" rx="120" ry="80" fill="url(#fireGlow)" />
+      
+      {/* Logs */}
+      <ellipse cx="370" cy="385" rx="35" ry="12" fill="#4A3728" />
+      <ellipse cx="430" cy="385" rx="35" ry="12" fill="#3D2E22" />
+      <ellipse cx="400" cy="375" rx="30" ry="10" fill="#5C4033" />
+      
+      {/* Fire flames */}
+      <defs>
+        <linearGradient id="flame1" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#FF4500" />
+          <stop offset="50%" stopColor="#FF6B35" />
+          <stop offset="100%" stopColor="#FFD700" />
+        </linearGradient>
+        <linearGradient id="flame2" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#FF6347" />
+          <stop offset="60%" stopColor="#FFA500" />
+          <stop offset="100%" stopColor="#FFFF00" />
+        </linearGradient>
+      </defs>
+      
+      {/* Animated flame shapes */}
+      <path d="M380 380 Q370 340 385 310 Q395 330 390 360 Q400 340 395 380 Z" fill="url(#flame1)" opacity="0.9">
+        <animate attributeName="d" dur="0.8s" repeatCount="indefinite"
+          values="M380 380 Q370 340 385 310 Q395 330 390 360 Q400 340 395 380 Z;
+                  M380 380 Q375 345 388 315 Q392 335 388 358 Q398 342 395 380 Z;
+                  M380 380 Q370 340 385 310 Q395 330 390 360 Q400 340 395 380 Z" />
+      </path>
+      <path d="M400 380 Q390 330 405 290 Q415 320 410 350 Q420 320 415 380 Z" fill="url(#flame2)" opacity="0.95">
+        <animate attributeName="d" dur="1s" repeatCount="indefinite"
+          values="M400 380 Q390 330 405 290 Q415 320 410 350 Q420 320 415 380 Z;
+                  M400 380 Q395 335 408 295 Q412 325 408 355 Q418 325 415 380 Z;
+                  M400 380 Q390 330 405 290 Q415 320 410 350 Q420 320 415 380 Z" />
+      </path>
+      <path d="M420 380 Q410 345 425 320 Q432 340 428 360 Q438 345 432 380 Z" fill="url(#flame1)" opacity="0.85">
+        <animate attributeName="d" dur="0.7s" repeatCount="indefinite"
+          values="M420 380 Q410 345 425 320 Q432 340 428 360 Q438 345 432 380 Z;
+                  M420 380 Q415 348 427 325 Q430 342 426 358 Q436 348 432 380 Z;
+                  M420 380 Q410 345 425 320 Q432 340 428 360 Q438 345 432 380 Z" />
+      </path>
+      
+      {/* Mantle */}
+      <rect x="260" y="185" width="280" height="25" fill="#5C4033" rx="4" />
+      
+      {/* Window on left */}
+      <rect x="60" y="100" width="120" height="150" fill="#87CEEB" rx="4" />
+      <rect x="60" y="100" width="120" height="150" fill="none" stroke="#5C4033" strokeWidth="12" rx="4" />
+      <line x1="120" y1="100" x2="120" y2="250" stroke="#5C4033" strokeWidth="6" />
+      <line x1="60" y1="175" x2="180" y2="175" stroke="#5C4033" strokeWidth="6" />
+      
+      {/* Curtains */}
+      <path d="M50 90 Q55 180 45 260 L65 260 Q60 180 70 90 Z" fill="#8B4513" opacity="0.7" />
+      <path d="M190 90 Q185 180 195 260 L175 260 Q180 180 170 90 Z" fill="#8B4513" opacity="0.7" />
+      
+      {/* Window on right */}
+      <rect x="620" y="100" width="120" height="150" fill="#87CEEB" rx="4" />
+      <rect x="620" y="100" width="120" height="150" fill="none" stroke="#5C4033" strokeWidth="12" rx="4" />
+      <line x1="680" y1="100" x2="680" y2="250" stroke="#5C4033" strokeWidth="6" />
+      <line x1="620" y1="175" x2="740" y2="175" stroke="#5C4033" strokeWidth="6" />
+      
+      {/* Curtains right */}
+      <path d="M610 90 Q615 180 605 260 L625 260 Q620 180 630 90 Z" fill="#8B4513" opacity="0.7" />
+      <path d="M750 90 Q745 180 755 260 L735 260 Q740 180 730 90 Z" fill="#8B4513" opacity="0.7" />
+      
+      {/* Cozy rug in front of fireplace */}
+      <ellipse cx="400" cy="520" rx="180" ry="60" fill="#A0522D" />
+      <ellipse cx="400" cy="520" rx="160" ry="50" fill="#CD853F" />
+      <ellipse cx="400" cy="520" rx="140" ry="40" fill="#DEB887" />
+      
+      {/* Cat bed on left */}
+      <ellipse cx="150" cy="500" rx="60" ry="25" fill="#FF6B6B" />
+      <ellipse cx="150" cy="495" rx="50" ry="18" fill="#FF8E8E" />
+      
+      {/* Cat bed on right */}
+      <ellipse cx="650" cy="500" rx="60" ry="25" fill="#6B9FFF" />
+      <ellipse cx="650" cy="495" rx="50" ry="18" fill="#8EB8FF" />
+      
+      {/* Bookshelf on wall */}
+      <rect x="550" y="280" width="80" height="110" fill="#5C4033" />
+      <rect x="555" y="285" width="70" height="25" fill="#3D2E22" />
+      <rect x="555" y="315" width="70" height="25" fill="#3D2E22" />
+      <rect x="555" y="345" width="70" height="25" fill="#3D2E22" />
+      <rect x="555" y="375" width="70" height="10" fill="#3D2E22" />
+      
+      {/* Books */}
+      <rect x="560" y="287" width="8" height="20" fill="#C41E3A" />
+      <rect x="570" y="289" width="6" height="18" fill="#228B22" />
+      <rect x="578" y="286" width="10" height="21" fill="#4169E1" />
+      <rect x="590" y="288" width="7" height="19" fill="#DAA520" />
+      
+      <rect x="558" y="317" width="12" height="20" fill="#8B4513" />
+      <rect x="572" y="319" width="8" height="18" fill="#800080" />
+      <rect x="582" y="316" width="10" height="21" fill="#2F4F4F" />
+      
+      {/* Plant */}
+      <rect x="170" y="330" width="40" height="60" fill="#B87333" rx="4" />
+      <ellipse cx="190" cy="330" rx="35" ry="20" fill="#228B22" />
+      <ellipse cx="180" cy="320" rx="25" ry="15" fill="#32CD32" />
+      <ellipse cx="200" cy="315" rx="20" ry="12" fill="#228B22" />
+    </svg>
+  );
+}
 
 const roomContainerStyle: CSSProperties = {
   position: 'relative',
   width: '100%',
-  height: '400px',
+  height: '100%',
+  minHeight: '300px',
   overflow: 'hidden',
   borderRadius: '12px',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  backgroundColor: '#2F2F2F',
 };
 
-function Room({ style = 'cozy', children }: RoomProps) {
-  const colors = ROOM_COLORS[style];
+const contentStyle: CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  zIndex: 1,
+};
 
-  const wallStyle: CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '70%',
-    background: `linear-gradient(180deg, ${colors.wall} 0%, ${colors.wall}dd 100%)`,
-  };
-
-  const floorStyle: CSSProperties = {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '35%',
-    background: `linear-gradient(180deg, ${colors.floor}cc 0%, ${colors.floor} 100%)`,
-  };
-
-  const windowStyle: CSSProperties = {
-    position: 'absolute',
-    top: '15%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '120px',
-    height: '100px',
-    backgroundColor: '#87CEEB',
-    border: `8px solid ${colors.accent}`,
-    borderRadius: '8px 8px 0 0',
-    boxShadow: 'inset 0 0 20px rgba(255, 255, 255, 0.5)',
-  };
-
-  const windowCrossVertical: CSSProperties = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '8px',
-    height: '100%',
-    backgroundColor: colors.accent,
-  };
-
-  const windowCrossHorizontal: CSSProperties = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '100%',
-    height: '8px',
-    backgroundColor: colors.accent,
-  };
-
-  const curtainLeftStyle: CSSProperties = {
-    position: 'absolute',
-    top: '8%',
-    left: 'calc(50% - 100px)',
-    width: '40px',
-    height: '130px',
-    background: `linear-gradient(90deg, ${colors.accent}aa, ${colors.accent}66)`,
-    borderRadius: '0 0 20px 0',
-  };
-
-  const curtainRightStyle: CSSProperties = {
-    position: 'absolute',
-    top: '8%',
-    right: 'calc(50% - 100px)',
-    width: '40px',
-    height: '130px',
-    background: `linear-gradient(90deg, ${colors.accent}66, ${colors.accent}aa)`,
-    borderRadius: '0 0 0 20px',
-  };
-
-  const catBedStyle: CSSProperties = {
-    position: 'absolute',
-    bottom: '15%',
-    left: '10%',
-    width: '100px',
-    height: '40px',
-    backgroundColor: '#FF6B6B',
-    borderRadius: '50% 50% 40% 40%',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-  };
-
-  const scratcherStyle: CSSProperties = {
-    position: 'absolute',
-    bottom: '15%',
-    right: '15%',
-    width: '30px',
-    height: '80px',
-    background: `linear-gradient(90deg, #D2691E, #CD853F, #D2691E)`,
-    borderRadius: '4px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-  };
-
-  const scratcherTopStyle: CSSProperties = {
-    position: 'absolute',
-    top: '-15px',
-    left: '-10px',
-    width: '50px',
-    height: '15px',
-    backgroundColor: '#228B22',
-    borderRadius: '4px',
-  };
-
-  const plantStyle: CSSProperties = {
-    position: 'absolute',
-    bottom: '15%',
-    right: '35%',
-    width: '50px',
-    height: '50px',
-  };
-
-  const potStyle: CSSProperties = {
-    position: 'absolute',
-    bottom: 0,
-    left: '10px',
-    width: '30px',
-    height: '25px',
-    backgroundColor: '#B87333',
-    borderRadius: '0 0 8px 8px',
-  };
-
-  const leafStyle: (rotation: number, offset: number) => CSSProperties = (rotation, offset) => ({
-    position: 'absolute',
-    bottom: '20px',
-    left: `${15 + offset}px`,
-    width: '20px',
-    height: '30px',
-    backgroundColor: '#228B22',
-    borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-    transform: `rotate(${rotation}deg)`,
-    transformOrigin: 'bottom center',
-  });
-
-  const contentStyle: CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    padding: '20px',
-    gap: '10px',
-  };
-
+function Room({ children }: RoomProps) {
   return (
     <div style={roomContainerStyle} data-testid="room">
-      {/* Background layers */}
-      <div style={wallStyle} />
-      <div style={floorStyle} />
-      
-      {/* Window */}
-      <div style={windowStyle}>
-        <div style={windowCrossVertical} />
-        <div style={windowCrossHorizontal} />
-      </div>
-      
-      {/* Curtains */}
-      <div style={curtainLeftStyle} />
-      <div style={curtainRightStyle} />
-      
-      {/* Furniture */}
-      <div style={catBedStyle} data-testid="cat-bed" />
-      <div style={scratcherStyle}>
-        <div style={scratcherTopStyle} />
-      </div>
-      
-      {/* Plant */}
-      <div style={plantStyle}>
-        <div style={potStyle} />
-        <div style={leafStyle(-30, -5)} />
-        <div style={leafStyle(0, 5)} />
-        <div style={leafStyle(30, 15)} />
-      </div>
-      
-      {/* Cat content area */}
+      <CozyRoomBackground />
       <div style={contentStyle}>
         {children}
       </div>

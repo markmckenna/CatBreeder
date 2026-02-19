@@ -23,8 +23,7 @@ describe('GameUI', () => {
 
   it('displays day counter starting at 1', () => {
     renderGameUI();
-    expect(screen.getByText('Day')).toBeInTheDocument();
-    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('Day 1')).toBeInTheDocument();
   });
 
   it('displays starting money', () => {
@@ -39,53 +38,21 @@ describe('GameUI', () => {
     expect(screen.getByText('2')).toBeInTheDocument(); // Initial cats
   });
 
-  it('renders breed button', () => {
-    renderGameUI();
-    expect(screen.getByText(/Breed Cats/)).toBeInTheDocument();
-  });
-
-  it('renders sell button', () => {
-    renderGameUI();
-    expect(screen.getByText(/Sell Cat/)).toBeInTheDocument();
-  });
-
   it('renders end turn button', () => {
     renderGameUI();
     expect(screen.getByText(/End Turn/)).toBeInTheDocument();
-  });
-
-  it('shows breeding panel when breed mode is active', () => {
-    renderGameUI();
-    
-    fireEvent.click(screen.getByText(/Breed Cats/));
-    
-    expect(screen.getByText('Select Breeding Pair')).toBeInTheDocument();
-    expect(screen.getByText('Confirm Breeding')).toBeInTheDocument();
-    expect(screen.getByText('Cancel')).toBeInTheDocument();
-  });
-
-  it('can cancel breeding mode', () => {
-    renderGameUI();
-    
-    fireEvent.click(screen.getByText(/Breed Cats/));
-    expect(screen.getByText('Select Breeding Pair')).toBeInTheDocument();
-    
-    fireEvent.click(screen.getByText('Cancel'));
-    expect(screen.queryByText('Select Breeding Pair')).not.toBeInTheDocument();
   });
 
   it('advances day when end turn is clicked', () => {
     renderGameUI();
     
     // Day starts at 1
-    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('Day 1')).toBeInTheDocument();
     
     fireEvent.click(screen.getByText(/End Turn/));
     
-    // Day should now be 2 (look next to "Day" label)
-    const dayLabel = screen.getByText('Day');
-    const dayContainer = dayLabel.parentElement;
-    expect(dayContainer?.textContent).toContain('2');
+    // Day should now be 2
+    expect(screen.getByText('Day 2')).toBeInTheDocument();
   });
 
   it('renders room component', () => {
@@ -98,5 +65,66 @@ describe('GameUI', () => {
     // Should have 2 initial cats, each with a test id starting with "cat-sprite-"
     const catSprites = screen.getAllByTestId(/^cat-sprite-/);
     expect(catSprites.length).toBe(2);
+  });
+
+  it('shows hint to click a cat when nothing selected', () => {
+    renderGameUI();
+    expect(screen.getByText(/Click a cat to view info/)).toBeInTheDocument();
+  });
+
+  it('shows cat info panel when cat is clicked', () => {
+    renderGameUI();
+    
+    // Click the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.click(catSprites[0]);
+    
+    // Should show info panel with breed and sell buttons
+    expect(screen.getByRole('button', { name: /Breed/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sell/ })).toBeInTheDocument();
+    // Should show market value section
+    expect(screen.getByText(/Est. Market Value/)).toBeInTheDocument();
+  });
+
+  it('shows genetics info for selected cat', () => {
+    renderGameUI();
+    
+    // Click the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.click(catSprites[0]);
+    
+    // Should show genetics section
+    expect(screen.getByText('Genetics')).toBeInTheDocument();
+  });
+
+  it('enters breed select mode when clicking Breed on a cat', () => {
+    renderGameUI();
+    
+    // Click the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.click(catSprites[0]);
+    
+    // Click breed button
+    fireEvent.click(screen.getByRole('button', { name: /Breed/ }));
+    
+    // Should show breed select hint
+    expect(screen.getByText(/Select a mate/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Cancel/ })).toBeInTheDocument();
+  });
+
+  it('can cancel breed select mode', () => {
+    renderGameUI();
+    
+    // Click the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.click(catSprites[0]);
+    
+    // Click breed button
+    fireEvent.click(screen.getByRole('button', { name: /Breed/ }));
+    expect(screen.getByText(/Select a mate/)).toBeInTheDocument();
+    
+    // Cancel
+    fireEvent.click(screen.getByRole('button', { name: /Cancel/ }));
+    expect(screen.queryByText(/Select a mate/)).not.toBeInTheDocument();
   });
 });
