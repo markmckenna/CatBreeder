@@ -251,4 +251,57 @@ describe('game state', () => {
       expect(available[0].id).not.toBe(cat.id);
     });
   });
+
+  describe('BUY_FURNITURE action', () => {
+    it('buys a toy for $50', () => {
+      const state = createInitialGameState();
+      const initialMoney = state.money;
+
+      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+
+      expect(newState.money).toBe(initialMoney - 50);
+      expect(newState.furniture.toys).toBe(1);
+      expect(newState.furniture.beds).toBe(0);
+    });
+
+    it('buys a bed for $100', () => {
+      const state = createInitialGameState();
+      const initialMoney = state.money;
+
+      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'bed' });
+
+      expect(newState.money).toBe(initialMoney - 100);
+      expect(newState.furniture.toys).toBe(0);
+      expect(newState.furniture.beds).toBe(1);
+    });
+
+    it('does not buy if not enough money', () => {
+      const state = { ...createInitialGameState(), money: 30 };
+
+      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+
+      expect(newState.money).toBe(30);
+      expect(newState.furniture.toys).toBe(0);
+    });
+
+    it('can buy multiple furniture items', () => {
+      let state = createInitialGameState();
+      state = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+      state = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+      state = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'bed' });
+
+      expect(state.furniture.toys).toBe(2);
+      expect(state.furniture.beds).toBe(1);
+    });
+
+    it('records transaction when buying furniture', () => {
+      const state = createInitialGameState();
+
+      const newState = applyAction(state, { type: 'BUY_FURNITURE', itemType: 'toy' });
+
+      expect(newState.transactions).toHaveLength(1);
+      expect(newState.transactions[0].type).toBe('buy');
+      expect(newState.transactions[0].amount).toBe(50);
+    });
+  });
 });

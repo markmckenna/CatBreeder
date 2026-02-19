@@ -9,9 +9,11 @@ import Room from '../../environment/Room';
 import CatSprite from '../../cats/CatSprite';
 import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
+import ShopPanel from '../ShopPanel';
 import { calculateCatValue, createMarketState, getValueBreakdown } from '../../economy/market.ts';
 import type { MarketCat } from '../../economy/market.ts';
 import { getCollectionProgress } from '../../cats/collection.ts';
+import { calculateCapacity, FurnitureItemType } from '../../environment/furniture.ts';
 import type { Cat } from '../../cats/genetics.ts';
 import styles from './styles.css';
 
@@ -56,6 +58,7 @@ function GameUI() {
   const [mode, setMode] = useState<'view' | 'breed-select'>('view');
   const [showCollection, setShowCollection] = useState(false);
   const [showMarket, setShowMarket] = useState(false);
+  const [showShop, setShowShop] = useState(false);
 
   const market = useMemo(() => createMarketState(), []);
   const catPositions = useMemo(
@@ -105,6 +108,13 @@ function GameUI() {
       type: 'BUY_CAT',
       cat: marketCat.cat,
       price: marketCat.price,
+    });
+  };
+
+  const handleBuyFurniture = (itemType: FurnitureItemType) => {
+    dispatch({
+      type: 'BUY_FURNITURE',
+      itemType,
     });
   };
 
@@ -219,6 +229,17 @@ function GameUI() {
             <div className={styles.statIcon}>🏪</div>
             <div className={styles.statValue}>{state.marketInventory.length}</div>
             <div className={styles.statLabel}>Market</div>
+          </div>
+          <div 
+            className={`${styles.statTile} ${styles.clickable}`}
+            onClick={() => setShowShop(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && setShowShop(true)}
+          >
+            <div className={styles.statIcon}>🛋️</div>
+            <div className={styles.statValue}>{state.cats.length}/{calculateCapacity(state.furniture)}</div>
+            <div className={styles.statLabel}>Capacity</div>
           </div>
         </div>
 
@@ -432,6 +453,17 @@ function GameUI() {
           playerMoney={state.money}
           onBuy={handleBuyCat}
           onClose={() => setShowMarket(false)}
+        />
+      )}
+
+      {/* Shop Panel Modal */}
+      {showShop && (
+        <ShopPanel
+          furniture={state.furniture}
+          money={state.money}
+          catCount={state.cats.length}
+          onBuy={handleBuyFurniture}
+          onClose={() => setShowShop(false)}
         />
       )}
     </div>

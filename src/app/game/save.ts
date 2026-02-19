@@ -60,6 +60,8 @@ function serializeState(state: GameState): SerializedGameState {
 function deserializeState(data: SerializedGameState): GameState {
   return {
     ...data,
+    // Provide default furniture for saves that don't have it
+    furniture: data.furniture ?? { toys: 0, beds: 0 },
     traitCollection: {
       collected: new Map(data.traitCollection.collected),
     } as TraitCollection,

@@ -2,7 +2,7 @@
  * Tests for MarketPanel component.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import MarketPanel from './index.tsx';
 import type { MarketCat } from '../../economy/market.ts';

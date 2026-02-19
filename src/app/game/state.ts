@@ -8,6 +8,8 @@ import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
 import { createMarketState, calculateCatValue, generateMarketInventory, FOOD_COST_PER_CAT } from '../economy/market.ts';
 import type { TraitCollection } from '../cats/collection.ts';
 import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
+import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture.ts';
+import { createInitialFurniture, SHOP_ITEMS } from '../environment/furniture.ts';
 
 /**
  * Planned breeding pair for next turn
@@ -32,6 +34,9 @@ export interface GameState {
   // Trait collection - tracks discovered trait combinations
   traitCollection: TraitCollection;
   
+  // Furniture owned by the player
+  furniture: OwnedFurniture;
+  
   // Pending actions for next turn
   breedingPairs: BreedingPair[];
   catsForSale: string[]; // cat IDs
@@ -53,6 +58,7 @@ export type GameAction =
   | { type: 'LIST_FOR_SALE'; catId: string }
   | { type: 'UNLIST_FROM_SALE'; catId: string }
   | { type: 'BUY_CAT'; cat: Cat; price: number }
+  | { type: 'BUY_FURNITURE'; itemType: FurnitureItemType }
   | { type: 'END_TURN' };
 
 /**
@@ -85,6 +91,7 @@ export function createInitialGameState(): GameState {
     market,
     marketInventory: generateMarketInventory(market),
     traitCollection: createTraitCollection(),
+    furniture: createInitialFurniture(),
     breedingPairs: [],
     catsForSale: [],
     transactions: [],
@@ -160,6 +167,32 @@ export function applyAction(state: GameState, action: GameAction): GameState {
           type: 'buy',
           catId: action.cat.id,
           amount: action.price,
+          day: state.day,
+        }],
+      };
+    }
+
+    case 'BUY_FURNITURE': {
+      const item = SHOP_ITEMS[action.itemType];
+      if (!item || state.money < item.price) {
+        return state;
+      }
+
+      const newFurniture = { ...state.furniture };
+      if (action.itemType === 'toy') {
+        newFurniture.toys += 1;
+      } else if (action.itemType === 'bed') {
+        newFurniture.beds += 1;
+      }
+
+      return {
+        ...state,
+        money: state.money - item.price,
+        furniture: newFurniture,
+        transactions: [...state.transactions, {
+          type: 'buy',
+          catId: `furniture-${action.itemType}-${Date.now()}`,
+          amount: item.price,
           day: state.day,
         }],
       };
