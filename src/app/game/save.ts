@@ -104,9 +104,7 @@ export function saveGame(state: GameState, seed: number): boolean {
 export function loadGame(): { state: GameState; seed: number } | null {
   try {
     const savedJson = localStorage.getItem(SAVE_KEY);
-    if (!savedJson) {
-      return null;
-    }
+    if (!savedJson) return null;
 
     const saveData: SaveData = JSON.parse(savedJson);
     

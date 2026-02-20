@@ -40,10 +40,7 @@ export function isFurnitureSelection(s: Selectable | null): s is FurnitureSelect
 
 /** Get a unique ID for a selectable for comparison */
 export function getSelectableId(s: Selectable): string {
-  if (s.type === 'cat') {
-    return `cat-${s.cat.id}`;
-  }
-  return `furniture-${s.furnitureType}-${s.index}`;
+  return s.type === 'cat' ? `cat-${s.cat.id}` : `furniture-${s.furnitureType}-${s.index}`;
 }
 
 /** Check if two selectables are the same */

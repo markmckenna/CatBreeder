@@ -101,9 +101,7 @@ export function registerBredCat(
 ): { updated: boolean; collection: TraitCollection } {
   const key = getPhenotypeKey(cat.phenotype);
   
-  if (collection.collected.has(key)) {
-    return { updated: false, collection };
-  }
+  if (collection.collected.has(key)) return { updated: false, collection };
 
   const newCollected = new Map(collection.collected);
   newCollected.set(key, {

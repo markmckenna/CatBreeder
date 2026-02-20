@@ -145,22 +145,11 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
   const breakdown: { trait: string; multiplier: number }[] = [];
   const tv = market.traitValues;
 
-  if (tv.size[cat.phenotype.size] > 1) {
-    breakdown.push({ trait: `${cat.phenotype.size} size`, multiplier: tv.size[cat.phenotype.size] });
-  }
-  if (tv.tailLength[cat.phenotype.tailLength] > 1) {
-    breakdown.push({ trait: `${cat.phenotype.tailLength} tail`, multiplier: tv.tailLength[cat.phenotype.tailLength] });
-  }
-  if (tv.earShape[cat.phenotype.earShape] > 1) {
-    breakdown.push({ trait: `${cat.phenotype.earShape} ears`, multiplier: tv.earShape[cat.phenotype.earShape] });
-  }
-  if (tv.tailColor[cat.phenotype.tailColor] > 1) {
-    breakdown.push({ trait: `${cat.phenotype.tailColor} fur`, multiplier: tv.tailColor[cat.phenotype.tailColor] });
-  }
-  // Kitten premium
-  if (cat.age < 4) {
-    breakdown.push({ trait: 'kitten', multiplier: 1.2 });
-  }
+  if (tv.size[cat.phenotype.size] > 1) breakdown.push({ trait: `${cat.phenotype.size} size`, multiplier: tv.size[cat.phenotype.size] });
+  if (tv.tailLength[cat.phenotype.tailLength] > 1) breakdown.push({ trait: `${cat.phenotype.tailLength} tail`, multiplier: tv.tailLength[cat.phenotype.tailLength] });
+  if (tv.earShape[cat.phenotype.earShape] > 1) breakdown.push({ trait: `${cat.phenotype.earShape} ears`, multiplier: tv.earShape[cat.phenotype.earShape] });
+  if (tv.tailColor[cat.phenotype.tailColor] > 1) breakdown.push({ trait: `${cat.phenotype.tailColor} fur`, multiplier: tv.tailColor[cat.phenotype.tailColor] });
+  if (cat.age < 4) breakdown.push({ trait: 'kitten', multiplier: 1.2 });
 
   return breakdown;
 }

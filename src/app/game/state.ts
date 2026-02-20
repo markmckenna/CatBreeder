@@ -218,18 +218,12 @@ function buyCat(state: GameState, cat: Cat, price: number): GameState {
 
 function buyFurniture(state: GameState, itemType: FurnitureItemType): GameState {
   const item = SHOP_ITEMS[itemType];
-  if (!item || state.money < item.price) {
-    return state;
-  }
+  if (!item || state.money < item.price) return state;
 
   const newFurniture = { ...state.furniture };
-  if (itemType === 'toy') {
-    newFurniture.toys += 1;
-  } else if (itemType === 'bed') {
-    newFurniture.beds += 1;
-  } else if (itemType === 'catTree') {
-    newFurniture.catTrees += 1;
-  }
+  if (itemType === 'toy') newFurniture.toys += 1;
+  else if (itemType === 'bed') newFurniture.beds += 1;
+  else if (itemType === 'catTree') newFurniture.catTrees += 1;
 
   return {
     ...state,
@@ -246,9 +240,7 @@ function buyFurniture(state: GameState, itemType: FurnitureItemType): GameState 
 
 function sellFurniture(state: GameState, itemType: FurnitureItemType): GameState {
   const item = SHOP_ITEMS[itemType];
-  if (!item) {
-    return state;
-  }
+  if (!item) return state;
 
   const newFurniture = { ...state.furniture };
   let canSell = false;
@@ -264,9 +256,7 @@ function sellFurniture(state: GameState, itemType: FurnitureItemType): GameState
     canSell = true;
   }
 
-  if (!canSell) {
-    return state;
-  }
+  if (!canSell) return state;
 
   const sellPrice = Math.floor(item.price * 0.5);
 
@@ -425,25 +415,17 @@ export function processTurn(
     const spotType: SpotType | undefined = spotsByCat.get(cat.id);
     
     // Toy access: +5% happiness
-    if (spotType === 'toy') {
-      change += 5;
-    }
+    if (spotType === 'toy') change += 5;
     
     // Bed or cat tree access: +8% happiness
-    if (spotType === 'bed' || spotType === 'catTree') {
-      change += 8;
-    }
+    if (spotType === 'bed' || spotType === 'catTree') change += 8;
     
     // Comfort spot (rug or bookshelf): no penalty
     // No comfort spot (floor): -5% extra
-    if (spotType === 'floor') {
-      change -= 5;
-    }
+    if (spotType === 'floor') change -= 5;
     
     // Alone penalty: -5% extra
-    if (isAlone) {
-      change -= 5;
-    }
+    if (isAlone) change -= 5;
     
     // Overcrowding penalty: -1% per cat over capacity
     change -= overcrowdCount;
@@ -470,19 +452,13 @@ export function processTurn(
   newState.marketInventory = generateMarketInventory(newState.market, rng);
 
   // Generate events
-  if (result.births.length > 0) {
-    result.events.push(`${result.births.length} kitten(s) were born!`);
-  }
-  if (newDiscoveries.length > 0) {
-    result.events.push(`🎉 New trait discovered by ${newDiscoveries.join(', ')}!`);
-  }
+  if (result.births.length > 0) result.events.push(`${result.births.length} kitten(s) were born!`);
+  if (newDiscoveries.length > 0) result.events.push(`🎉 New trait discovered by ${newDiscoveries.join(', ')}!`);
   if (result.sales.length > 0) {
     const totalEarned = result.sales.reduce((sum, s) => sum + s.price, 0);
     result.events.push(`Sold ${result.sales.length} cat(s) for $${totalEarned}!`);
   }
-  if (foodCost > 0) {
-    result.events.push(`Food expenses: $${foodCost}`);
-  }
+  if (foodCost > 0) result.events.push(`Food expenses: $${foodCost}`);
 
   return { newState, result };
 }
