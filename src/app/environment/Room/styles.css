@@ -71,9 +71,11 @@
 }
 
 /* Plant - tall potted tree, positioned to sit on floor */
+
 .plant {
   composes: svgObject;
-  bottom: 33%;  /* Pot bottom sits at 67% from top, on the floor line */
+  /* Place pot base at 70% (floor line), SVG pot base is at y=120, viewBox height=120 */
+  top: calc(70% - 32%); /* 32% is plant height, so top aligns pot base at 70% */
   left: 18%;
   width: 8%;
   height: 32%;
@@ -128,12 +130,12 @@
   filter: brightness(1.15) drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
 }
 
+
 .furnitureCatTree {
   position: absolute;
   transform: translateX(-50%);
-  /* Position so base sits on floor: floor at 67% from top, base at 96% of SVG height */
-  /* top = 67% - (202/210)*height = 67% - 48% = 19% when height=50% */
-  top: 19%;
+  /* Place base ellipse (y=202, SVG height=210) at 70% (floor line) */
+  top: calc(70% - (202/210 * 50%)); /* 50% is height, 202/210 is base offset in SVG */
   width: 11%;
   height: 50%;
   overflow: visible;
