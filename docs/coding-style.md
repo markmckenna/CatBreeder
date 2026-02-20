@@ -7,6 +7,25 @@ Code style and architectural conventions for the CatBreeder project. When making
 ### Minimize Duplication
 Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers.
 
+### Order Conditions by Runtime Cost
+In if statements with multiple commutative conditions, order them by expected runtime (cheapest first):
+
+```typescript
+// ✅ Equality check before substring search
+if (err.code === 'EADDRINUSE' || err.message?.includes('EADDRINUSE'))
+
+// ❌ Expensive operation first
+if (err.message?.includes('EADDRINUSE') || err.code === 'EADDRINUSE')
+```
+
+Cost hierarchy (cheapest to most expensive):
+1. Boolean/null checks (`!x`, `x === null`)
+2. Numeric comparisons (`x > 0`)
+3. String equality (`x === 'foo'`)
+4. String methods (`.includes()`, `.startsWith()`)
+5. Regex operations (`.match()`, `.test()`)
+6. Function calls with side effects
+
 ### Prefer Promise Chains When Simpler
 Use `.then()/.catch()` over async/await when it reduces a multi-line function to a single expression:
 

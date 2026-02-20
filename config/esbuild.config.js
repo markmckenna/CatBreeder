@@ -35,7 +35,7 @@ async function serveWithFallback(ctx, servedir, startPort, maxAttempts = 100) {
       }
       return { ...result, port };
     } catch (err) {
-      if (err.message?.includes('EADDRINUSE') || err.code === 'EADDRINUSE') {
+      if (err.code === 'EADDRINUSE' || err.message?.includes('EADDRINUSE')) {
         continue;
       }
       throw err;
