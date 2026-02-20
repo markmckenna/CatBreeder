@@ -31,12 +31,9 @@ export interface TraitCollection {
   collected: Map<TraitKey, CollectedTrait>;
 }
 
-/**
- * Generate a unique key for a phenotype combination
- */
-export function getPhenotypeKey(phenotype: CatPhenotype): TraitKey {
-  return `${phenotype.size}-${phenotype.tailLength}-${phenotype.earShape}-${phenotype.tailColor}`;
-}
+/** Generate a unique key for a phenotype combination */
+export const getPhenotypeKey = (phenotype: CatPhenotype): TraitKey =>
+  `${phenotype.size}-${phenotype.tailLength}-${phenotype.earShape}-${phenotype.tailColor}`;
 
 /**
  * Get all possible phenotype combinations
@@ -62,31 +59,18 @@ export function getAllPhenotypeCombinations(): CatPhenotype[] {
   return combinations;
 }
 
-/**
- * Create an empty trait collection
- */
-export function createTraitCollection(): TraitCollection {
-  return {
-    collected: new Map(),
-  };
-}
+/** Create an empty trait collection */
+export const createTraitCollection = (): TraitCollection => ({ collected: new Map() });
 
-/**
- * Check if a trait combination has been collected
- */
-export function isTraitCollected(collection: TraitCollection, phenotype: CatPhenotype): boolean {
-  return collection.collected.has(getPhenotypeKey(phenotype));
-}
+/** Check if a trait combination has been collected */
+export const isTraitCollected = (collection: TraitCollection, phenotype: CatPhenotype): boolean =>
+  collection.collected.has(getPhenotypeKey(phenotype));
 
-/**
- * Get the cat that first collected a trait, if any
- */
-export function getCollectedTraitInfo(
+/** Get the cat that first collected a trait, if any */
+export const getCollectedTraitInfo = (
   collection: TraitCollection, 
   phenotype: CatPhenotype
-): CollectedTrait | undefined {
-  return collection.collected.get(getPhenotypeKey(phenotype));
-}
+): CollectedTrait | undefined => collection.collected.get(getPhenotypeKey(phenotype));
 
 /**
  * Register a newly bred cat's traits in the collection.

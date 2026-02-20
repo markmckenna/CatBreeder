@@ -100,49 +100,29 @@ function breedGenotype<T>(parent1: [T, T], parent2: [T, T], random: RandomFn = d
   return [pickAllele(parent1, random), pickAllele(parent2, random)];
 }
 
-/**
- * Determine size phenotype from genotype
- * Large (S) is dominant over Small (s)
- */
-export function getSizePhenotype(genotype: SizeGenotype): SizePhenotype {
-  return genotype.includes('S') ? 'large' : 'small';
-}
+/** Determine size phenotype from genotype. Large (S) is dominant over Small (s) */
+export const getSizePhenotype = (genotype: SizeGenotype): SizePhenotype =>
+  genotype.includes('S') ? 'large' : 'small';
 
-/**
- * Determine tail length phenotype from genotype
- * Long (T) is dominant over Short (t)
- */
-export function getTailLengthPhenotype(genotype: TailLengthGenotype): TailLengthPhenotype {
-  return genotype.includes('T') ? 'long' : 'short';
-}
+/** Determine tail length phenotype from genotype. Long (T) is dominant over Short (t) */
+export const getTailLengthPhenotype = (genotype: TailLengthGenotype): TailLengthPhenotype =>
+  genotype.includes('T') ? 'long' : 'short';
 
-/**
- * Determine ear shape phenotype from genotype
- * Pointed (E) is dominant over Folded (f)
- */
-export function getEarShapePhenotype(genotype: EarShapeGenotype): EarShapePhenotype {
-  return genotype.includes('E') ? 'pointed' : 'folded';
-}
+/** Determine ear shape phenotype from genotype. Pointed (E) is dominant over Folded (f) */
+export const getEarShapePhenotype = (genotype: EarShapeGenotype): EarShapePhenotype =>
+  genotype.includes('E') ? 'pointed' : 'folded';
 
-/**
- * Determine tail color phenotype from genotype
- * Orange (O) is dominant over White (w)
- */
-export function getTailColorPhenotype(genotype: TailColorGenotype): TailColorPhenotype {
-  return genotype.includes('O') ? 'orange' : 'white';
-}
+/** Determine tail color phenotype from genotype. Orange (O) is dominant over White (w) */
+export const getTailColorPhenotype = (genotype: TailColorGenotype): TailColorPhenotype =>
+  genotype.includes('O') ? 'orange' : 'white';
 
-/**
- * Calculate full phenotype from genotype
- */
-export function getPhenotype(genotype: CatGenotype): CatPhenotype {
-  return {
-    size: getSizePhenotype(genotype.size),
-    tailLength: getTailLengthPhenotype(genotype.tailLength),
-    earShape: getEarShapePhenotype(genotype.earShape),
-    tailColor: getTailColorPhenotype(genotype.tailColor),
-  };
-}
+/** Calculate full phenotype from genotype */
+export const getPhenotype = (genotype: CatGenotype): CatPhenotype => ({
+  size: getSizePhenotype(genotype.size),
+  tailLength: getTailLengthPhenotype(genotype.tailLength),
+  earShape: getEarShapePhenotype(genotype.earShape),
+  tailColor: getTailColorPhenotype(genotype.tailColor),
+});
 
 /**
  * Breed two cats to produce offspring
@@ -236,14 +216,9 @@ const CAT_NAMES = [
   'Tiger', 'Smokey', 'Patches', 'Pumpkin', 'Snowball',
 ];
 
-/**
- * Get a random cat name from the predefined list
- * 
- * @param random - Optional random function for deterministic selection
- */
-export function getRandomCatName(random: RandomFn = defaultRandom): string {
-  return pickRandom(CAT_NAMES, random);
-}
+/** Get a random cat name from the predefined list */
+export const getRandomCatName = (random: RandomFn = defaultRandom): string =>
+  pickRandom(CAT_NAMES, random);
 
 // Re-export RandomFn type for consumers
 export type { RandomFn };

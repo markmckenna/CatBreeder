@@ -3,6 +3,4 @@
  */
 
 /** Format a number as currency for display */
-export function formatMoney(amount: number): string {
-  return `$${amount.toLocaleString()}`;
-}
+export const formatMoney = (amount: number): string => `$${amount.toLocaleString()}`;

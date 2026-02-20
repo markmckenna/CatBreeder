@@ -29,22 +29,15 @@ export interface FurnitureSelection {
 export type Selectable = CatSelection | FurnitureSelection;
 
 /** Check if selection is a cat */
-export function isCatSelection(s: Selectable | null): s is CatSelection {
-  return s?.type === 'cat';
-}
+export const isCatSelection = (s: Selectable | null): s is CatSelection => s?.type === 'cat';
 
 /** Check if selection is furniture */
-export function isFurnitureSelection(s: Selectable | null): s is FurnitureSelection {
-  return s?.type === 'furniture';
-}
+export const isFurnitureSelection = (s: Selectable | null): s is FurnitureSelection => s?.type === 'furniture';
 
 /** Get a unique ID for a selectable for comparison */
-export function getSelectableId(s: Selectable): string {
-  return s.type === 'cat' ? `cat-${s.cat.id}` : `furniture-${s.furnitureType}-${s.index}`;
-}
+export const getSelectableId = (s: Selectable): string =>
+  s.type === 'cat' ? `cat-${s.cat.id}` : `furniture-${s.furnitureType}-${s.index}`;
 
 /** Check if two selectables are the same */
-export function isSameSelectable(a: Selectable | null, b: Selectable | null): boolean {
-  if (!a || !b) return false;
-  return getSelectableId(a) === getSelectableId(b);
-}
+export const isSameSelectable = (a: Selectable | null, b: Selectable | null): boolean =>
+  a !== null && b !== null && getSelectableId(a) === getSelectableId(b);

@@ -69,16 +69,9 @@ export function coinFlip<T>(a: T, b: T, random: RandomFn = defaultRandom): T {
   return random() < 0.5 ? a : b;
 }
 
-/**
- * Generate a random integer in range [min, max] inclusive.
- * 
- * @param min - Minimum value (inclusive)
- * @param max - Maximum value (inclusive)
- * @param random - Random function (defaults to Math.random)
- */
-export function randomInt(min: number, max: number, random: RandomFn = defaultRandom): number {
-  return Math.floor(random() * (max - min + 1)) + min;
-}
+/** Generate a random integer in range [min, max] inclusive */
+export const randomInt = (min: number, max: number, random: RandomFn = defaultRandom): number =>
+  Math.floor(random() * (max - min + 1)) + min;
 
 /**
  * Returns a random number from a normal distribution using Box-Muller transform.

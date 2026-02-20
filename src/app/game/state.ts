@@ -473,9 +473,6 @@ export function getAvailableForBreeding(state: GameState): Cat[] {
   return state.cats.filter(c => !pairedIds.has(c.id) && c.age >= 4);
 }
 
-/**
- * Get cats available for sale (not already listed)
- */
-export function getAvailableForSale(state: GameState): Cat[] {
-  return state.cats.filter(c => !state.catsForSale.includes(c.id));
-}
+/** Get cats available for sale (not already listed) */
+export const getAvailableForSale = (state: GameState): Cat[] =>
+  state.cats.filter(c => !state.catsForSale.includes(c.id));

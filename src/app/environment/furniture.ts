@@ -65,19 +65,13 @@ export function createInitialFurniture(): OwnedFurniture {
  */
 export const BASE_CAPACITY = 2;
 
-/**
- * Calculate total cat carrying capacity based on furniture
- */
-export function calculateCapacity(furniture: OwnedFurniture): number {
-  return BASE_CAPACITY + furniture.toys + furniture.beds + ((furniture.catTrees ?? 0) * 3);
-}
+/** Calculate total cat capacity based on owned furniture */
+export const calculateCapacity = (furniture: OwnedFurniture): number =>
+  BASE_CAPACITY + furniture.toys + furniture.beds + ((furniture.catTrees ?? 0) * 3);
 
-/**
- * Get total furniture count
- */
-export function getTotalFurniture(furniture: OwnedFurniture): number {
-  return furniture.toys + furniture.beds + (furniture.catTrees ?? 0);
-}
+/** Get total furniture count */
+export const getTotalFurniture = (furniture: OwnedFurniture): number =>
+  furniture.toys + furniture.beds + (furniture.catTrees ?? 0);
 
 /**
  * Happiness change constants (percentages)

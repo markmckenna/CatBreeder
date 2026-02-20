@@ -8,9 +8,6 @@ export function capitalize(str: string | null | undefined): string | null | unde
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-export function formatCurrency(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-  }).format(amount);
-}
+/** Format currency using Intl.NumberFormat */
+export const formatCurrency = (amount: number, currency = 'USD'): string =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);

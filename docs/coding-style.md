@@ -33,6 +33,29 @@ function capitalize(str: string): string {
 }
 ```
 
+### Prefer Single-Line and Fluent Style
+When a function body is a single expression, use arrow function syntax without braces. For method chains, align continuation lines:
+
+```typescript
+// ✅ Single expression as arrow function
+export const formatCurrency = (amount: number, currency = 'USD') =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency })
+    .format(amount);
+
+// ✅ Short enough for one line
+export const square = (n: number) => n * n;
+
+// ❌ Unnecessary braces and return
+export function formatCurrency(amount: number, currency = 'USD'): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
+}
+```
+
+Use `function` declarations for:
+- Functions with multiple statements
+- Functions that need hoisting
+- Methods that use `this`
+
 ### Minimize Nesting
 Reduce visual complexity by:
 - Omitting braces for single-line if/else bodies
