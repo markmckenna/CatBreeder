@@ -8,28 +8,30 @@ Code style and architectural conventions for the CatBreeder project. When making
 Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers.
 
 ### Transparent Utility Functions
-Utility functions should pass through nullish values transparently rather than converting them:
+When a utility function accepts optional arguments, it should pass through nullish values rather than converting them:
 
 ```typescript
-// ✅ Transparent - preserves null/undefined
-function capitalize<T extends string | null | undefined>(str: T): T {
+// ✅ When input can be optional, preserve null/undefined
+function capitalize(str: string | null | undefined): string | null | undefined {
   if (str == null) return str;
-  return (str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()) as T;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-capitalize(undefined) // → undefined
-capitalize(null)      // → null
-capitalize('')        // → ''
-capitalize('hello')   // → 'Hello'
-
-// ❌ Lossy - converts null/undefined to empty string
-function capitalize(str: string): string {
-  if (!str) return '';
+// ❌ Don't convert null/undefined to a different value
+function capitalize(str: string | null | undefined): string {
+  if (!str) return '';  // Loses information
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 ```
 
-This preserves information and makes functions composable without unexpected type coercion.
+However, if a function's signature already requires non-null arguments, don't change it to accept null/undefined just for passthrough. The goal is simpler typing, not forcing generics everywhere:
+
+```typescript
+// ✅ Fine as-is if callers always have a string
+function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+```
 
 ### Minimize Nesting
 Reduce visual complexity by:
