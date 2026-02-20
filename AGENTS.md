@@ -6,20 +6,17 @@ Guidelines for AI agents working with this repository.
 
 1. **Run checks after changes**: `npm run typecheck && npm run test:run`
 2. **Commit after each change**: Test and commit every completed task (features, fixes, refactors) before moving on
-3. **Visual positioning**: See [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) for room coordinates
-4. **CSS patterns**: See [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) for styling conventions
-5. **Prefer CSS Modules**: Inline styles only when all properties derive from props/state
+3. **Follow coding style**: See [docs/CODING_STYLE.md](docs/CODING_STYLE.md) for conventions
+4. **Visual positioning**: See [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) for room coordinates
+5. **CSS patterns**: See [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) for styling conventions
 6. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
-7. **Update documentation**: Keep AGENTS.md, README.md, and [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) current
-8. **Use existing patterns**: Follow conventions in existing files
-9. **Minimize duplication**: Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers
-10. **Prefer promise chains when simpler**: Use `.then()/.catch()` over async/await when it reduces a multi-line function to a single expression
+7. **Update documentation**: Keep AGENTS.md, README.md, and docs/ current
+8. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/CODING_STYLE.md](docs/CODING_STYLE.md)
 
 ## Supplementary Documentation
 
 | Document | Purpose |
-|----------|---------|
-| [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) | Room coordinates, positioning, pointer-events |
+|----------|---------|| [docs/CODING_STYLE.md](docs/CODING_STYLE.md) | Code style, architecture, naming conventions || [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) | Room coordinates, positioning, pointer-events |
 | [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) | CSS Modules, z-index, transitions |
 | [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) | Game mechanics, formulas, balance values |
 
@@ -66,64 +63,7 @@ CatBreeder is an idle/incremental game about cat breeding, built with React and 
 └── dist/                # Build output (gitignored)
 ```
 
-### Feature-Based Organization
-
-Code in `src/app/` should be organized by **feature or domain**, not by type. Group related files together to minimize distance between components that work together.
-
-**Do this:**
-```
-src/app/
-├── index.tsx              # App root
-├── cats/                  # Cat domain
-│   ├── types.ts           # Cat type definitions
-│   ├── genetics.ts        # Breeding/inheritance logic
-│   ├── genetics.test.ts
-│   ├── CatCard.tsx
-│   └── CatCard.test.tsx
-└── economy/               # Economy domain
-    ├── types.ts
-    ├── market.ts          # Market simulation
-    ├── market.test.ts
-    └── MarketView.tsx
-```
-
-**Not this:**
-```
-src/app/
-├── components/            # ❌ Don't group by type
-│   ├── CatCard.tsx
-│   └── MarketView.tsx
-├── logic/                 # ❌ Don't separate logic from UI
-│   ├── genetics.ts
-│   └── market.ts
-└── tests/                 # ❌ Keep tests with source
-    └── ...
-```
-
-### UI/Game Logic Separation
-
-The codebase maintains a clean separation between rendering (UI) and non-rendered game logic:
-
-| Layer | Directory | Purpose |
-|-------|-----------|---------|
-| **UI** | `src/app/ui/` | Visual components (CatSprite, panels, overlays) |
-| **Game Logic** | `src/app/game/` | State management, turn processing, save/load |
-| **Domain Logic** | `src/app/cats/`, `economy/`, `environment/` | Pure game mechanics (no React) |
-
-**Design Intent**: Game logic should be able to run in a Node.js environment without any UI dependencies. Data flows from game logic to UI via `useGame()` hook, which is the primary entry point for UI components to access game state.
-
-### Dependency Direction
-
-**UI modules may import from non-UI modules, but never the reverse.**
-
-```
-✅ ui/CatSprite → cats/genetics (UI imports logic)
-✅ ui/GameUI → game/GameContext (UI imports state)
-✅ game/state → cats/genetics (logic imports logic)
-❌ cats/genetics → ui/CatSprite (logic must NOT import UI)
-```
-
-This ensures game logic remains testable and portable without UI dependencies.
+See [docs/CODING_STYLE.md](docs/CODING_STYLE.md) for feature-based organization, UI/game logic separation, and dependency direction rules.
 
 ## Commands
 
@@ -155,142 +95,11 @@ npm run typecheck    # Run TypeScript type checking
 
 ## Coding Conventions
 
-### File Naming
-- React components with styles: Use folder-per-component (see below)
-- Simple React components: `PascalCase.tsx` (e.g., `UserProfile.tsx`)
-- Utilities/helpers: `camelCase.ts` (e.g., `helpers.ts`)
-- Tests: `index.test.tsx` (in component folder) or `[filename].test.ts`
-- Non-JS files (HTML, CSS): `kebab-case` (e.g., `index.html`, `main-layout.css`)
-
-### Folder-per-Component Structure
-Components with styles use a folder structure for cleaner organization:
-
-```
-src/app/ui/GameUI/
-├── index.tsx        # Component
-├── styles.css       # CSS Module (scoped automatically)
-└── index.test.tsx   # Tests
-```
-
-This pattern:
-- Avoids verbose `.module.css` naming
-- Keeps related files together
-- Allows clean imports: `import GameUI from './ui/GameUI'`
-
-### Styling with CSS Modules
-CSS files named `styles.css` in component folders are treated as CSS Modules:
-
-```tsx
-import styles from './styles.css';
-
-function GameUI() {
-  return <div className={styles.container}>...</div>;
-}
-```
-
-CSS Module benefits:
-- Scoped class names (no collisions)
-- Full CSS features (`:hover`, media queries, transitions)
-- Co-located with components
-- Type-safe imports via `src/css-modules.d.ts`
-
-For simple components without styles, use a single file (e.g., `CatCard.tsx`) instead of a folder.
-
-### Styling Architecture Rules
-
-**Prefer CSS Modules over inline styles.** Move static styles to adjacent `styles.css` files rather than using `CSSProperties` objects or inline `style` props. This keeps styling concerns in CSS where they belong.
-
-**Exception: Highly dynamic styles.** When every style property depends on props/state (e.g., CatSprite where colors, sizes, and positions all derive from cat phenotype), inline styles are acceptable. The rule of thumb: if a style would be static for most instances, it belongs in CSS.
-
-**Do this:**
-```tsx
-import styles from './styles.css';
-
-function Card({ highlighted }: Props) {
-  return (
-    <div className={highlighted ? styles.highlighted : styles.card}>
-      Content
-    </div>
-  );
-}
-```
-
-**Not this:**
-```tsx
-const cardStyle: CSSProperties = {  // ❌ Move to CSS
-  padding: '16px',
-  borderRadius: '8px',
-};
-
-function Card() {
-  return <div style={cardStyle}>Content</div>;
-}
-```
-
-### SVG Componentization
-
-For complex SVG visuals (rooms, backgrounds, detailed graphics), compose from individual SVG components rather than one monolithic SVG:
-
-```tsx
-// ✅ Composable SVG components
-function Room() {
-  return (
-    <div className={styles.container}>
-      <WallFloor />       {/* Base background */}
-      <Window side="left" />
-      <Fireplace />
-      <Furniture />
-      {children}
-    </div>
-  );
-}
-
-function Fireplace() {
-  return (
-    <svg viewBox="0 0 240 210" className={styles.fireplace}>
-      {/* Fireplace SVG content */}
-    </svg>
-  );
-}
-```
-
-Benefits:
-- Individual elements can be positioned via CSS
-- Easier to maintain and modify individual pieces
-- Better code organization and reusability
-- Animations and interactions can target specific elements
-
-### Component Structure
-```tsx
-// Imports
-import { useState } from 'react';
-
-// Types (if needed)
-interface Props {
-  title: string;
-}
-
-// Component
-function MyComponent({ title }: Props) {
-  const [state, setState] = useState(0);
-  
-  return <div>{title}</div>;
-}
-
-export default MyComponent;
-```
-
-### Testing Conventions
-- Place tests adjacent to source files (e.g., `index.tsx` → `index.test.tsx`)
-- Use descriptive test names: `it('renders the user name when logged in')`
-- Prefer `screen.getByRole()` over `getByTestId()`
-- Test behavior, not implementation details
-
-### Import Aliases
-The `@/` alias maps to `src/`:
-```tsx
-import { createSeededRandom } from '@/base/random';
-```
+See [docs/CODING_STYLE.md](docs/CODING_STYLE.md) for detailed coding conventions including:
+- File naming and component structure
+- Styling with CSS Modules
+- Testing conventions
+- Import aliases
 
 ## Workflow Guidelines
 
