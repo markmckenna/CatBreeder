@@ -3,7 +3,6 @@ import { copyFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
-import { createServer } from 'net';
 import cssModulesPlugin from 'esbuild-css-modules-plugin';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -19,24 +18,7 @@ function openBrowser(url) {
   exec(`${cmd} ${url}`);
 }
 
-/**
- * Check if a port is available
- */
-function isPortAvailable(port) {
-  return new Promise((resolve) => {
-    const server = createServer();
-    server.once('error', () => resolve(false));
-    server.once('listening', () => {
-      server.close();
-      resolve(true);
-    });
-    server.listen(port);
-  });
-}
-
-/**
- * Check if an existing dev server is responding on the port
- */
+/** Check if an existing dev server is responding on the port */
 async function isDevServerRunning(port) {
   try {
     const response = await fetch(`http://localhost:${port}/`);
@@ -46,13 +28,21 @@ async function isDevServerRunning(port) {
   }
 }
 
-/**
- * Find an available port starting from the default
- */
-async function findAvailablePort(startPort) {
-  for (let port = startPort; port < startPort + 100; port++) {
-    if (await isPortAvailable(port)) {
-      return port;
+/** Try to start esbuild serve, incrementing port on EADDRINUSE */
+async function serveWithFallback(ctx, servedir, startPort, maxAttempts = 100) {
+  for (let i = 0; i < maxAttempts; i++) {
+    const port = startPort + i;
+    try {
+      const result = await ctx.serve({ servedir, port });
+      if (port !== startPort) {
+        console.log(`Port ${startPort} in use, using port ${port}`);
+      }
+      return { ...result, port };
+    } catch (err) {
+      if (err.message?.includes('EADDRINUSE') || err.code === 'EADDRINUSE') {
+        continue;
+      }
+      throw err;
     }
   }
   throw new Error('No available ports found');
@@ -106,20 +96,12 @@ async function build() {
     }
 
     // Find available port (in case something else is using 3000)
-    const port = await findAvailablePort(DEFAULT_PORT);
-    if (port !== DEFAULT_PORT) {
-      console.log(`Port ${DEFAULT_PORT} in use, using port ${port}`);
-    }
-
     const ctx = await esbuild.context(buildOptions);
     await ctx.watch();
     console.log('Watching for changes...');
     
-    // Serve the dist directory
-    const { host } = await ctx.serve({
-      servedir: distDir,
-      port,
-    });
+    // Serve the dist directory, auto-incrementing port if needed
+    const { port } = await serveWithFallback(ctx, distDir, DEFAULT_PORT);
     const url = `http://localhost:${port}`;
     console.log(`Server running at ${url}`);
     
