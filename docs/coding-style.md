@@ -56,6 +56,21 @@ Use `function` declarations for:
 - Functions that need hoisting
 - Methods that use `this`
 
+### Prefer Direct Assignment Over Wrapping
+When assigning a function that doesn't depend on `this`, assign it directly rather than wrapping in an arrow function:
+
+```typescript
+// ✅ Direct assignment
+export const defaultRandom: RandomFn = Math.random;
+
+// ❌ Unnecessary wrapper
+export const defaultRandom: RandomFn = () => Math.random();
+```
+
+This only applies when the assigned function:
+- Doesn't use `this` (most static methods like `Math.random`)
+- Has a compatible signature (no extra arguments to discard)
+
 ### Minimize Nesting
 Reduce visual complexity by:
 - Omitting braces for single-line if/else bodies

@@ -44,7 +44,7 @@ export function createSeededRandom(seed: number): RandomFn {
  * Default random function using Math.random().
  * Use this when you don't need deterministic behavior.
  */
-export const defaultRandom: RandomFn = () => Math.random();
+export const defaultRandom: RandomFn = Math.random;
 
 /**
  * Pick a random item from an array.
