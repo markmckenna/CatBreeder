@@ -12,6 +12,7 @@ Guidelines for AI agents working with this repository.
 6. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
 7. **Update documentation**: Keep AGENTS.md, README.md, and [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) current
 8. **Use existing patterns**: Follow conventions in existing files
+9. **Minimize duplication**: Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers
 
 ## Supplementary Documentation
 

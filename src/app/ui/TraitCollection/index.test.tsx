@@ -2,23 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TraitCollection from './index.tsx';
 import { createTraitCollection, registerBredCat } from '../../cats/collection.ts';
-import type { Cat, CatPhenotype } from '../../cats/genetics.ts';
+import type { CatPhenotype } from '../../cats/genetics.ts';
+import { createMockCatFromPhenotype } from '@/test/helpers.ts';
 
 describe('TraitCollection', () => {
-  const mockCat = (phenotype: CatPhenotype, name: string, id: string): Cat => ({
-    id,
-    name,
-    genotype: {
-      size: phenotype.size === 'small' ? ['s', 's'] : ['S', 'S'],
-      tailLength: phenotype.tailLength === 'short' ? ['t', 't'] : ['T', 'T'],
-      earShape: phenotype.earShape === 'folded' ? ['f', 'f'] : ['E', 'E'],
-      tailColor: phenotype.tailColor === 'white' ? ['w', 'w'] : ['O', 'O'],
-    },
-    phenotype,
-    age: 0,
-    happiness: 100,
-  });
-
   it('renders the collection grid', () => {
     const collection = createTraitCollection();
     render(<TraitCollection collection={collection} />);
@@ -30,7 +17,7 @@ describe('TraitCollection', () => {
   it('shows collected traits', () => {
     let collection = createTraitCollection();
     const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
-    const cat = mockCat(phenotype, 'Snowball', 'cat_1');
+    const cat = createMockCatFromPhenotype(phenotype, 'Snowball', 'cat_1');
     
     const result = registerBredCat(collection, cat, 5);
     collection = result.collection;

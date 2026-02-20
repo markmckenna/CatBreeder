@@ -1,49 +1,10 @@
-/**
- * Tests for CatSprite component.
- */
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CatSprite from '.';
-import type { Cat } from '../../cats/genetics.ts';
+import { createMockCat, SMALL_FOLDED_CAT } from '@/test/helpers.ts';
 
-const mockCat: Cat = {
-  id: 'test-cat-1',
-  name: 'Whiskers',
-  genotype: {
-    size: ['S', 's'],
-    tailLength: ['T', 't'],
-    earShape: ['E', 'f'],
-    tailColor: ['O', 'w'],
-  },
-  phenotype: {
-    size: 'large',
-    tailLength: 'long',
-    earShape: 'pointed',
-    tailColor: 'orange',
-  },
-  age: 2,
-  happiness: 80,
-};
-
-const smallFoldedCat: Cat = {
-  id: 'test-cat-2',
-  name: 'Mittens',
-  genotype: {
-    size: ['s', 's'],
-    tailLength: ['t', 't'],
-    earShape: ['f', 'f'],
-    tailColor: ['w', 'w'],
-  },
-  phenotype: {
-    size: 'small',
-    tailLength: 'short',
-    earShape: 'folded',
-    tailColor: 'white',
-  },
-  age: 1,
-  happiness: 90,
-};
+const mockCat = createMockCat();
+const smallFoldedCat = SMALL_FOLDED_CAT;
 
 describe('CatSprite', () => {
   it('renders cat with name', () => {

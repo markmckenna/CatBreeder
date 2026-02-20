@@ -1,7 +1,3 @@
-/**
- * Tests for unified selection system.
- */
-
 import { describe, it, expect } from 'vitest';
 import {
   isCatSelection,
@@ -11,33 +7,12 @@ import {
   type CatSelection,
   type FurnitureSelection,
 } from './selection.ts';
-import type { Cat } from '../cats/genetics.ts';
-
-function createMockCat(id: string): Cat {
-  return {
-    id,
-    name: 'Test Cat',
-    age: 10,
-    happiness: 80,
-    genotype: {
-      size: ['S', 'S'],
-      tailLength: ['T', 'T'],
-      earShape: ['E', 'E'],
-      tailColor: ['O', 'O'],
-    },
-    phenotype: {
-      size: 'large',
-      tailLength: 'long',
-      earShape: 'pointed',
-      tailColor: 'orange',
-    },
-  };
-}
+import { createMockCat } from '@/test/helpers.ts';
 
 function createCatSelection(catId: string): CatSelection {
   return {
     type: 'cat',
-    cat: createMockCat(catId),
+    cat: createMockCat({ id: catId }),
   };
 }
 

@@ -1,34 +1,7 @@
-/**
- * Tests for CatListPanel component.
- */
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CatListPanel from '.';
-import type { Cat } from '../../cats/genetics.ts';
-
-// Test helper to create mock cats
-function createMockCat(overrides: Partial<Cat> = {}): Cat {
-  return {
-    id: 'test-cat-1',
-    name: 'Whiskers',
-    age: 10,
-    happiness: 80,
-    genotype: {
-      size: ['S', 'S'],
-      tailLength: ['T', 'T'],
-      earShape: ['E', 'E'],
-      tailColor: ['O', 'O'],
-    },
-    phenotype: {
-      size: 'large',
-      tailLength: 'long',
-      earShape: 'pointed',
-      tailColor: 'orange',
-    },
-    ...overrides,
-  };
-}
+import { createMockCat } from '@/test/helpers.ts';
 
 describe('CatListPanel', () => {
   it('renders panel with title', () => {

@@ -10,23 +10,10 @@ import {
   serializeCollection,
   deserializeCollection,
 } from './collection.ts';
-import type { Cat, CatPhenotype } from './genetics.ts';
+import type { CatPhenotype } from './genetics.ts';
+import { createMockCatFromPhenotype } from '@/test/helpers.ts';
 
 describe('trait collection', () => {
-  const mockCat = (phenotype: CatPhenotype, name = 'TestCat', id = 'test_1'): Cat => ({
-    id,
-    name,
-    genotype: {
-      size: phenotype.size === 'small' ? ['s', 's'] : ['S', 'S'],
-      tailLength: phenotype.tailLength === 'short' ? ['t', 't'] : ['T', 'T'],
-      earShape: phenotype.earShape === 'folded' ? ['f', 'f'] : ['E', 'E'],
-      tailColor: phenotype.tailColor === 'white' ? ['w', 'w'] : ['O', 'O'],
-    },
-    phenotype,
-    age: 0,
-    happiness: 100,
-  });
-
   describe('getPhenotypeKey', () => {
     it('creates unique key for phenotype', () => {
       const phenotype: CatPhenotype = {
@@ -86,7 +73,7 @@ describe('trait collection', () => {
     it('returns true after trait is registered', () => {
       let collection = createTraitCollection();
       const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
-      const cat = mockCat(phenotype);
+      const cat = createMockCatFromPhenotype(phenotype);
       
       const result = registerBredCat(collection, cat, 1);
       collection = result.collection;
@@ -99,7 +86,7 @@ describe('trait collection', () => {
     it('registers new trait and returns updated=true', () => {
       const collection = createTraitCollection();
       const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
-      const cat = mockCat(phenotype, 'FirstCat', 'cat_1');
+      const cat = createMockCatFromPhenotype(phenotype, 'FirstCat', 'cat_1');
       
       const result = registerBredCat(collection, cat, 5);
       
@@ -111,8 +98,8 @@ describe('trait collection', () => {
       let collection = createTraitCollection();
       const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
       
-      const firstCat = mockCat(phenotype, 'FirstCat', 'cat_1');
-      const secondCat = mockCat(phenotype, 'SecondCat', 'cat_2');
+      const firstCat = createMockCatFromPhenotype(phenotype, 'FirstCat', 'cat_1');
+      const secondCat = createMockCatFromPhenotype(phenotype, 'SecondCat', 'cat_2');
       
       const result1 = registerBredCat(collection, firstCat, 5);
       collection = result1.collection;
@@ -129,7 +116,7 @@ describe('trait collection', () => {
     it('records cat info correctly', () => {
       const collection = createTraitCollection();
       const phenotype: CatPhenotype = { size: 'large', tailLength: 'long', earShape: 'pointed', tailColor: 'orange' };
-      const cat = mockCat(phenotype, 'BigOrangeCat', 'cat_42');
+      const cat = createMockCatFromPhenotype(phenotype, 'BigOrangeCat', 'cat_42');
       
       const result = registerBredCat(collection, cat, 7);
       const info = getCollectedTraitInfo(result.collection, phenotype);
@@ -158,7 +145,7 @@ describe('trait collection', () => {
       
       // Add 4 traits
       for (let i = 0; i < 4; i++) {
-        const cat = mockCat(combinations[i], `Cat${i}`, `cat_${i}`);
+        const cat = createMockCatFromPhenotype(combinations[i], `Cat${i}`, `cat_${i}`);
         const result = registerBredCat(collection, cat, i);
         collection = result.collection;
       }
@@ -173,7 +160,7 @@ describe('trait collection', () => {
     it('round-trips correctly', () => {
       let collection = createTraitCollection();
       const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
-      const cat = mockCat(phenotype, 'TestCat', 'cat_1');
+      const cat = createMockCatFromPhenotype(phenotype, 'TestCat', 'cat_1');
       
       const result = registerBredCat(collection, cat, 5);
       collection = result.collection;
