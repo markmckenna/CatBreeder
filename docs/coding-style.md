@@ -109,6 +109,28 @@ Keep descriptive names when:
 - Multiple parameters of the same type need disambiguation
 - The meaning isn't clear from types alone
 
+### Write Naturally Generic Functions
+When a utility function's logic doesn't depend on a specific type, write it generically:
+
+```typescript
+// ✅ Generic - works with any array type
+export const pickRandom = <T>(items: T[], rng = defaultRandom): T =>
+  items[Math.floor(rng() * items.length)];
+
+// ✅ Generic - works with any two values
+export const coinFlip = <T>(a: T, b: T, rng = defaultRandom): T =>
+  rng() < 0.5 ? a : b;
+
+// ❌ Unnecessarily specific
+export const pickRandomString = (items: string[], rng = defaultRandom): string =>
+  items[Math.floor(rng() * items.length)];
+```
+
+This applies when:
+- The function operates on values without using type-specific methods
+- The same logic would work for different types
+- Type parameters can be inferred from usage
+
 ### Prefer Direct Assignment Over Wrapping
 When assigning a function that doesn't depend on `this`, assign it directly rather than wrapping in an arrow function:
 
