@@ -1,4 +1,3 @@
-
 /**
  * Visual System Design (Agent-Oriented Reference)
  *
