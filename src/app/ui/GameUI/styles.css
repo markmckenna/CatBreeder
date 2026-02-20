@@ -314,6 +314,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 4; /* Above all furniture and overlays */
 }
 
 .catPosition {
@@ -321,6 +322,7 @@
   transform: translate(-50%, -50%);
   pointer-events: auto;
   transition: left 0.5s ease-out, top 0.5s ease-out;
+  z-index: 4; /* Ensure cats are above all furniture */
 }
 
 /* Mode hints */
