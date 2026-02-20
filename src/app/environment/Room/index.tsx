@@ -353,31 +353,69 @@ function CatTreeItem({ x, index, selected, onClick, onMouseEnter, onMouseLeave }
   // Hitbox: Use pointer-events on visible SVG shapes, not the bounding box, so cats on top don't block selection.
 
   return (
-    <svg 
+    <svg
       viewBox="0 0 90 210"
       className={`${styles.furnitureCatTree} ${selected ? styles.furnitureSelected : ''}`}
-      style={{ 
+      style={{
         left: `${x}%`,
         zIndex: 2, // Placeable furniture layer
+        pointerEvents: 'none', // Only visible shapes are interactive
       }}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       data-testid="furniture-cat-tree"
     >
       {/* Main post */}
-      <rect x="37" y="0" width="16" height="205" fill={mainColor} stroke="#2a2520" strokeWidth="1" />
+      <rect x="37" y="0" width="16" height="205" fill={mainColor} stroke="#2a2520" strokeWidth="1"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
       {/* Top platform (highest cat) */}
-      <ellipse cx="45" cy="25" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
-      <ellipse cx="45" cy="22" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
+      <ellipse cx="45" cy="25" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+      <ellipse cx="45" cy="22" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
       {/* Middle platform */}
-      <ellipse cx="45" cy="90" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
-      <ellipse cx="45" cy="87" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
+      <ellipse cx="45" cy="90" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+      <ellipse cx="45" cy="87" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
       {/* Bottom platform (lowest cat) */}
-      <ellipse cx="45" cy="155" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
-      <ellipse cx="45" cy="152" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
+      <ellipse cx="45" cy="155" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+      <ellipse cx="45" cy="152" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
       {/* Base */}
-      <ellipse cx="45" cy="202" rx="40" ry="8" fill={mainColor} stroke="#2a2520" strokeWidth="1" />
+      <ellipse cx="45" cy="202" rx="40" ry="8" fill={mainColor} stroke="#2a2520" strokeWidth="1"
+        style={{ pointerEvents: 'visiblePainted', cursor: 'pointer' }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
     </svg>
   );
 }
