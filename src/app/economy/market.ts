@@ -155,13 +155,6 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
 }
 
 /**
- * Format currency for display
- */
-export function formatMoney(amount: number): string {
-  return `$${amount.toLocaleString()}`;
-}
-
-/**
  * Market premium when buying cats (20%)
  */
 export const MARKET_BUY_PREMIUM = 0.2;

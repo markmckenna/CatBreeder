@@ -3,7 +3,7 @@
  */
 
 import type { MarketCat } from '../../economy/market.ts';
-import { formatMoney } from '../../economy/market.ts';
+import { formatMoney } from '../format.ts';
 import CatSprite from '../CatSprite';
 import styles from './styles.css';
 

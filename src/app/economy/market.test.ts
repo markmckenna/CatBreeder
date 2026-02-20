@@ -5,7 +5,6 @@ import {
   calculatePurchasePrice,
   getTraitMultiplier,
   getValueBreakdown,
-  formatMoney,
   generateMarketInventory,
   DEFAULT_TRAIT_VALUES,
   MARKET_BUY_PREMIUM,
@@ -241,17 +240,6 @@ describe('market', () => {
       const breakdown = getValueBreakdown(adult, market);
       
       expect(breakdown.find(b => b.trait === 'kitten')).toBeUndefined();
-    });
-  });
-
-  describe('formatMoney', () => {
-    it('formats with dollar sign', () => {
-      expect(formatMoney(100)).toBe('$100');
-    });
-
-    it('adds thousand separators', () => {
-      expect(formatMoney(1000)).toBe('$1,000');
-      expect(formatMoney(1000000)).toBe('$1,000,000');
     });
   });
 

@@ -4,7 +4,7 @@
  */
 
 import { SHOP_ITEMS, FurnitureItemType, OwnedFurniture, calculateCapacity } from '../../environment/furniture.ts';
-import { formatMoney } from '../../economy/market.ts';
+import { formatMoney } from '../format.ts';
 
 interface ShopPanelProps {
   furniture: OwnedFurniture;

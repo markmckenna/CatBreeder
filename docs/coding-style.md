@@ -132,6 +132,22 @@ src/app/
     └── ...
 ```
 
+### Position Helpers Near Their Consumers
+
+Utility functions should be placed close to the code that uses them:
+- UI formatting functions (e.g., `formatMoney`) belong in `src/app/ui/`
+- Domain helpers belong in their respective domain directories
+- Only truly generic utilities (no domain knowledge) belong in `src/base/`
+
+```
+src/app/
+├── ui/
+│   ├── format.ts          # UI formatting utilities
+│   └── MarketPanel/       # Uses format.ts
+└── base/
+    └── helpers.ts         # Generic utilities (capitalize, etc.)
+```
+
 ### UI/Game Logic Separation
 
 The codebase maintains a clean separation between rendering (UI) and non-rendered game logic:
