@@ -34,5 +34,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    // Minimize nesting: allow single-line if without braces
+    'curly': ['error', 'multi-line', 'consistent'],
+    'nonblock-statement-body-position': ['error', 'beside'],
   },
 };

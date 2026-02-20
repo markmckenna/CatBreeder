@@ -7,6 +7,32 @@ Code style and architectural conventions for the CatBreeder project. When making
 ### Minimize Duplication
 Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers.
 
+### Minimize Nesting
+Reduce visual complexity by:
+- Omitting braces for single-line if/else bodies
+- Keeping single-line bodies on the same line as the condition
+- Using ternaries for conditional assignments
+- Using early returns to avoid else blocks
+
+```typescript
+// ✅ Minimal nesting
+if (!cat) return null;
+const status = cat.age >= 4 ? 'adult' : 'kitten';
+
+// ❌ Excessive nesting
+if (cat) {
+  let status;
+  if (cat.age >= 4) {
+    status = 'adult';
+  } else {
+    status = 'kitten';
+  }
+  // ...
+} else {
+  return null;
+}
+```
+
 ### Order Conditions by Runtime Cost
 In if statements with multiple commutative conditions, order them by expected runtime (cheapest first):
 
