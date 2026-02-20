@@ -13,8 +13,8 @@ import {
   breedCats,
   createRandomCat,
   createRandomGenotype,
-  getRandomCatName,
-  getPhenotype,
+  randomCatName,
+  phenotypeFor,
   type Cat,
   type CatGenotype,
   type CatPhenotype,
@@ -28,7 +28,7 @@ function createCatWithGenotype(name: string, genotype: CatGenotype, id: string):
     id,
     name,
     genotype,
-    phenotype: getPhenotype(genotype),
+    phenotype: phenotypeFor(genotype),
     age: 100,
     happiness: 100,
   };
@@ -112,12 +112,12 @@ describe('deterministic breeding', () => {
       expect(genotype1).toEqual(genotype2);
     });
 
-    it('getRandomCatName is deterministic with seed', () => {
+    it('randomCatName is deterministic with seed', () => {
       const rng1 = createSeededRandom(777);
       const rng2 = createSeededRandom(777);
       
-      const name1 = getRandomCatName(rng1);
-      const name2 = getRandomCatName(rng2);
+      const name1 = randomCatName(rng1);
+      const name2 = randomCatName(rng2);
 
       expect(name1).toBe(name2);
     });
@@ -357,7 +357,7 @@ describe('breeding program snapshots', () => {
         const offspring = breedCats(
           cats[i],
           cats[i + 1],
-          getRandomCatName(rng),
+          randomCatName(rng),
           { random: rng, id: `g${gen}_c${i}` }
         );
         newCats.push(offspring);
@@ -368,7 +368,7 @@ describe('breeding program snapshots', () => {
         const offspring = breedCats(
           cats[0],
           cats[cats.length - 1],
-          getRandomCatName(rng),
+          randomCatName(rng),
           { random: rng, id: `g${gen}_mix` }
         );
         newCats.push(offspring);

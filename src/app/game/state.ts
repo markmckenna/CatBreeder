@@ -3,7 +3,7 @@
  */
 
 import type { Cat, RandomFn } from '../cats/genetics.ts';
-import { breedCats, createRandomCat, getRandomCatName } from '../cats/genetics.ts';
+import { breedCats, createRandomCat, randomCatName } from '../cats/genetics.ts';
 import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
 import { createMarketState, calculateCatValue, generateMarketInventory, FOOD_COST_PER_CAT } from '../economy/market.ts';
 import type { TraitCollection } from '../cats/collection.ts';
@@ -342,7 +342,7 @@ export function processTurn(
       const offspring = breedCats(
         parent1, 
         parent2, 
-        getRandomCatName(rng),
+        randomCatName(rng),
         rng ? { random: rng } : undefined
       );
       result.births.push(offspring);

@@ -1,67 +1,67 @@
 import { describe, it, expect } from 'vitest';
 import {
-  getSizePhenotype,
-  getTailLengthPhenotype,
-  getEarShapePhenotype,
-  getTailColorPhenotype,
-  getPhenotype,
+  sizePhenotypeFor,
+  tailLengthPhenotypeFor,
+  earShapePhenotypeFor,
+  tailColorPhenotypeFor,
+  phenotypeFor,
   breedCats,
   createRandomCat,
-  getRandomCatName,
+  randomCatName,
 } from './genetics.ts';
 import type { Cat, CatGenotype } from './genetics.ts';
 
 describe('genetics', () => {
   describe('phenotype determination', () => {
-    describe('getSizePhenotype', () => {
+    describe('sizePhenotypeFor', () => {
       it('returns large when dominant allele present (SS)', () => {
-        expect(getSizePhenotype(['S', 'S'])).toBe('large');
+        expect(sizePhenotypeFor(['S', 'S'])).toBe('large');
       });
 
       it('returns large when heterozygous (Ss)', () => {
-        expect(getSizePhenotype(['S', 's'])).toBe('large');
-        expect(getSizePhenotype(['s', 'S'])).toBe('large');
+        expect(sizePhenotypeFor(['S', 's'])).toBe('large');
+        expect(sizePhenotypeFor(['s', 'S'])).toBe('large');
       });
 
       it('returns small when homozygous recessive (ss)', () => {
-        expect(getSizePhenotype(['s', 's'])).toBe('small');
+        expect(sizePhenotypeFor(['s', 's'])).toBe('small');
       });
     });
 
-    describe('getTailLengthPhenotype', () => {
+    describe('tailLengthPhenotypeFor', () => {
       it('returns long when dominant allele present', () => {
-        expect(getTailLengthPhenotype(['T', 'T'])).toBe('long');
-        expect(getTailLengthPhenotype(['T', 't'])).toBe('long');
+        expect(tailLengthPhenotypeFor(['T', 'T'])).toBe('long');
+        expect(tailLengthPhenotypeFor(['T', 't'])).toBe('long');
       });
 
       it('returns short when homozygous recessive', () => {
-        expect(getTailLengthPhenotype(['t', 't'])).toBe('short');
+        expect(tailLengthPhenotypeFor(['t', 't'])).toBe('short');
       });
     });
 
-    describe('getEarShapePhenotype', () => {
+    describe('earShapePhenotypeFor', () => {
       it('returns pointed when dominant allele present', () => {
-        expect(getEarShapePhenotype(['E', 'E'])).toBe('pointed');
-        expect(getEarShapePhenotype(['E', 'f'])).toBe('pointed');
+        expect(earShapePhenotypeFor(['E', 'E'])).toBe('pointed');
+        expect(earShapePhenotypeFor(['E', 'f'])).toBe('pointed');
       });
 
       it('returns folded when homozygous recessive', () => {
-        expect(getEarShapePhenotype(['f', 'f'])).toBe('folded');
+        expect(earShapePhenotypeFor(['f', 'f'])).toBe('folded');
       });
     });
 
-    describe('getTailColorPhenotype', () => {
+    describe('tailColorPhenotypeFor', () => {
       it('returns orange when dominant allele present', () => {
-        expect(getTailColorPhenotype(['O', 'O'])).toBe('orange');
-        expect(getTailColorPhenotype(['O', 'w'])).toBe('orange');
+        expect(tailColorPhenotypeFor(['O', 'O'])).toBe('orange');
+        expect(tailColorPhenotypeFor(['O', 'w'])).toBe('orange');
       });
 
       it('returns white when homozygous recessive', () => {
-        expect(getTailColorPhenotype(['w', 'w'])).toBe('white');
+        expect(tailColorPhenotypeFor(['w', 'w'])).toBe('white');
       });
     });
 
-    describe('getPhenotype', () => {
+    describe('phenotypeFor', () => {
       it('calculates full phenotype from genotype', () => {
         const genotype: CatGenotype = {
           size: ['S', 's'],
@@ -70,7 +70,7 @@ describe('genetics', () => {
           tailColor: ['O', 'w'],
         };
 
-        expect(getPhenotype(genotype)).toEqual({
+        expect(phenotypeFor(genotype)).toEqual({
           size: 'large',
           tailLength: 'short',
           earShape: 'folded',
@@ -166,17 +166,17 @@ describe('genetics', () => {
 
     it('creates a cat with matching phenotype', () => {
       const cat = createRandomCat('TestCat');
-      expect(getPhenotype(cat.genotype)).toEqual(cat.phenotype);
+      expect(phenotypeFor(cat.genotype)).toEqual(cat.phenotype);
     });
   });
 
-  describe('getRandomCatName', () => {
+  describe('randomCatName', () => {
     it('returns a string', () => {
-      expect(typeof getRandomCatName()).toBe('string');
+      expect(typeof randomCatName()).toBe('string');
     });
 
     it('returns non-empty name', () => {
-      expect(getRandomCatName().length).toBeGreaterThan(0);
+      expect(randomCatName().length).toBeGreaterThan(0);
     });
   });
 });

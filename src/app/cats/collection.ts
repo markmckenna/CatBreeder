@@ -32,7 +32,7 @@ export interface TraitCollection {
 }
 
 /** Generate a unique key for a phenotype combination */
-export const getPhenotypeKey = (phenotype: CatPhenotype): TraitKey =>
+export const phenotypeKeyFor = (phenotype: CatPhenotype): TraitKey =>
   `${phenotype.size}-${phenotype.tailLength}-${phenotype.earShape}-${phenotype.tailColor}`;
 
 /**
@@ -64,13 +64,13 @@ export const createTraitCollection = (): TraitCollection => ({ collected: new Ma
 
 /** Check if a trait combination has been collected */
 export const isTraitCollected = (collection: TraitCollection, phenotype: CatPhenotype): boolean =>
-  collection.collected.has(getPhenotypeKey(phenotype));
+  collection.collected.has(phenotypeKeyFor(phenotype));
 
 /** Get the cat that first collected a trait, if any */
 export const getCollectedTraitInfo = (
   collection: TraitCollection, 
   phenotype: CatPhenotype
-): CollectedTrait | undefined => collection.collected.get(getPhenotypeKey(phenotype));
+): CollectedTrait | undefined => collection.collected.get(phenotypeKeyFor(phenotype));
 
 /**
  * Register a newly bred cat's traits in the collection.
@@ -83,7 +83,7 @@ export function registerBredCat(
   cat: Cat,
   day: number
 ): { updated: boolean; collection: TraitCollection } {
-  const key = getPhenotypeKey(cat.phenotype);
+  const key = phenotypeKeyFor(cat.phenotype);
   
   if (collection.collected.has(key)) return { updated: false, collection };
 

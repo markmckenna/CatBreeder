@@ -101,27 +101,27 @@ function breedGenotype<T>(parent1: [T, T], parent2: [T, T], random: RandomFn = d
 }
 
 /** Determine size phenotype from genotype. Large (S) is dominant over Small (s) */
-export const getSizePhenotype = (genotype: SizeGenotype): SizePhenotype =>
+export const sizePhenotypeFor = (genotype: SizeGenotype): SizePhenotype =>
   genotype.includes('S') ? 'large' : 'small';
 
 /** Determine tail length phenotype from genotype. Long (T) is dominant over Short (t) */
-export const getTailLengthPhenotype = (genotype: TailLengthGenotype): TailLengthPhenotype =>
+export const tailLengthPhenotypeFor = (genotype: TailLengthGenotype): TailLengthPhenotype =>
   genotype.includes('T') ? 'long' : 'short';
 
 /** Determine ear shape phenotype from genotype. Pointed (E) is dominant over Folded (f) */
-export const getEarShapePhenotype = (genotype: EarShapeGenotype): EarShapePhenotype =>
+export const earShapePhenotypeFor = (genotype: EarShapeGenotype): EarShapePhenotype =>
   genotype.includes('E') ? 'pointed' : 'folded';
 
 /** Determine tail color phenotype from genotype. Orange (O) is dominant over White (w) */
-export const getTailColorPhenotype = (genotype: TailColorGenotype): TailColorPhenotype =>
+export const tailColorPhenotypeFor = (genotype: TailColorGenotype): TailColorPhenotype =>
   genotype.includes('O') ? 'orange' : 'white';
 
 /** Calculate full phenotype from genotype */
-export const getPhenotype = (genotype: CatGenotype): CatPhenotype => ({
-  size: getSizePhenotype(genotype.size),
-  tailLength: getTailLengthPhenotype(genotype.tailLength),
-  earShape: getEarShapePhenotype(genotype.earShape),
-  tailColor: getTailColorPhenotype(genotype.tailColor),
+export const phenotypeFor = (genotype: CatGenotype): CatPhenotype => ({
+  size: sizePhenotypeFor(genotype.size),
+  tailLength: tailLengthPhenotypeFor(genotype.tailLength),
+  earShape: earShapePhenotypeFor(genotype.earShape),
+  tailColor: tailColorPhenotypeFor(genotype.tailColor),
 });
 
 /**
@@ -146,7 +146,7 @@ export function breedCats(parent1: Cat, parent2: Cat, name: string, options: Bre
     id: options.id ?? generateCatId(random),
     name,
     genotype,
-    phenotype: getPhenotype(genotype),
+    phenotype: phenotypeFor(genotype),
     age: 0,
     happiness: 100,
     favourite: false,
@@ -199,7 +199,7 @@ export function createRandomCat(name: string, options: CreateCatOptions = {}): C
     id: options.id ?? generateCatId(random),
     name,
     genotype,
-    phenotype: getPhenotype(genotype),
+    phenotype: phenotypeFor(genotype),
     age: options.age ?? randomInt(30, 394, random), // 1 month to ~1 year
     happiness: options.happiness ?? randomInt(70, 100, random),
     favourite: false,
@@ -217,7 +217,7 @@ const CAT_NAMES = [
 ];
 
 /** Get a random cat name from the predefined list */
-export const getRandomCatName = (random: RandomFn = defaultRandom): string =>
+export const randomCatName = (random: RandomFn = defaultRandom): string =>
   pickRandom(CAT_NAMES, random);
 
 // Re-export RandomFn type for consumers

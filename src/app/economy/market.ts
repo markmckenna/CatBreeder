@@ -6,7 +6,7 @@
  */
 
 import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/genetics.ts';
-import { createRandomCat, getRandomCatName } from '../cats/genetics.ts';
+import { createRandomCat, randomCatName } from '../cats/genetics.ts';
 import { defaultRandom, normalRandom } from '@/base/random.ts';
 
 /**
@@ -193,7 +193,7 @@ export function generateMarketInventory(
   const inventory: MarketCat[] = [];
   
   for (let i = 0; i < MARKET_INVENTORY_SIZE; i++) {
-    const name = getRandomCatName(rng);
+    const name = randomCatName(rng);
     const cat = createRandomCat(name, { random: rng });
     const price = calculatePurchasePrice(cat, market);
     inventory.push({ cat, price });

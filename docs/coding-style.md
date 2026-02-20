@@ -56,6 +56,29 @@ Use `function` declarations for:
 - Functions that need hoisting
 - Methods that use `this`
 
+### Fluent Naming Convention
+Prefer fluent naming over getter-style naming for transformation functions:
+
+```typescript
+// ✅ Fluent style - reads naturally as "phenotype for genotype"
+export const phenotypeFor = (genotype: Genotype): Phenotype => ...
+export const keyFor = (item: Item): string => ...
+
+// ❌ Getter style - reads awkwardly as "get phenotype, genotype"  
+export const getPhenotype = (genotype: Genotype): Phenotype => ...
+export const getKey = (item: Item): string => ...
+```
+
+For generator functions (that create rather than transform), drop the `get` prefix:
+
+```typescript
+// ✅ Generator without get prefix
+export const randomCatName = (rng?: RandomFn): string => ...
+
+// ❌ Getter style for generator
+export const getRandomCatName = (rng?: RandomFn): string => ...
+```
+
 ### Prefer Direct Assignment Over Wrapping
 When assigning a function that doesn't depend on `this`, assign it directly rather than wrapping in an arrow function:
 

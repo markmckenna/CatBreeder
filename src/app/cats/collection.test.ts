@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  getPhenotypeKey,
+  phenotypeKeyFor,
   getAllPhenotypeCombinations,
   createTraitCollection,
   isTraitCollected,
@@ -14,7 +14,7 @@ import type { CatPhenotype } from './genetics.ts';
 import { createMockCatFromPhenotype } from '@/test/helpers.ts';
 
 describe('trait collection', () => {
-  describe('getPhenotypeKey', () => {
+  describe('phenotypeKeyFor', () => {
     it('creates unique key for phenotype', () => {
       const phenotype: CatPhenotype = {
         size: 'small',
@@ -22,14 +22,14 @@ describe('trait collection', () => {
         earShape: 'folded',
         tailColor: 'white',
       };
-      expect(getPhenotypeKey(phenotype)).toBe('small-short-folded-white');
+      expect(phenotypeKeyFor(phenotype)).toBe('small-short-folded-white');
     });
 
     it('creates different keys for different phenotypes', () => {
       const p1: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
       const p2: CatPhenotype = { size: 'large', tailLength: 'long', earShape: 'pointed', tailColor: 'orange' };
       
-      expect(getPhenotypeKey(p1)).not.toBe(getPhenotypeKey(p2));
+      expect(phenotypeKeyFor(p1)).not.toBe(phenotypeKeyFor(p2));
     });
   });
 
@@ -41,14 +41,14 @@ describe('trait collection', () => {
 
     it('returns all unique combinations', () => {
       const combinations = getAllPhenotypeCombinations();
-      const keys = combinations.map(getPhenotypeKey);
+      const keys = combinations.map(phenotypeKeyFor);
       const uniqueKeys = new Set(keys);
       expect(uniqueKeys.size).toBe(16);
     });
 
     it('includes both extremes', () => {
       const combinations = getAllPhenotypeCombinations();
-      const keys = combinations.map(getPhenotypeKey);
+      const keys = combinations.map(phenotypeKeyFor);
       
       expect(keys).toContain('small-short-folded-white');  // All recessive
       expect(keys).toContain('large-long-pointed-orange'); // All dominant

@@ -11,7 +11,7 @@ import type { CatPhenotype } from '../../cats/genetics.ts';
 import type { TraitCollection as TraitCollectionType } from '../../cats/collection.ts';
 import {
   getAllPhenotypeCombinations,
-  getPhenotypeKey,
+  phenotypeKeyFor,
   getCollectedTraitInfo,
   getCollectionProgress,
 } from '../../cats/collection.ts';
@@ -44,10 +44,10 @@ function TraitCollection({ collection, onClose }: TraitCollectionProps) {
         
         <div className={styles.grid}>
           {combinations.map((phenotype) => {
-            const key = getPhenotypeKey(phenotype);
+            const key = phenotypeKeyFor(phenotype);
             const info = getCollectedTraitInfo(collection, phenotype);
             const isCollected = !!info;
-            const isHovered = hoveredPhenotype && getPhenotypeKey(hoveredPhenotype) === key;
+            const isHovered = hoveredPhenotype && phenotypeKeyFor(hoveredPhenotype) === key;
             
             return (
               <div
