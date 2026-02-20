@@ -4,6 +4,21 @@ Code style and architectural conventions for the CatBreeder project. When making
 
 ## General Principles
 
+### Eliminate Unused Code
+Proactively remove unused functions, variables, imports, and dead code paths. Don't keep utility functions "just in case" - they can be recreated if needed.
+
+```typescript
+// ❌ Don't keep unused utilities around
+export const formatDate = (date: Date) => ...  // Never called anywhere
+
+// ✅ Delete it. If needed later, recreate it then
+```
+
+Check for unused code when:
+- Refactoring functionality
+- Removing features
+- Reviewing existing utilities
+
 ### Minimize Duplication
 Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers.
 
@@ -285,10 +300,9 @@ Utility functions should be placed close to the code that uses them:
 ```
 src/app/
 ├── ui/
-│   ├── format.ts          # UI formatting utilities
-│   └── MarketPanel/       # Uses format.ts
+│   └── format.ts          # UI formatting utilities
 └── base/
-    └── helpers.ts         # Generic utilities (capitalize, etc.)
+    └── random.ts          # Generic utilities (seeded RNG, etc.)
 ```
 
 ### UI/Game Logic Separation
