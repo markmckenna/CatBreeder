@@ -38,7 +38,8 @@
 /* Fireplace - centered */
 .fireplace {
   composes: svgObject;
-  top: 33%;
+  /* Move fireplace base to sit at 70% (floor line), SVG base is at y=210, viewBox height=210, so top = 70% - 35% = 35% */
+  top: 35%;
   left: 35%;
   width: 30%;
   height: 35%;
