@@ -6,19 +6,21 @@ Guidelines for AI agents working with this repository.
 
 1. **Run checks after changes**: `npm run typecheck && npm run test:run`
 2. **Commit after each change**: Test and commit every completed task (features, fixes, refactors) before moving on
-3. **Follow coding style**: See [docs/CODING_STYLE.md](docs/CODING_STYLE.md) for conventions
-4. **Visual positioning**: See [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) for room coordinates
-5. **CSS patterns**: See [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) for styling conventions
+3. **Follow coding style**: See [docs/coding-style.md](docs/coding-style.md) for conventions
+4. **Visual positioning**: See [docs/visual-system.md](docs/visual-system.md) for room coordinates
+5. **CSS patterns**: See [docs/css-patterns.md](docs/css-patterns.md) for styling conventions
 6. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
 7. **Update documentation**: Keep AGENTS.md, README.md, and docs/ current
-8. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/CODING_STYLE.md](docs/CODING_STYLE.md)
+8. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/coding-style.md](docs/coding-style.md)
 
 ## Supplementary Documentation
 
 | Document | Purpose |
-|----------|---------|| [docs/CODING_STYLE.md](docs/CODING_STYLE.md) | Code style, architecture, naming conventions || [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) | Room coordinates, positioning, pointer-events |
-| [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) | CSS Modules, z-index, transitions |
-| [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) | Game mechanics, formulas, balance values |
+|----------|---------|
+| [docs/coding-style.md](docs/coding-style.md) | Code style, architecture, naming conventions |
+| [docs/visual-system.md](docs/visual-system.md) | Room coordinates, positioning, pointer-events |
+| [docs/css-patterns.md](docs/css-patterns.md) | CSS Modules, z-index, transitions |
+| [docs/game-design.md](docs/game-design.md) | Game mechanics, formulas, balance values |
 
 **Read these when working on related areas** - they contain detailed patterns that prevent common mistakes.
 
@@ -63,7 +65,7 @@ CatBreeder is an idle/incremental game about cat breeding, built with React and 
 └── dist/                # Build output (gitignored)
 ```
 
-See [docs/CODING_STYLE.md](docs/CODING_STYLE.md) for feature-based organization, UI/game logic separation, and dependency direction rules.
+See [docs/coding-style.md](docs/coding-style.md) for feature-based organization, UI/game logic separation, and dependency direction rules.
 
 ## Commands
 
@@ -95,7 +97,7 @@ npm run typecheck    # Run TypeScript type checking
 
 ## Coding Conventions
 
-See [docs/CODING_STYLE.md](docs/CODING_STYLE.md) for detailed coding conventions including:
+See [docs/coding-style.md](docs/coding-style.md) for detailed coding conventions including:
 - File naming and component structure
 - Styling with CSS Modules
 - Testing conventions
@@ -213,7 +215,7 @@ Edit `config/esbuild.config.js`. Key options:
 3. **Keep dependencies minimal** - Only add what's necessary
 4. **Write tests for new code** - Maintain test coverage
 5. **Use existing patterns** - Follow conventions in existing files
-6. **Update documentation** - Keep AGENTS.md, README.md, and GAME_DESIGN.md current (see below)
+6. **Update documentation** - Keep AGENTS.md, README.md, and game-design.md current (see below)
 7. **Commit after each feature** - When implementing multiple features, test and commit each one separately before moving to the next. This keeps changes atomic and makes it easier to review or revert individual features.
 8. **Bump save version on compatibility changes** - When changing saved game state structure (adding/removing fields, changing types), increment `SAVE_VERSION` in `src/app/game/save.ts` to invalidate old saves.
 
@@ -223,14 +225,14 @@ Edit `config/esbuild.config.js`. Key options:
 
 ### Game Design Documentation
 
-**All gameplay-related features MUST be documented in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md).**
+**All gameplay-related features MUST be documented in [docs/game-design.md](docs/game-design.md).**
 
 This document serves as the authoritative reference for how game mechanics work. Maintainers should be able to read through it and understand:
 - What each system does
 - The formulas and rules that govern behavior
 - How systems interact with each other
 
-### When to Update docs/GAME_DESIGN.md
+### When to Update docs/game-design.md
 - Adding new game mechanics or systems
 - Modifying existing gameplay behavior
 - Changing formulas, rates, or balance values
@@ -257,4 +259,4 @@ After making structural changes, verify:
 - [ ] File paths in examples are correct
 - [ ] Configuration file locations are current
 - [ ] Any new patterns are documented
-- [ ] Game mechanics are documented in GAME_DESIGN.md
+- [ ] Game mechanics are documented in game-design.md

@@ -120,7 +120,7 @@ The content overlay (`div.content`) covers the entire room. Without proper point
 1. Parent container has `pointer-events: none`
 2. Element itself has `pointer-events: auto`
 3. Element has `cursor: pointer`
-4. Element has appropriate `z-index` (see CSS_PATTERNS.md)
+4. Element has appropriate `z-index` (see css-patterns.md)
 
 ## SVG Object Sizing
 
