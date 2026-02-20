@@ -62,15 +62,15 @@ const BED_SPOT_DEFS: Omit<RoomSpot, 'type'>[] = [
 const CAT_TREE_SPOT_DEFS: Omit<RoomSpot, 'type'>[][] = [
   // First cat tree - left side
   [
-    { id: 'catTree-1-top', x: 12, y: 27 },   // 19% + (22/210)*50% + 3% = 27.2%
-    { id: 'catTree-1-mid', x: 12, y: 43 },   // 19% + (87/210)*50% + 3% = 42.7%
-    { id: 'catTree-1-bot', x: 12, y: 58 },   // 19% + (152/210)*50% + 3% = 58.2%
+    { id: 'catTree-1-top', x: 12, y: 25 },   // Adjusted from 27
+    { id: 'catTree-1-mid', x: 12, y: 40 },   // Adjusted from 43
+    { id: 'catTree-1-bot', x: 12, y: 55 },   // Adjusted from 58
   ],
   // Second cat tree - right side
   [
-    { id: 'catTree-2-top', x: 88, y: 27 },
-    { id: 'catTree-2-mid', x: 88, y: 43 },
-    { id: 'catTree-2-bot', x: 88, y: 58 },
+    { id: 'catTree-2-top', x: 88, y: 25 },
+    { id: 'catTree-2-mid', x: 88, y: 40 },
+    { id: 'catTree-2-bot', x: 88, y: 55 },
   ],
 ];
 
