@@ -4,7 +4,7 @@
  */
 
 // Purchasable furniture item types
-export type FurnitureItemType = 'toy' | 'bed';
+export type FurnitureItemType = 'toy' | 'bed' | 'catTree';
 
 /**
  * Definition of a furniture item available in the shop
@@ -32,6 +32,12 @@ export const SHOP_ITEMS: Record<FurnitureItemType, FurnitureItem> = {
     price: 100,
     capacityBonus: 1,
   },
+  catTree: {
+    type: 'catTree',
+    name: 'Cat Tree',
+    price: 200,
+    capacityBonus: 3,
+  },
 };
 
 /**
@@ -40,6 +46,7 @@ export const SHOP_ITEMS: Record<FurnitureItemType, FurnitureItem> = {
 export interface OwnedFurniture {
   toys: number;
   beds: number;
+  catTrees: number;
 }
 
 /**
@@ -49,6 +56,7 @@ export function createInitialFurniture(): OwnedFurniture {
   return {
     toys: 0,
     beds: 0,
+    catTrees: 0,
   };
 }
 
@@ -61,14 +69,14 @@ export const BASE_CAPACITY = 2;
  * Calculate total cat carrying capacity based on furniture
  */
 export function calculateCapacity(furniture: OwnedFurniture): number {
-  return BASE_CAPACITY + furniture.toys + furniture.beds;
+  return BASE_CAPACITY + furniture.toys + furniture.beds + ((furniture.catTrees ?? 0) * 3);
 }
 
 /**
  * Get total furniture count
  */
 export function getTotalFurniture(furniture: OwnedFurniture): number {
-  return furniture.toys + furniture.beds;
+  return furniture.toys + furniture.beds + (furniture.catTrees ?? 0);
 }
 
 /**
@@ -99,7 +107,7 @@ export function getHappinessStatus(catCount: number, furniture: OwnedFurniture):
 } {
   const capacity = calculateCapacity(furniture);
   const overcrowded = catCount > capacity;
-  const hasComfortItems = furniture.toys > 0 || furniture.beds > 0;
+  const hasComfortItems = furniture.toys > 0 || furniture.beds > 0 || furniture.catTrees > 0;
   
   if (overcrowded) {
     return { 

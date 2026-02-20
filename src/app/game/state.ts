@@ -59,8 +59,10 @@ export enum ActionType {
   REMOVE_BREEDING_PAIR = 'REMOVE_BREEDING_PAIR',
   LIST_FOR_SALE = 'LIST_FOR_SALE',
   UNLIST_FROM_SALE = 'UNLIST_FROM_SALE',
+  TOGGLE_FAVOURITE = 'TOGGLE_FAVOURITE',
   BUY_CAT = 'BUY_CAT',
   BUY_FURNITURE = 'BUY_FURNITURE',
+  SELL_FURNITURE = 'SELL_FURNITURE',
   END_TURN = 'END_TURN',
 }
 
@@ -69,8 +71,10 @@ export type GameAction =
   | { type: ActionType.REMOVE_BREEDING_PAIR; parent1Id: string; parent2Id: string }
   | { type: ActionType.LIST_FOR_SALE; catId: string }
   | { type: ActionType.UNLIST_FROM_SALE; catId: string }
+  | { type: ActionType.TOGGLE_FAVOURITE; catId: string }
   | { type: ActionType.BUY_CAT; cat: Cat; price: number }
   | { type: ActionType.BUY_FURNITURE; itemType: FurnitureItemType }
+  | { type: ActionType.SELL_FURNITURE; itemType: FurnitureItemType }
   | { type: ActionType.END_TURN };
 
 /**
@@ -156,6 +160,8 @@ function listForSale(state: GameState, catId: string): GameState {
   if (state.catsForSale.includes(catId)) return state;
   const cat = state.cats.find(c => c.id === catId);
   if (!cat) return state;
+  // Cannot sell favourited cats
+  if (cat.favourite) return state;
 
   return {
     ...state,
@@ -167,6 +173,24 @@ function unlistFromSale(state: GameState, catId: string): GameState {
   return {
     ...state,
     catsForSale: state.catsForSale.filter(id => id !== catId),
+  };
+}
+
+function toggleFavourite(state: GameState, catId: string): GameState {
+  const cat = state.cats.find(c => c.id === catId);
+  if (!cat) return state;
+
+  // If cat is listed for sale and we're favouriting, remove from sale
+  const catsForSale = cat.favourite 
+    ? state.catsForSale 
+    : state.catsForSale.filter(id => id !== catId);
+
+  return {
+    ...state,
+    cats: state.cats.map(c => 
+      c.id === catId ? { ...c, favourite: !c.favourite } : c
+    ),
+    catsForSale,
   };
 }
 
@@ -203,6 +227,8 @@ function buyFurniture(state: GameState, itemType: FurnitureItemType): GameState 
     newFurniture.toys += 1;
   } else if (itemType === 'bed') {
     newFurniture.beds += 1;
+  } else if (itemType === 'catTree') {
+    newFurniture.catTrees += 1;
   }
 
   return {
@@ -213,6 +239,45 @@ function buyFurniture(state: GameState, itemType: FurnitureItemType): GameState 
       type: 'buy',
       catId: `furniture-${itemType}-${Date.now()}`,
       amount: item.price,
+      day: state.day,
+    }],
+  };
+}
+
+function sellFurniture(state: GameState, itemType: FurnitureItemType): GameState {
+  const item = SHOP_ITEMS[itemType];
+  if (!item) {
+    return state;
+  }
+
+  const newFurniture = { ...state.furniture };
+  let canSell = false;
+  
+  if (itemType === 'toy' && newFurniture.toys > 0) {
+    newFurniture.toys -= 1;
+    canSell = true;
+  } else if (itemType === 'bed' && newFurniture.beds > 0) {
+    newFurniture.beds -= 1;
+    canSell = true;
+  } else if (itemType === 'catTree' && newFurniture.catTrees > 0) {
+    newFurniture.catTrees -= 1;
+    canSell = true;
+  }
+
+  if (!canSell) {
+    return state;
+  }
+
+  const sellPrice = Math.floor(item.price * 0.5);
+
+  return {
+    ...state,
+    money: state.money + sellPrice,
+    furniture: newFurniture,
+    transactions: [...state.transactions, {
+      type: 'sell',
+      catId: `furniture-${itemType}-${Date.now()}`,
+      amount: sellPrice,
       day: state.day,
     }],
   };
@@ -237,11 +302,17 @@ export function applyAction(state: GameState, action: GameAction): GameState {
     case ActionType.UNLIST_FROM_SALE:
       return unlistFromSale(state, action.catId);
     
+    case ActionType.TOGGLE_FAVOURITE:
+      return toggleFavourite(state, action.catId);
+    
     case ActionType.BUY_CAT:
       return buyCat(state, action.cat, action.price);
     
     case ActionType.BUY_FURNITURE:
       return buyFurniture(state, action.itemType);
+    
+    case ActionType.SELL_FURNITURE:
+      return sellFurniture(state, action.itemType);
     
     case ActionType.END_TURN:
       // Turn processing is handled by processTurn
@@ -358,8 +429,8 @@ export function processTurn(
       change += 5;
     }
     
-    // Bed access: +8% happiness
-    if (spotType === 'bed') {
+    // Bed or cat tree access: +8% happiness
+    if (spotType === 'bed' || spotType === 'catTree') {
       change += 8;
     }
     

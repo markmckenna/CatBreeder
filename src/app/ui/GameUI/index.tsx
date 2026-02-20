@@ -18,6 +18,8 @@ import { getCollectionProgress } from '../../cats/collection.ts';
 import { calculateCapacity, FurnitureItemType } from '../../environment/furniture.ts';
 import { assignCatPositions, getFurniturePositions } from '../../environment/positions.ts';
 import type { Cat } from '../../cats/genetics.ts';
+import type { Selectable, CatSelection } from '../selection.ts';
+import { isCatSelection, isFurnitureSelection, isSameSelectable } from '../selection.ts';
 import styles from './styles.css';
 
 /**
@@ -37,7 +39,11 @@ function getBreedingStatus(alleles: [string, string]): 'pure' | 'carrier' | 'dom
 
 function GameUI() {
   const { state, dispatch, endTurn, lastTurnResult } = useGame();
-  const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
+  
+  // Unified selection: hovered is transient, selected is sticky
+  const [hovered, setHovered] = useState<Selectable | null>(null);
+  const [selected, setSelected] = useState<Selectable | null>(null);
+  
   const [breedingFirstCat, setBreedingFirstCat] = useState<Cat | null>(null);
   const [mode, setMode] = useState<'view' | 'breed-select'>('view');
   const [showCollection, setShowCollection] = useState(false);
@@ -56,23 +62,32 @@ function GameUI() {
   );
   const collectionProgress = getCollectionProgress(state.traitCollection);
 
-  const handleCatClick = (cat: Cat) => {
-    if (mode === 'breed-select') {
+  // Helper to get the selected cat (if selection is a cat)
+  const selectedCat = isCatSelection(selected) ? selected.cat : null;
+  const selectedFurniture = isFurnitureSelection(selected) ? selected : null;
+
+  // Unified click handler for any selectable
+  const handleSelect = (item: Selectable) => {
+    if (mode === 'breed-select' && isCatSelection(item)) {
       // Selecting second cat for breeding
-      if (breedingFirstCat && cat.id !== breedingFirstCat.id) {
+      if (breedingFirstCat && item.cat.id !== breedingFirstCat.id) {
         dispatch({
           type: ActionType.ADD_BREEDING_PAIR,
           parent1Id: breedingFirstCat.id,
-          parent2Id: cat.id,
+          parent2Id: item.cat.id,
         });
         setBreedingFirstCat(null);
-        setSelectedCat(null);
+        setSelected(null);
         setMode('view');
       }
     } else {
-      // View mode - select cat to see info
-      setSelectedCat(cat.id === selectedCat?.id ? null : cat);
+      // Toggle selection: click same item to deselect, different to select
+      setSelected(isSameSelectable(selected, item) ? null : item);
     }
+  };
+
+  const handleCatClick = (cat: Cat) => {
+    handleSelect({ type: 'cat', cat });
   };
 
   const handleBreedClick = () => {
@@ -82,13 +97,32 @@ function GameUI() {
     }
   };
 
-  const handleSellClick = () => {
+  const handleSellCatClick = () => {
     if (selectedCat) {
       dispatch({
         type: ActionType.LIST_FOR_SALE,
         catId: selectedCat.id,
       });
-      setSelectedCat(null);
+      setSelected(null);
+    }
+  };
+
+  const handleToggleFavourite = () => {
+    if (selectedCat) {
+      dispatch({
+        type: ActionType.TOGGLE_FAVOURITE,
+        catId: selectedCat.id,
+      });
+    }
+  };
+
+  const handleSellFurnitureClick = () => {
+    if (selectedFurniture) {
+      dispatch({
+        type: ActionType.SELL_FURNITURE,
+        itemType: selectedFurniture.furnitureType,
+      });
+      setSelected(null);
     }
   };
 
@@ -107,9 +141,16 @@ function GameUI() {
     });
   };
 
+  const handleSellFurniture = (itemType: FurnitureItemType) => {
+    dispatch({
+      type: ActionType.SELL_FURNITURE,
+      itemType,
+    });
+  };
+
   const handleEndTurn = () => {
     endTurn();
-    setSelectedCat(null);
+    setSelected(null);
     setBreedingFirstCat(null);
     setMode('view');
   };
@@ -131,6 +172,7 @@ function GameUI() {
     pair => pair.parent1Id === selectedCat.id || pair.parent2Id === selectedCat.id
   );
   const isForSale = selectedCat && state.catsForSale.includes(selectedCat.id);
+  const isFavourite = selectedCat?.favourite ?? false;
 
   return (
     <div className={styles.gameWindow}>
@@ -138,7 +180,13 @@ function GameUI() {
       <div className={styles.roomViewport}>
         <div className={styles.roomContainer}>
           <div className={styles.roomInner}>
-            <Room furniture={state.furniture} furniturePositions={furniturePositions}>
+            <Room 
+              furniture={state.furniture} 
+              furniturePositions={furniturePositions}
+              selectedFurniture={selectedFurniture}
+              onFurnitureClick={handleSelect}
+              onFurnitureHover={setHovered}
+            >
               {mode === 'breed-select' && (
                 <div className={styles.modeHint}>
                   💕 Select a mate for {breedingFirstCat?.name}
@@ -149,6 +197,8 @@ function GameUI() {
                 {state.cats.map((cat) => {
                   const pos = catPositions.find(p => p.catId === cat.id);
                   const isBreedingFirst = breedingFirstCat?.id === cat.id;
+                  const isSelected = selectedCat?.id === cat.id;
+                  const catSelection: CatSelection = { type: 'cat', cat };
                   return (
                     <div
                       key={cat.id}
@@ -161,7 +211,9 @@ function GameUI() {
                       <CatSprite
                         cat={cat}
                         onClick={() => handleCatClick(cat)}
-                        selected={cat.id === selectedCat?.id || isBreedingFirst}
+                        selected={isSelected || isBreedingFirst}
+                        onMouseEnter={() => setHovered(catSelection)}
+                        onMouseLeave={() => setHovered(null)}
                       />
                     </div>
                   );
@@ -240,6 +292,57 @@ function GameUI() {
 
         {/* Info Panels */}
         <div className={styles.infoPanel}>
+          {/* Hover Info Panel - shows transient info when hovering (but not if something is selected) */}
+          {hovered && !selected && (
+            <div className={`${styles.panelSection} ${styles.hoverInfoPanel}`}>
+              {isCatSelection(hovered) && (
+                <>
+                  <div className={styles.panelTitle}>🐱 {hovered.cat.name}</div>
+                  <div className={styles.hoverDetails}>
+                    <div>{hovered.cat.age} weeks old</div>
+                    <div>Size: {hovered.cat.phenotype.size}</div>
+                    <div>Tail: {hovered.cat.phenotype.tailLength} {hovered.cat.phenotype.tailColor}</div>
+                    <div>Ears: {hovered.cat.phenotype.earShape}</div>
+                  </div>
+                  <div className={styles.hoverHint}>Click to select</div>
+                </>
+              )}
+              {isFurnitureSelection(hovered) && (
+                <>
+                  <div className={styles.panelTitle}>🛋️ {hovered.item.name}</div>
+                  <div className={styles.hoverDetails}>
+                    <div>+{hovered.item.capacityBonus} capacity</div>
+                    <div>Sell value: ${Math.floor(hovered.item.price * 0.5)}</div>
+                  </div>
+                  <div className={styles.hoverHint}>Click to select</div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Turn Results - shown first when available to reduce sidebar flicker */}
+          {lastTurnResult && (lastTurnResult.births.length > 0 || lastTurnResult.sales.length > 0 || lastTurnResult.foodCost > 0) && (
+            <div className={`${styles.panelSection} ${styles.turnResult}`}>
+              <div className={`${styles.panelTitle} ${styles.turnResultTitle}`}>
+                📋 Last Week
+              </div>
+              <div className={styles.panelContent}>
+                {lastTurnResult.births.length > 0 && (
+                  <div>🐣 Born: {lastTurnResult.births.map(c => c.name).join(', ')}</div>
+                )}
+                {lastTurnResult.sales.length > 0 && (
+                  <div>💰 Sold: {lastTurnResult.sales.map(s => `${s.cat.name} ($${s.price})`).join(', ')}</div>
+                )}
+                {moneyEarned > 0 && (
+                  <div>📈 Earned: ${moneyEarned}</div>
+                )}
+                {lastTurnResult.foodCost > 0 && (
+                  <div>🍽️ Expenses: ${lastTurnResult.foodCost}</div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Selected Cat Info Panel */}
           {selectedCat && mode === 'view' && (
             <div className={`${styles.panelSection} ${styles.catInfoPanel}`}>
@@ -320,6 +423,13 @@ function GameUI() {
                 {/* Per-cat actions */}
                 <div className={styles.catActions}>
                   <button
+                    className={isFavourite ? styles.buttonPrimary : styles.buttonSecondary}
+                    onClick={handleToggleFavourite}
+                    title={isFavourite ? 'Remove from favourites' : 'Add to favourites'}
+                  >
+                    {isFavourite ? '⭐' : '☆'}
+                  </button>
+                  <button
                     className={styles.buttonPrimary}
                     onClick={handleBreedClick}
                     disabled={!!isInBreedingPair || state.cats.length < 2}
@@ -328,8 +438,9 @@ function GameUI() {
                   </button>
                   <button
                     className={styles.buttonSecondary}
-                    onClick={handleSellClick}
-                    disabled={!!isForSale}
+                    onClick={handleSellCatClick}
+                    disabled={!!isForSale || isFavourite}
+                    title={isFavourite ? 'Remove from favourites to sell' : ''}
                   >
                     🏷️ {isForSale ? 'Listed' : 'Sell'}
                   </button>
@@ -340,6 +451,47 @@ function GameUI() {
                 {isForSale && (
                   <div className={styles.catStatus}>Listed for sale</div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Selected Furniture Info Panel */}
+          {selectedFurniture && mode === 'view' && (
+            <div className={`${styles.panelSection} ${styles.furnitureInfoPanel}`}>
+              <div className={styles.panelTitle}>
+                🛋️ {selectedFurniture.item.name}
+              </div>
+              <div className={styles.catDetails}>
+                <div className={styles.traitRow}>
+                  <span className={styles.traitLabel}>Type</span>
+                  <span className={styles.traitValue}>{selectedFurniture.furnitureType}</span>
+                </div>
+                <div className={styles.traitRow}>
+                  <span className={styles.traitLabel}>Capacity</span>
+                  <span className={styles.traitValue}>+{selectedFurniture.item.capacityBonus}</span>
+                </div>
+                <div className={styles.traitRow}>
+                  <span className={styles.traitLabel}>Original Price</span>
+                  <span className={styles.traitValue}>${selectedFurniture.item.price}</span>
+                </div>
+
+                <div className={styles.valueSection}>
+                  <div className={styles.valueTitle}>Sell Value</div>
+                  <div className={styles.valueAmount}>${Math.floor(selectedFurniture.item.price * 0.5)}</div>
+                  <div className={styles.valueBreakdown}>
+                    <span className={styles.valueTrait}>50% of original price</span>
+                  </div>
+                </div>
+
+                {/* Furniture actions */}
+                <div className={styles.catActions}>
+                  <button
+                    className={styles.buttonSecondary}
+                    onClick={handleSellFurnitureClick}
+                  >
+                    💰 Sell for ${Math.floor(selectedFurniture.item.price * 0.5)}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -357,29 +509,6 @@ function GameUI() {
               <button className={styles.buttonSecondary} onClick={cancelBreedSelect}>
                 ✕ Cancel
               </button>
-            </div>
-          )}
-
-          {/* Turn Results */}
-          {lastTurnResult && (lastTurnResult.births.length > 0 || lastTurnResult.sales.length > 0 || lastTurnResult.foodCost > 0) && (
-            <div className={`${styles.panelSection} ${styles.turnResult}`}>
-              <div className={`${styles.panelTitle} ${styles.turnResultTitle}`}>
-                📋 Last Week
-              </div>
-              <div className={styles.panelContent}>
-                {lastTurnResult.births.length > 0 && (
-                  <div>🐣 Born: {lastTurnResult.births.map(c => c.name).join(', ')}</div>
-                )}
-                {lastTurnResult.sales.length > 0 && (
-                  <div>💰 Sold: {lastTurnResult.sales.map(s => `${s.cat.name} ($${s.price})`).join(', ')}</div>
-                )}
-                {moneyEarned > 0 && (
-                  <div>📈 Earned: ${moneyEarned}</div>
-                )}
-                {lastTurnResult.foodCost > 0 && (
-                  <div>🍽️ Expenses: ${lastTurnResult.foodCost}</div>
-                )}
-              </div>
             </div>
           )}
 
@@ -414,15 +543,6 @@ function GameUI() {
                   const cat = state.cats.find(c => c.id === catId);
                   return <div key={catId}>{cat?.name}</div>;
                 })}
-              </div>
-            </div>
-          )}
-
-          {/* Prompt to select cat when nothing selected */}
-          {!selectedCat && mode === 'view' && (
-            <div className={styles.panelSection}>
-              <div className={styles.panelContent}>
-                <div className={styles.hintText}>👆 Click a cat to view info</div>
               </div>
             </div>
           )}
@@ -461,6 +581,7 @@ function GameUI() {
           money={state.money}
           catCount={state.cats.length}
           onBuy={handleBuyFurniture}
+          onSell={handleSellFurniture}
           onClose={() => setShowShop(false)}
         />
       )}
@@ -469,7 +590,13 @@ function GameUI() {
       {showCatList && (
         <CatListPanel
           cats={state.cats}
-          onSelectCat={(cat) => setSelectedCat(cat)}
+          onSelectCat={(cat) => {
+            setSelected({ type: 'cat', cat });
+            setShowCatList(false);
+          }}
+          onToggleFavourite={(catId) => {
+            dispatch({ type: ActionType.TOGGLE_FAVOURITE, catId });
+          }}
           onClose={() => setShowCatList(false)}
         />
       )}

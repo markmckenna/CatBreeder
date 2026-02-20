@@ -63,6 +63,7 @@ export interface Cat {
   phenotype: CatPhenotype;
   age: number; // in days
   happiness: number; // 0-100
+  favourite?: boolean; // starred cats cannot be sold
 }
 
 /**
@@ -168,6 +169,7 @@ export function breedCats(parent1: Cat, parent2: Cat, name: string, options: Bre
     phenotype: getPhenotype(genotype),
     age: 0,
     happiness: 100,
+    favourite: false,
   };
 }
 
@@ -220,6 +222,7 @@ export function createRandomCat(name: string, options: CreateCatOptions = {}): C
     phenotype: getPhenotype(genotype),
     age: options.age ?? randomInt(30, 394, random), // 1 month to ~1 year
     happiness: options.happiness ?? randomInt(70, 100, random),
+    favourite: false,
   };
 }
 

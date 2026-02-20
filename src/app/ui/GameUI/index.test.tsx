@@ -67,9 +67,10 @@ describe('GameUI', () => {
     expect(catSprites.length).toBe(2);
   });
 
-  it('shows hint to click a cat when nothing selected', () => {
+  it('does not show cat info panel when nothing selected', () => {
     renderGameUI();
-    expect(screen.getByText(/Click a cat to view info/)).toBeInTheDocument();
+    // Cat info panel should not be visible initially
+    expect(screen.queryByText(/Est. Market Value/)).not.toBeInTheDocument();
   });
 
   it('shows cat info panel when cat is clicked', () => {

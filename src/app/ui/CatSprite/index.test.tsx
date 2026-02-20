@@ -87,6 +87,6 @@ describe('CatSprite', () => {
     const { container } = render(<CatSprite cat={mockCat} selected />);
     // Selected cats have a transform scale applied
     const sprite = container.firstChild as HTMLElement;
-    expect(sprite.style.transform).toContain('scale(1.1)');
+    expect(sprite.style.transform).toContain('scale(1.15)');
   });
 });

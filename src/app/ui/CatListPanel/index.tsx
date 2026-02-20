@@ -9,13 +9,19 @@ import styles from './styles.css';
 interface CatListPanelProps {
   cats: Cat[];
   onSelectCat: (cat: Cat) => void;
+  onToggleFavourite?: (catId: string) => void;
   onClose: () => void;
 }
 
-function CatListPanel({ cats, onSelectCat, onClose }: CatListPanelProps) {
+function CatListPanel({ cats, onSelectCat, onToggleFavourite, onClose }: CatListPanelProps) {
   const handleCatClick = (cat: Cat) => {
     onSelectCat(cat);
     onClose();
+  };
+
+  const handleStarClick = (e: React.MouseEvent, catId: string) => {
+    e.stopPropagation();
+    onToggleFavourite?.(catId);
   };
 
   return (
@@ -43,6 +49,16 @@ function CatListPanel({ cats, onSelectCat, onClose }: CatListPanelProps) {
                 onKeyDown={(e) => e.key === 'Enter' && handleCatClick(cat)}
                 aria-label={`Select ${cat.name}`}
               >
+                {onToggleFavourite && (
+                  <button
+                    className={`${styles.starButton} ${cat.favourite ? styles.starActive : ''}`}
+                    onClick={(e) => handleStarClick(e, cat.id)}
+                    title={cat.favourite ? 'Remove from favourites' : 'Add to favourites'}
+                    aria-label={cat.favourite ? `Remove ${cat.name} from favourites` : `Add ${cat.name} to favourites`}
+                  >
+                    {cat.favourite ? '⭐' : '☆'}
+                  </button>
+                )}
                 <div className={styles.catPreview}>
                   <CatSprite cat={cat} />
                 </div>

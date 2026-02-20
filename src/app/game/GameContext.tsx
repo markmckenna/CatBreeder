@@ -4,7 +4,7 @@
  * Handles save/load with localStorage and seeded random generation.
  */
 
-import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
 import type { GameState, GameAction, TurnResult } from './state.ts';
 import { createInitialGameState, applyAction, processTurn } from './state.ts';
 import { saveGame, loadGame, deleteSave } from './save.ts';
@@ -114,6 +114,11 @@ export function GameProvider({ children }: GameProviderProps) {
     internalDispatch({ type: 'GAME_ACTION', action });
   }, []);
 
+  // Auto-save whenever game state changes
+  useEffect(() => {
+    saveGame(gameState, seed);
+  }, [gameState, seed]);
+
   const endTurn = useCallback(() => {
     // Create seeded RNG based on seed + day for reproducibility
     const turnSeed = seed + gameState.day;
@@ -121,9 +126,7 @@ export function GameProvider({ children }: GameProviderProps) {
     
     const { newState, result } = processTurn(gameState, rng);
     internalDispatch({ type: 'END_TURN', result, newState });
-    
-    // Auto-save after each turn
-    saveGame(newState, seed);
+    // Auto-save handled by useEffect on gameState change
     
     return result;
   }, [gameState, seed]);

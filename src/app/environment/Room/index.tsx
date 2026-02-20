@@ -4,13 +4,18 @@
  */
 
 import { ReactNode } from 'react';
-import type { OwnedFurniture } from '../furniture.ts';
+import type { OwnedFurniture, FurnitureItemType } from '../furniture.ts';
+import { SHOP_ITEMS } from '../furniture.ts';
 import { getToyColor, getBedColor, type FurniturePosition } from '../positions.ts';
+import type { FurnitureSelection } from '../../ui/selection.ts';
 import styles from './styles.css';
 
 export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
 
 export type FurnitureType = 'bed' | 'scratcher' | 'window' | 'plant' | 'toy';
+
+// Re-export for convenience
+export type { FurnitureSelection } from '../../ui/selection.ts';
 
 export interface RoomData {
   id: string;
@@ -31,6 +36,9 @@ interface RoomProps {
   style?: RoomStyle;
   furniture?: OwnedFurniture;
   furniturePositions?: FurniturePosition[];
+  selectedFurniture?: FurnitureSelection | null;
+  onFurnitureClick?: (selection: FurnitureSelection) => void;
+  onFurnitureHover?: (selection: FurnitureSelection | null) => void;
   children?: ReactNode;
 }
 
@@ -54,12 +62,17 @@ function WallFloor() {
       {/* Floor */}
       <rect x="0" y="400" width="800" height="200" fill="#8B7355" />
       
-      {/* Floor boards pattern */}
+      {/* Floor boards pattern - staggered planks */}
       <defs>
         <pattern id="floorboards" patternUnits="userSpaceOnUse" width="100" height="200">
           <rect x="0" y="0" width="100" height="200" fill="#8B7355" />
+          {/* Full-height plank lines */}
           <line x1="0" y1="0" x2="0" y2="200" stroke="#7A6548" strokeWidth="2" />
-          <line x1="50" y1="100" x2="50" y2="200" stroke="#7A6548" strokeWidth="1" />
+          <line x1="50" y1="0" x2="50" y2="200" stroke="#7A6548" strokeWidth="1" />
+          {/* Horizontal stagger lines for alternating boards */}
+          <line x1="0" y1="100" x2="50" y2="100" stroke="#7A6548" strokeWidth="1" />
+          <line x1="50" y1="50" x2="100" y2="50" stroke="#7A6548" strokeWidth="1" />
+          <line x1="50" y1="150" x2="100" y2="150" stroke="#7A6548" strokeWidth="1" />
         </pattern>
       </defs>
       <rect x="0" y="400" width="800" height="200" fill="url(#floorboards)" />
@@ -137,11 +150,9 @@ function Window({ side }: { side: 'left' | 'right' }) {
   const className = side === 'left' ? styles.windowLeft : styles.windowRight;
   return (
     <svg viewBox="-20 -15 160 180" preserveAspectRatio="xMidYMid meet" className={className}>
-      {/* Curtains - behind window */}
-      <path d={side === 'left' 
-        ? "M-15 -10 Q-10 75 -15 165 L10 165 Q5 75 15 -10 Z"
-        : "M145 -10 Q140 75 145 165 L120 165 Q125 75 115 -10 Z"
-      } fill="#8B4513" opacity="0.85" />
+      {/* Curtains - one on each side of window */}
+      <path d="M-15 -10 Q-10 75 -15 165 L10 165 Q5 75 15 -10 Z" fill="#8B4513" opacity="0.85" />
+      <path d="M135 -10 Q130 75 135 165 L110 165 Q115 75 105 -10 Z" fill="#8B4513" opacity="0.85" />
       
       {/* Window glass */}
       <rect x="0" y="0" width="120" height="150" fill="#87CEEB" rx="4" />
@@ -182,13 +193,16 @@ function Bookshelf() {
 /** Potted plant */
 function Plant() {
   return (
-    <svg viewBox="-15 0 70 60" preserveAspectRatio="xMidYMid meet" className={styles.plant}>
+    <svg viewBox="0 0 50 120" preserveAspectRatio="xMidYMid meet" className={styles.plant}>
       {/* Pot */}
-      <rect x="0" y="30" width="40" height="30" fill="#B87333" rx="4" />
-      {/* Leaves */}
-      <ellipse cx="20" cy="30" rx="30" ry="18" fill="#228B22" />
-      <ellipse cx="12" cy="22" rx="20" ry="12" fill="#32CD32" />
-      <ellipse cx="28" cy="18" rx="16" ry="10" fill="#228B22" />
+      <rect x="10" y="95" width="30" height="25" fill="#B87333" rx="3" />
+      {/* Trunk */}
+      <rect x="21" y="40" width="8" height="58" fill="#8B4513" />
+      {/* Leaves/foliage - layered for depth */}
+      <ellipse cx="25" cy="35" rx="22" ry="18" fill="#228B22" />
+      <ellipse cx="18" cy="28" rx="15" ry="12" fill="#32CD32" />
+      <ellipse cx="32" cy="25" rx="14" ry="10" fill="#228B22" />
+      <ellipse cx="25" cy="18" rx="12" ry="10" fill="#2E8B2E" />
     </svg>
   );
 }
@@ -204,75 +218,172 @@ function Rug() {
   );
 }
 
-/** Cat bed */
-function CatBed({ side, color }: { side: 'left' | 'right'; color: string }) {
-  const className = side === 'left' ? styles.catBedLeft : styles.catBedRight;
-  const lightColor = color === '#FF6B6B' ? '#FF8E8E' : '#8EB8FF';
-  return (
-    <svg viewBox="0 0 120 50" preserveAspectRatio="xMidYMid meet" className={className}>
-      <ellipse cx="60" cy="30" rx="60" ry="25" fill={color} />
-      <ellipse cx="60" cy="25" rx="50" ry="18" fill={lightColor} />
-    </svg>
-  );
-}
-
 // ============= Furniture Layer =============
 
-function ToyItem({ x, y, index }: { x: number; y: number; index: number }) {
+interface FurnitureItemProps {
+  x: number;
+  y?: number;
+  index: number;
+  selected?: boolean;
+  onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+}
+
+function ToyItem({ x, y, index, selected, onClick, onMouseEnter, onMouseLeave }: FurnitureItemProps) {
   const colors = getToyColor(index);
   return (
     <div
-      className={styles.furnitureToy}
+      className={`${styles.furnitureToy} ${selected ? styles.furnitureSelected : ''}`}
       style={{ 
         left: `${x}%`, 
         top: `${y}%`,
         background: `linear-gradient(135deg, ${colors.main} 0%, ${colors.accent} 100%)`,
+        border: '2px solid rgba(0, 0, 0, 0.3)',
       }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       data-testid="furniture-toy"
     />
   );
 }
 
-function BedItem({ x, y, index }: { x: number; y: number; index: number }) {
+function BedItem({ x, y, index, selected, onClick, onMouseEnter, onMouseLeave }: FurnitureItemProps) {
   const colors = getBedColor(index);
   return (
     <svg 
       viewBox="0 0 80 35"
-      className={styles.furnitureBed}
+      className={`${styles.furnitureBed} ${selected ? styles.furnitureSelected : ''}`}
       style={{ left: `${x}%`, top: `${y}%` }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       data-testid="furniture-bed"
     >
       {/* Bed frame */}
-      <ellipse cx="40" cy="22" rx="40" ry="15" fill={colors.main} />
+      <ellipse cx="40" cy="22" rx="40" ry="15" fill={colors.main} stroke="#4a3728" strokeWidth="1.5" />
       <ellipse cx="40" cy="20" rx="36" ry="12" fill={colors.accent} />
       {/* Cushion */}
-      <ellipse cx="40" cy="17" rx="30" ry="9" fill={colors.cushion} />
+      <ellipse cx="40" cy="17" rx="30" ry="9" fill={colors.cushion} stroke="#4a3728" strokeWidth="0.5" />
     </svg>
   );
 }
 
-function FurnitureLayer({ positions }: { positions: FurniturePosition[] }) {
-  // Sort so beds render first (under cats)
+function CatTreeItem({ x, index, selected, onClick, onMouseEnter, onMouseLeave }: FurnitureItemProps) {
+  // Use distinct colors that don't match the floor (avoid browns)
+  const mainColor = index % 2 === 0 ? '#5D4E37' : '#4A3F2F';  // Darker brown for contrast
+  const platformColor = index % 2 === 0 ? '#8B7355' : '#7A6548';
+  const cushionColor = index % 2 === 0 ? '#E8D5B7' : '#D4C4A8';  // Lighter cushions
+  
+  return (
+    <svg 
+      viewBox="0 0 90 210"
+      className={`${styles.furnitureCatTree} ${selected ? styles.furnitureSelected : ''}`}
+      style={{ 
+        left: `${x}%`,
+      }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      data-testid="furniture-cat-tree"
+    >
+      {/* Main post */}
+      <rect x="37" y="0" width="16" height="205" fill={mainColor} stroke="#2a2520" strokeWidth="1" />
+      
+      {/* Top platform (highest cat) */}
+      <ellipse cx="45" cy="25" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
+      <ellipse cx="45" cy="22" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
+      
+      {/* Middle platform */}
+      <ellipse cx="45" cy="90" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
+      <ellipse cx="45" cy="87" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
+      
+      {/* Bottom platform (lowest cat) */}
+      <ellipse cx="45" cy="155" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
+      <ellipse cx="45" cy="152" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
+      
+      {/* Base */}
+      <ellipse cx="45" cy="202" rx="40" ry="8" fill={mainColor} stroke="#2a2520" strokeWidth="1" />
+    </svg>
+  );
+}
+
+function FurnitureLayer({ positions, selectedFurniture, onFurnitureClick, onFurnitureHover }: { 
+  positions: FurniturePosition[]; 
+  selectedFurniture?: FurnitureSelection | null;
+  onFurnitureClick?: (selection: FurnitureSelection) => void;
+  onFurnitureHover?: (selection: FurnitureSelection | null) => void;
+}) {
+  // Sort: cat trees first (background), then beds (under cats), then toys (foreground)
   const sorted = [...positions].sort((a, b) => {
-    if (a.type === 'bed' && b.type !== 'bed') return -1;
-    if (a.type !== 'bed' && b.type === 'bed') return 1;
-    return 0;
+    const order = { catTree: 0, bed: 1, toy: 2 };
+    return order[a.type] - order[b.type];
   });
+
+  const createSelection = (type: FurnitureItemType, index: number): FurnitureSelection => ({
+    type: 'furniture',
+    furnitureType: type,
+    item: SHOP_ITEMS[type],
+    index,
+  });
+
+  const isSelected = (type: FurnitureItemType, index: number) => 
+    selectedFurniture?.furnitureType === type && selectedFurniture?.index === index;
   
   return (
     <>
-      {sorted.map((pos) => (
-        pos.type === 'toy' 
-          ? <ToyItem key={`toy-${pos.index}`} x={pos.x} y={pos.y} index={pos.index} />
-          : <BedItem key={`bed-${pos.index}`} x={pos.x} y={pos.y} index={pos.index} />
-      ))}
+      {sorted.map((pos) => {
+        if (pos.type === 'catTree') {
+          const selection = createSelection('catTree', pos.index);
+          return (
+            <CatTreeItem 
+              key={`catTree-${pos.index}`} 
+              x={pos.x} 
+              index={pos.index}
+              selected={isSelected('catTree', pos.index)}
+              onClick={() => onFurnitureClick?.(selection)}
+              onMouseEnter={() => onFurnitureHover?.(selection)}
+              onMouseLeave={() => onFurnitureHover?.(null)}
+            />
+          );
+        }
+        if (pos.type === 'toy') {
+          const selection = createSelection('toy', pos.index);
+          return (
+            <ToyItem 
+              key={`toy-${pos.index}`} 
+              x={pos.x} 
+              y={pos.y} 
+              index={pos.index}
+              selected={isSelected('toy', pos.index)}
+              onClick={() => onFurnitureClick?.(selection)}
+              onMouseEnter={() => onFurnitureHover?.(selection)}
+              onMouseLeave={() => onFurnitureHover?.(null)}
+            />
+          );
+        }
+        const selection = createSelection('bed', pos.index);
+        return (
+          <BedItem 
+            key={`bed-${pos.index}`} 
+            x={pos.x} 
+            y={pos.y} 
+            index={pos.index}
+            selected={isSelected('bed', pos.index)}
+            onClick={() => onFurnitureClick?.(selection)}
+            onMouseEnter={() => onFurnitureHover?.(selection)}
+            onMouseLeave={() => onFurnitureHover?.(null)}
+          />
+        );
+      })}
     </>
   );
 }
 
 // ============= Main Room Component =============
 
-function Room({ furniturePositions, children }: RoomProps) {
+function Room({ furniturePositions, selectedFurniture, onFurnitureClick, onFurnitureHover, children }: RoomProps) {
   return (
     <div className={styles.roomContainer} data-testid="room">
       {/* Background layer */}
@@ -285,12 +396,15 @@ function Room({ furniturePositions, children }: RoomProps) {
       <Bookshelf />
       <Plant />
       <Rug />
-      <CatBed side="left" color="#FF6B6B" />
-      <CatBed side="right" color="#6B9FFF" />
       
       {/* Player-owned furniture - positioned from cat positions */}
       {furniturePositions && furniturePositions.length > 0 && (
-        <FurnitureLayer positions={furniturePositions} />
+        <FurnitureLayer 
+          positions={furniturePositions} 
+          selectedFurniture={selectedFurniture}
+          onFurnitureClick={onFurnitureClick} 
+          onFurnitureHover={onFurnitureHover} 
+        />
       )}
       
       {/* Content (cats, UI overlays) */}

@@ -1,6 +1,6 @@
 /**
- * ShopPanel - UI for purchasing furniture items.
- * Shows available items with prices and allows purchase.
+ * ShopPanel - UI for purchasing and selling furniture items.
+ * Shows available items with prices and allows purchase/sale.
  */
 
 import { SHOP_ITEMS, FurnitureItemType, OwnedFurniture, calculateCapacity } from '../../environment/furniture.ts';
@@ -11,10 +11,18 @@ interface ShopPanelProps {
   money: number;
   catCount: number;
   onBuy: (itemType: FurnitureItemType) => void;
+  onSell: (itemType: FurnitureItemType) => void;
   onClose: () => void;
 }
 
-function ShopPanel({ furniture, money, catCount, onBuy, onClose }: ShopPanelProps) {
+function getOwnedCount(furniture: OwnedFurniture, itemType: FurnitureItemType): number {
+  if (itemType === 'toy') return furniture.toys;
+  if (itemType === 'bed') return furniture.beds;
+  if (itemType === 'catTree') return furniture.catTrees;
+  return 0;
+}
+
+function ShopPanel({ furniture, money, catCount, onBuy, onSell, onClose }: ShopPanelProps) {
   const capacity = calculateCapacity(furniture);
 
   return (
@@ -80,6 +88,8 @@ function ShopPanel({ furniture, money, catCount, onBuy, onClose }: ShopPanelProp
           {(Object.keys(SHOP_ITEMS) as FurnitureItemType[]).map((itemType) => {
             const item = SHOP_ITEMS[itemType];
             const canAfford = money >= item.price;
+            const owned = getOwnedCount(furniture, itemType);
+            const sellPrice = Math.floor(item.price * 0.5);
 
             return (
               <div 
@@ -97,24 +107,43 @@ function ShopPanel({ furniture, money, catCount, onBuy, onClose }: ShopPanelProp
                 <div>
                   <div style={{ fontWeight: 'bold', color: '#333' }}>{item.name}</div>
                   <div style={{ fontSize: '12px', color: '#666' }}>
-                    +{item.capacityBonus} capacity
+                    +{item.capacityBonus} capacity • Owned: {owned}
                   </div>
                 </div>
-                <button
-                  onClick={() => onBuy(itemType)}
-                  disabled={!canAfford}
-                  style={{
-                    backgroundColor: canAfford ? '#4CAF50' : '#BDBDBD',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    cursor: canAfford ? 'pointer' : 'not-allowed',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {formatMoney(item.price)}
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {owned > 0 && (
+                    <button
+                      onClick={() => onSell(itemType)}
+                      style={{
+                        backgroundColor: '#FF7043',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '8px 12px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '12px',
+                      }}
+                    >
+                      Sell {formatMoney(sellPrice)}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onBuy(itemType)}
+                    disabled={!canAfford}
+                    style={{
+                      backgroundColor: canAfford ? '#4CAF50' : '#BDBDBD',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      cursor: canAfford ? 'pointer' : 'not-allowed',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {formatMoney(item.price)}
+                  </button>
+                </div>
               </div>
             );
           })}

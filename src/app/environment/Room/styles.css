@@ -26,6 +26,7 @@
   display: flex;
   flex-direction: column;
   z-index: 1;
+  pointer-events: none; /* Allow clicks to pass through to furniture beneath */
 }
 
 /* SVG object positioning - using percentage-based layout */
@@ -63,19 +64,19 @@
 /* Bookshelf - positioned on floor */
 .bookshelf {
   composes: svgObject;
-  top: 48%;
+  top: 50%;
   left: 68.75%;
   width: 10%;
   height: 19%;
 }
 
-/* Plant - sized to include leaves */
+/* Plant - tall potted tree, positioned to sit on floor */
 .plant {
   composes: svgObject;
-  top: 52%;
+  bottom: 33%;  /* Pot bottom sits at 67% from top, on the floor line */
   left: 18%;
-  width: 9%;
-  height: 14%;
+  width: 8%;
+  height: 32%;
 }
 
 /* Rug - centered in room on floor */
@@ -85,23 +86,6 @@
   left: 25%;
   width: 50%;
   height: 22%;
-}
-
-/* Cat beds */
-.catBedLeft {
-  composes: svgObject;
-  top: 79%;
-  left: 11.25%;
-  width: 15%;
-  height: 8%;
-}
-
-.catBedRight {
-  composes: svgObject;
-  top: 79%;
-  right: 11.25%;
-  width: 15%;
-  height: 8%;
 }
 
 /* Furniture items - player purchased toys and beds */
@@ -115,6 +99,17 @@
               inset -2px -2px 4px rgba(0, 0, 0, 0.2),
               inset 2px 2px 4px rgba(255, 255, 255, 0.3);
   z-index: 3;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.furnitureToy:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5),
+              2px 2px 4px rgba(0, 0, 0, 0.3),
+              inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+              inset 2px 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .furnitureBed {
@@ -122,6 +117,50 @@
   transform: translate(-50%, -50%);
   width: 80px;
   height: 35px;
-  z-index: 1;
-  pointer-events: none;
+  z-index: 2;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.furnitureBed:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  filter: brightness(1.15) drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+.furnitureCatTree {
+  position: absolute;
+  transform: translateX(-50%);
+  /* Position so base sits on floor: floor at 67% from top, base at 96% of SVG height */
+  /* top = 67% - (202/210)*height = 67% - 48% = 19% when height=50% */
+  top: 19%;
+  width: 11%;
+  height: 50%;
+  overflow: visible;
+  z-index: 2;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.furnitureCatTree:hover {
+  filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  transform: translateX(-50%) scale(1.05);
+}
+
+/* Selected state for all furniture - gold glow to match cat selection */
+.furnitureSelected {
+  filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 215, 0, 0.7)) !important;
+}
+
+.furnitureToy.furnitureSelected {
+  transform: translate(-50%, -50%) scale(1.25);
+}
+
+.furnitureBed.furnitureSelected {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.furnitureCatTree.furnitureSelected {
+  transform: translateX(-50%) scale(1.08);
 }

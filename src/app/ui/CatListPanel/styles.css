@@ -89,6 +89,28 @@
   border-color: #3498db;
 }
 
+.starButton {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+  color: #bdc3c7;
+}
+
+.starButton:hover {
+  background: #f1f1f1;
+  transform: scale(1.2);
+}
+
+.starButton.starActive {
+  color: #f39c12;
+}
+
 .catPreview {
   flex-shrink: 0;
   width: 70px;

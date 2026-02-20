@@ -9,7 +9,7 @@ import type { OwnedFurniture } from './furniture.ts';
 import type { RandomFn } from '@/base/random.ts';
 
 /** Types of spots cats can occupy */
-export type SpotType = 'rug' | 'bookshelf' | 'toy' | 'bed' | 'floor';
+export type SpotType = 'rug' | 'bookshelf' | 'toy' | 'bed' | 'catTree' | 'floor';
 
 /** A named position in the room */
 export interface RoomSpot {
@@ -71,6 +71,28 @@ const BED_SPOT_DEFS: Omit<RoomSpot, 'type'>[] = [
 ];
 
 /**
+ * Cat tree spot definitions (when player owns cat trees)
+ * Each tree provides 3 spots stacked vertically
+ * Cat trees positioned at top: 19%, height: 50% (element spans 19%-69%)
+ * Platform cushion centers at SVG y: 22, 87, 152 (viewBox 0-210)
+ * Cat position formula: 19% + (platform_y/210)*50% + ~3% body offset
+ */
+const CAT_TREE_SPOT_DEFS: Omit<RoomSpot, 'type'>[][] = [
+  // First cat tree - left side
+  [
+    { id: 'catTree-1-top', x: 12, y: 27 },   // 19% + (22/210)*50% + 3% = 27.2%
+    { id: 'catTree-1-mid', x: 12, y: 43 },   // 19% + (87/210)*50% + 3% = 42.7%
+    { id: 'catTree-1-bot', x: 12, y: 58 },   // 19% + (152/210)*50% + 3% = 58.2%
+  ],
+  // Second cat tree - right side
+  [
+    { id: 'catTree-2-top', x: 88, y: 27 },
+    { id: 'catTree-2-mid', x: 88, y: 43 },
+    { id: 'catTree-2-bot', x: 88, y: 58 },
+  ],
+];
+
+/**
  * Floor positions (no comfort bonus)
  */
 const FLOOR_SPOTS: RoomSpot[] = [
@@ -84,12 +106,20 @@ const FLOOR_SPOTS: RoomSpot[] = [
 
 /**
  * Get all available spots based on furniture owned.
- * Order determines priority: beds > toys > rug/bookshelf > floor
+ * Order determines priority: catTrees > beds > toys > rug/bookshelf > floor
  */
 export function getAvailableSpots(furniture: OwnedFurniture): RoomSpot[] {
   const spots: RoomSpot[] = [];
   
-  // Beds first (highest comfort)
+  // Cat trees first (highest comfort - 3 spots each)
+  const catTreeCount = Math.min(furniture.catTrees, CAT_TREE_SPOT_DEFS.length);
+  for (let i = 0; i < catTreeCount; i++) {
+    for (const spot of CAT_TREE_SPOT_DEFS[i]) {
+      spots.push({ ...spot, type: 'catTree' });
+    }
+  }
+  
+  // Beds (high comfort)
   const bedCount = Math.min(furniture.beds, BED_SPOT_DEFS.length);
   for (let i = 0; i < bedCount; i++) {
     spots.push({ ...BED_SPOT_DEFS[i], type: 'bed' });
@@ -143,10 +173,10 @@ export function assignCatPositions(
 
 /**
  * Get furniture item positions for rendering.
- * Returns positions where toys/beds should be drawn.
+ * Returns positions where toys/beds/catTrees should be drawn.
  */
 export interface FurniturePosition {
-  type: 'toy' | 'bed';
+  type: 'toy' | 'bed' | 'catTree';
   index: number;
   x: number;
   y: number;
@@ -157,6 +187,20 @@ export function getFurniturePositions(
   furniture: OwnedFurniture
 ): FurniturePosition[] {
   const positions: FurniturePosition[] = [];
+  
+  // Cat trees are whole objects - add one per owned tree
+  // Position is based on the tree's base location
+  for (let i = 0; i < Math.min(furniture.catTrees, CAT_TREE_SPOT_DEFS.length); i++) {
+    const treeDefs = CAT_TREE_SPOT_DEFS[i];
+    // Use bottom spot as anchor point
+    const bottomSpot = treeDefs[treeDefs.length - 1];
+    positions.push({
+      type: 'catTree',
+      index: i,
+      x: bottomSpot.x,
+      y: bottomSpot.y + 10, // Base of tree
+    });
+  }
   
   // Get spots for toys and beds that have cats on them
   for (const catPos of catPositions) {

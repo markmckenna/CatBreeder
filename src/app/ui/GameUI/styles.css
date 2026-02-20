@@ -359,9 +359,41 @@
   50% { transform: translateX(-50%) translateY(-5px); }
 }
 
+/* Hover Info Panel */
+.hoverInfoPanel {
+  border-color: #87CEEB !important;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hoverDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #b8c5d6;
+}
+
+.hoverHint {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: #666;
+  font-style: italic;
+}
+
 /* Cat Info Panel */
 .catInfoPanel {
   border-color: #4A90A4 !important;
+}
+
+/* Furniture Info Panel */
+.furnitureInfoPanel {
+  border-color: #DAA520 !important;
 }
 
 .catDetails {

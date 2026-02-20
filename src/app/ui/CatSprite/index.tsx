@@ -5,13 +5,15 @@
  * All styling is inline since every property depends on phenotype/age.
  */
 
-import { CSSProperties } from 'react';
+import { CSSProperties, useState } from 'react';
 import type { Cat, CatPhenotype } from '../../cats/genetics.ts';
 
 interface CatSpriteProps {
   cat: Cat;
   selected?: boolean;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 // ============= Color Derivation =============
@@ -75,23 +77,39 @@ function Ear({
   const isPointed = phenotype.earShape === 'pointed';
   const rotation = side === 'left' ? -1 : 1;
   
-  // Ear shape determines border radius
+  // Position ears on outer corners of head - lower % = more outward
+  const outerPosition = isPointed ? '8%' : '12%';
+  
+  // Pointed ears use clip-path for true triangle shape
+  // Folded ears stay rounded
   const borderRadius = isPointed 
-    ? '50% 50% 15% 15%'   // Triangular: rounded top, sharper bottom
+    ? '0'  // Using clip-path instead
     : '60% 60% 40% 40%';  // Rounded all around (Scottish Fold)
+  
+  // Triangular clip-path: point at top-center, wide at bottom
+  const clipPath = isPointed
+    ? (side === 'left' 
+        ? 'polygon(50% 0%, 0% 100%, 100% 100%)'  // Triangle shape
+        : 'polygon(50% 0%, 0% 100%, 100% 100%)')
+    : undefined;
   
   const style: CSSProperties = {
     position: 'absolute',
-    [side]: '28%',
-    top: isPointed ? '-15%' : '8%',
-    width: isPointed ? '22%' : '18%',
-    height: isPointed ? '35%' : '22%',
+    [side]: outerPosition,
+    top: isPointed ? '-20%' : '5%',
+    width: isPointed ? '24%' : '18%',
+    height: isPointed ? '40%' : '22%',
     backgroundColor: bodyColor,
-    border: '2px solid #00000022',
+    border: isPointed ? 'none' : '2px solid #00000022',
     borderRadius,
+    clipPath,
     transform: isPointed 
-      ? `rotate(${rotation * 15}deg)` 
+      ? `rotate(${rotation * 20}deg)` 
       : `rotate(${rotation * 40}deg) scaleY(0.8)`,
+    // Add subtle outline for pointed ears
+    ...(isPointed && {
+      boxShadow: '0 0 0 1.5px rgba(0,0,0,0.15)',
+    }),
   };
   
   return <div style={style} />;
@@ -172,7 +190,8 @@ function NameTag({ name }: { name: string }) {
 
 // ============= Main Component =============
 
-function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
+function CatSprite({ cat, selected = false, onClick, onMouseEnter, onMouseLeave }: CatSpriteProps) {
+  const [isHovered, setIsHovered] = useState(false);
   const { phenotype } = cat;
   
   // Kittens (under 4 weeks) are smaller with bigger eyes
@@ -184,6 +203,10 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
   
   // Derive colors from body color phenotype
   const { bodyColor, tailColor } = deriveColors(phenotype);
+
+  // Determine visual state
+  const isHighlighted = selected || isHovered;
+  const glowColor = selected ? '#FFD700' : '#87CEEB';
   
   // Base size is larger (80x66) for better visibility in room
   const containerStyle: CSSProperties = {
@@ -191,15 +214,27 @@ function CatSprite({ cat, selected = false, onClick }: CatSpriteProps) {
     width: `${80 * scale}px`,
     height: `${66 * scale}px`,
     cursor: onClick ? 'pointer' : 'default',
-    transition: 'transform 0.2s',
-    transform: selected ? 'scale(1.1)' : 'scale(1)',
-    filter: selected ? 'drop-shadow(0 0 8px #FFD700)' : 'none',
+    transition: 'transform 0.15s ease, filter 0.15s ease',
+    transform: isHighlighted ? 'scale(1.15)' : 'scale(1)',
+    filter: isHighlighted ? `drop-shadow(0 0 8px ${glowColor})` : 'none',
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onMouseEnter?.();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onMouseLeave?.();
   };
 
   return (
     <div 
       style={containerStyle} 
       onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       data-testid={`cat-sprite-${cat.id}`}
       role={onClick ? 'button' : undefined}
       aria-label={onClick ? `Select ${cat.name}` : cat.name}

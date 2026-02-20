@@ -9,10 +9,11 @@ import type { OwnedFurniture } from '../../environment/furniture.ts';
 
 describe('ShopPanel', () => {
   const defaultProps = {
-    furniture: { toys: 0, beds: 0 } as OwnedFurniture,
+    furniture: { toys: 0, beds: 0, catTrees: 0 } as OwnedFurniture,
     money: 500,
     catCount: 2,
     onBuy: vi.fn(),
+    onSell: vi.fn(),
     onClose: vi.fn(),
   };
 
@@ -32,7 +33,7 @@ describe('ShopPanel', () => {
   });
 
   it('displays current furniture count', () => {
-    render(<ShopPanel {...defaultProps} furniture={{ toys: 2, beds: 1 }} />);
+    render(<ShopPanel {...defaultProps} furniture={{ toys: 2, beds: 1, catTrees: 0 }} />);
     expect(screen.getByText('2 toys, 1 beds')).toBeInTheDocument();
   });
 

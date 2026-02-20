@@ -60,10 +60,17 @@ function serializeState(state: GameState): SerializedGameState {
  * Deserialize state from storage
  */
 function deserializeState(data: SerializedGameState): GameState {
+  // Ensure furniture has all expected properties (for old saves)
+  const savedFurniture = data.furniture ?? { toys: 0, beds: 0, catTrees: 0 };
+  const furniture = {
+    toys: savedFurniture.toys ?? 0,
+    beds: savedFurniture.beds ?? 0,
+    catTrees: savedFurniture.catTrees ?? 0,
+  };
+  
   return {
     ...data,
-    // Provide default furniture for saves that don't have it
-    furniture: data.furniture ?? { toys: 0, beds: 0 },
+    furniture,
     traitCollection: {
       collected: new Map(data.traitCollection.collected),
     } as TraitCollection,
