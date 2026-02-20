@@ -474,5 +474,5 @@ export function getAvailableForBreeding(state: GameState): Cat[] {
 }
 
 /** Get cats available for sale (not already listed) */
-export const getAvailableForSale = (state: GameState): Cat[] =>
-  state.cats.filter(c => !state.catsForSale.includes(c.id));
+export const getAvailableForSale = (it: GameState): Cat[] =>
+  it.cats.filter(c => !it.catsForSale.includes(c.id));

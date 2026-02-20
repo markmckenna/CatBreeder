@@ -29,14 +29,14 @@ export interface FurnitureSelection {
 export type Selectable = CatSelection | FurnitureSelection;
 
 /** Check if selection is a cat */
-export const isCatSelection = (s: Selectable | null): s is CatSelection => s?.type === 'cat';
+export const isCatSelection = (it: Selectable | null): it is CatSelection => it?.type === 'cat';
 
 /** Check if selection is furniture */
-export const isFurnitureSelection = (s: Selectable | null): s is FurnitureSelection => s?.type === 'furniture';
+export const isFurnitureSelection = (it: Selectable | null): it is FurnitureSelection => it?.type === 'furniture';
 
 /** Get a unique ID for a selectable for comparison */
-export const getSelectableId = (s: Selectable): string =>
-  s.type === 'cat' ? `cat-${s.cat.id}` : `furniture-${s.furnitureType}-${s.index}`;
+export const getSelectableId = (it: Selectable): string =>
+  it.type === 'cat' ? `cat-${it.cat.id}` : `furniture-${it.furnitureType}-${it.index}`;
 
 /** Check if two selectables are the same */
 export const isSameSelectable = (a: Selectable | null, b: Selectable | null): boolean =>

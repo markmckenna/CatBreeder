@@ -32,8 +32,8 @@ export interface TraitCollection {
 }
 
 /** Generate a unique key for a phenotype combination */
-export const phenotypeKeyFor = (phenotype: CatPhenotype): TraitKey =>
-  `${phenotype.size}-${phenotype.tailLength}-${phenotype.earShape}-${phenotype.tailColor}`;
+export const phenotypeKeyFor = (it: CatPhenotype): TraitKey =>
+  `${it.size}-${it.tailLength}-${it.earShape}-${it.tailColor}`;
 
 /**
  * Get all possible phenotype combinations

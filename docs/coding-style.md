@@ -79,6 +79,36 @@ export const randomCatName = (rng?: RandomFn): string => ...
 export const getRandomCatName = (rng?: RandomFn): string => ...
 ```
 
+### Abbreviated Parameter Names
+For concise single-line functions with typed parameters, use short symbolic names rather than verbose ones. When context is clear from the type, a single parameter can be named `it`:
+
+```typescript
+// ✅ Short names when type provides context
+export const sizePhenotypeFor = (it: SizeGenotype): SizePhenotype =>
+  it.includes('S') ? 'large' : 'small';
+
+// ✅ Inline callbacks - type flows from context
+cats.filter(it => it.age > 30)
+promise.then(it => it.value).catch(e => console.error(e))
+
+// ✅ Two parameters - use single letters or short names
+const add = (a: number, b: number) => a + b;
+
+// ❌ Verbose names in simple functions
+export const sizePhenotypeFor = (genotype: SizeGenotype): SizePhenotype =>
+  genotype.includes('S') ? 'large' : 'small';
+```
+
+Use abbreviated names when:
+- The function is a single expression
+- Parameter types are explicit (or inferred in callbacks)
+- The function name already describes the transformation
+
+Keep descriptive names when:
+- The function has multiple statements
+- Multiple parameters of the same type need disambiguation
+- The meaning isn't clear from types alone
+
 ### Prefer Direct Assignment Over Wrapping
 When assigning a function that doesn't depend on `this`, assign it directly rather than wrapping in an arrow function:
 

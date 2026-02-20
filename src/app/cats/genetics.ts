@@ -101,27 +101,27 @@ function breedGenotype<T>(parent1: [T, T], parent2: [T, T], random: RandomFn = d
 }
 
 /** Determine size phenotype from genotype. Large (S) is dominant over Small (s) */
-export const sizePhenotypeFor = (genotype: SizeGenotype): SizePhenotype =>
-  genotype.includes('S') ? 'large' : 'small';
+export const sizePhenotypeFor = (it: SizeGenotype): SizePhenotype =>
+  it.includes('S') ? 'large' : 'small';
 
 /** Determine tail length phenotype from genotype. Long (T) is dominant over Short (t) */
-export const tailLengthPhenotypeFor = (genotype: TailLengthGenotype): TailLengthPhenotype =>
-  genotype.includes('T') ? 'long' : 'short';
+export const tailLengthPhenotypeFor = (it: TailLengthGenotype): TailLengthPhenotype =>
+  it.includes('T') ? 'long' : 'short';
 
 /** Determine ear shape phenotype from genotype. Pointed (E) is dominant over Folded (f) */
-export const earShapePhenotypeFor = (genotype: EarShapeGenotype): EarShapePhenotype =>
-  genotype.includes('E') ? 'pointed' : 'folded';
+export const earShapePhenotypeFor = (it: EarShapeGenotype): EarShapePhenotype =>
+  it.includes('E') ? 'pointed' : 'folded';
 
 /** Determine tail color phenotype from genotype. Orange (O) is dominant over White (w) */
-export const tailColorPhenotypeFor = (genotype: TailColorGenotype): TailColorPhenotype =>
-  genotype.includes('O') ? 'orange' : 'white';
+export const tailColorPhenotypeFor = (it: TailColorGenotype): TailColorPhenotype =>
+  it.includes('O') ? 'orange' : 'white';
 
 /** Calculate full phenotype from genotype */
-export const phenotypeFor = (genotype: CatGenotype): CatPhenotype => ({
-  size: sizePhenotypeFor(genotype.size),
-  tailLength: tailLengthPhenotypeFor(genotype.tailLength),
-  earShape: earShapePhenotypeFor(genotype.earShape),
-  tailColor: tailColorPhenotypeFor(genotype.tailColor),
+export const phenotypeFor = (it: CatGenotype): CatPhenotype => ({
+  size: sizePhenotypeFor(it.size),
+  tailLength: tailLengthPhenotypeFor(it.tailLength),
+  earShape: earShapePhenotypeFor(it.earShape),
+  tailColor: tailColorPhenotypeFor(it.tailColor),
 });
 
 /**
