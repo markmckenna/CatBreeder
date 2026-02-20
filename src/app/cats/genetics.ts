@@ -217,7 +217,7 @@ const CAT_NAMES = [
 ];
 
 /** Get a random cat name from the predefined list */
-export const randomCatName = (random: RandomFn = defaultRandom): string =>
+export const randomCatName = (random: RandomFn = defaultRandom) =>
   pickRandom(CAT_NAMES, random);
 
 // Re-export RandomFn type for consumers

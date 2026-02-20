@@ -35,9 +35,9 @@ export const isCatSelection = (it: Selectable | null): it is CatSelection => it?
 export const isFurnitureSelection = (it: Selectable | null): it is FurnitureSelection => it?.type === 'furniture';
 
 /** Get a unique ID for a selectable for comparison */
-export const getSelectableId = (it: Selectable): string =>
+export const getSelectableId = (it: Selectable) =>
   it.type === 'cat' ? `cat-${it.cat.id}` : `furniture-${it.furnitureType}-${it.index}`;
 
 /** Check if two selectables are the same */
-export const isSameSelectable = (a: Selectable | null, b: Selectable | null): boolean =>
+export const isSameSelectable = (a: Selectable | null, b: Selectable | null) =>
   a !== null && b !== null && getSelectableId(a) === getSelectableId(b);

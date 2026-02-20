@@ -9,5 +9,5 @@ export function capitalize(str: string | null | undefined): string | null | unde
 }
 
 /** Format currency using Intl.NumberFormat */
-export const formatCurrency = (amount: number, currency = 'USD'): string =>
+export const formatCurrency = (amount: number, currency = 'USD') =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);

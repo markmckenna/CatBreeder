@@ -131,6 +131,34 @@ This applies when:
 - The same logic would work for different types
 - Type parameters can be inferred from usage
 
+### Omit Redundant Type Annotations
+Let TypeScript infer types when the result is obvious from context:
+
+```typescript
+// ✅ Return type inferred from expression
+export const formatMoney = (amount: number) => `$${amount.toLocaleString()}`;
+export const square = (n: number) => n * n;
+
+// ✅ Void return is obvious - no one would store the result
+export function deleteSave() {
+  localStorage.removeItem(SAVE_KEY);
+}
+
+// ❌ Redundant return type annotation
+export const formatMoney = (amount: number): string => `$${amount.toLocaleString()}`;
+export function deleteSave(): void { ... }
+```
+
+Omit type annotations when:
+- Return type is obvious from the expression
+- Function clearly has no meaningful return value (void)
+- Types can be inferred from assignment or usage
+
+Keep explicit types when:
+- The function is part of a public API that needs documentation
+- The inferred type would be wider than intended
+- Complex return types benefit from explicit declaration
+
 ### Prefer Direct Assignment Over Wrapping
 When assigning a function that doesn't depend on `this`, assign it directly rather than wrapping in an arrow function:
 

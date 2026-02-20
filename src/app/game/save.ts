@@ -123,12 +123,12 @@ export function loadGame(): { state: GameState; seed: number } | null {
 }
 
 /** Check if a save exists */
-export const hasSavedGame = (): boolean => localStorage.getItem(SAVE_KEY) !== null;
+export const hasSavedGame = () => localStorage.getItem(SAVE_KEY) !== null;
 
 /**
  * Delete saved game
  */
-export function deleteSave(): void {
+export function deleteSave() {
   localStorage.removeItem(SAVE_KEY);
 }
 

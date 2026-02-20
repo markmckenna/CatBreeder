@@ -70,7 +70,7 @@ export function coinFlip<T>(a: T, b: T, random: RandomFn = defaultRandom): T {
 }
 
 /** Generate a random integer in range [min, max] inclusive */
-export const randomInt = (min: number, max: number, random: RandomFn = defaultRandom): number =>
+export const randomInt = (min: number, max: number, random: RandomFn = defaultRandom) =>
   Math.floor(random() * (max - min + 1)) + min;
 
 /**
