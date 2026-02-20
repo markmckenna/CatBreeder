@@ -42,6 +42,13 @@ interface RoomProps {
   children?: ReactNode;
 }
 
+
+// ============= Visual Layer Z-Index =============
+// 0: Walls & Floor (background)
+// 1: Affixed objects (windows, fireplace, plant, rug)
+// 2: Placeable furniture (cat trees, beds, toys)
+// 3: Cats (always on top)
+
 // ============= Individual SVG Components =============
 
 /** Wall and floor background */
@@ -270,18 +277,26 @@ function BedItem({ x, y, index, selected, onClick, onMouseEnter, onMouseLeave }:
   );
 }
 
+
 function CatTreeItem({ x, index, selected, onClick, onMouseEnter, onMouseLeave }: FurnitureItemProps) {
   // Use distinct colors that don't match the floor (avoid browns)
   const mainColor = index % 2 === 0 ? '#5D4E37' : '#4A3F2F';  // Darker brown for contrast
   const platformColor = index % 2 === 0 ? '#8B7355' : '#7A6548';
   const cushionColor = index % 2 === 0 ? '#E8D5B7' : '#D4C4A8';  // Lighter cushions
-  
+
+  // --- Visual System Agent Notes ---
+  // Placement position: The logical anchor for this object is the center of its foot, slightly above the rendered base (y=202, so use y=195).
+  // Hardpoints: This object defines three hardpoints (cat platforms) at y=22, 87, 152. When placing a cat, align the cat's placement position (butt) to the chosen hardpoint.
+  // Layering: This object is in the placeable furniture layer (z-index: 2), always above affixed objects and below cats.
+  // Hitbox: Use pointer-events on visible SVG shapes, not the bounding box, so cats on top don't block selection.
+
   return (
     <svg 
       viewBox="0 0 90 210"
       className={`${styles.furnitureCatTree} ${selected ? styles.furnitureSelected : ''}`}
       style={{ 
         left: `${x}%`,
+        zIndex: 2, // Placeable furniture layer
       }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
@@ -290,19 +305,15 @@ function CatTreeItem({ x, index, selected, onClick, onMouseEnter, onMouseLeave }
     >
       {/* Main post */}
       <rect x="37" y="0" width="16" height="205" fill={mainColor} stroke="#2a2520" strokeWidth="1" />
-      
       {/* Top platform (highest cat) */}
       <ellipse cx="45" cy="25" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
       <ellipse cx="45" cy="22" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
-      
       {/* Middle platform */}
       <ellipse cx="45" cy="90" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
       <ellipse cx="45" cy="87" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
-      
       {/* Bottom platform (lowest cat) */}
       <ellipse cx="45" cy="155" rx="38" ry="12" fill={platformColor} stroke="#3a3530" strokeWidth="1.5" />
       <ellipse cx="45" cy="152" rx="33" ry="9" fill={cushionColor} stroke="#a09080" strokeWidth="0.5" />
-      
       {/* Base */}
       <ellipse cx="45" cy="202" rx="40" ry="8" fill={mainColor} stroke="#2a2520" strokeWidth="1" />
     </svg>
@@ -386,18 +397,18 @@ function FurnitureLayer({ positions, selectedFurniture, onFurnitureClick, onFurn
 function Room({ furniturePositions, selectedFurniture, onFurnitureClick, onFurnitureHover, children }: RoomProps) {
   return (
     <div className={styles.roomContainer} data-testid="room">
-      {/* Background layer */}
+      {/* Background layer (z-index: 0) */}
       <WallFloor />
-      
-      {/* Room objects - positioned via CSS */}
+
+      {/* Affixed objects (z-index: 1) */}
       <Window side="left" />
       <Window side="right" />
       <Fireplace />
       <Bookshelf />
       <Plant />
       <Rug />
-      
-      {/* Player-owned furniture - positioned from cat positions */}
+
+      {/* Placeable furniture (z-index: 2) */}
       {furniturePositions && furniturePositions.length > 0 && (
         <FurnitureLayer 
           positions={furniturePositions} 
@@ -406,8 +417,8 @@ function Room({ furniturePositions, selectedFurniture, onFurnitureClick, onFurni
           onFurnitureHover={onFurnitureHover} 
         />
       )}
-      
-      {/* Content (cats, UI overlays) */}
+
+      {/* Cats and overlays (z-index: 3) */}
       <div className={styles.content}>
         {children}
       </div>
