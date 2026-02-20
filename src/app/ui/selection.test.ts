@@ -45,7 +45,7 @@ function createFurnitureSelection(type: 'bed' | 'catTree' | 'toy', index: number
   return {
     type: 'furniture',
     furnitureType: type,
-    item: { name: type, price: 100, description: 'Test item' },
+    item: { type, name: type, price: 100, capacityBonus: 1 },
     index,
   };
 }
