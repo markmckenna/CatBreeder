@@ -1,6 +1,68 @@
+
 /**
- * Room component - displays a cozy background for cats.
- * Composed from individual SVG objects that can be positioned via CSS.
+ * Visual System Design (Agent-Oriented Reference)
+ *
+ * ## Room Coordinate System
+ * - Uses percentage-based positioning relative to the container.
+ *
+ * ### Vertical Layout
+ * | Element    | Top % | Description                |
+ * |------------|-------|----------------------------|
+ * | Ceiling    | 0%    | Top of room                |
+ * | Wall       | 0-66% | Wall area (cream/wallpaper)|
+ * | Baseboard  | 66%   | Dark brown trim strip      |
+ * | Floor      | 67-100%| Wooden floor area (legacy) |
+ *
+ * **Rule:** Anything below 70% is “on the floor.” Place thick objects (cat trees, beds) further onto the floor for realism.
+ *
+ * ### Horizontal Layout
+ * - Left edge: 0%, Center: 50%, Right edge: 100%
+ * - Cat trees: x=12% (left), x=88% (right)
+ *
+ * ## Visual Layering
+ * 1. Walls & Floor (background SVGs)
+ * 2. Affixed Objects (windows, fireplace, plants, rugs)
+ * 3. Placeable Furniture (cat trees, beds, toys)
+ * 4. Cats (always on top)
+ *
+ * ## Object Positioning
+ * - Floor objects: use bottom: 30% (70% from top) or greater, depending on thickness.
+ *
+ * ### Placement Positions and Hardpoints
+ * - Every placeable object defines a placement position (anchor point for alignment).
+ * - Objects that can have things placed on them (e.g., cat trees) define hardpoints (snap points).
+ *   - Cat tree: placement at center of foot (y=195), hardpoints at y=22, 87, 152 (platforms).
+ *   - Cat: placement at butt. Snap to hardpoint when placed on tree.
+ *
+ * ## Hitboxes and Pointer Events
+ * - Interactive objects must use a hitbox matching their visible outline (SVG shape), not the bounding box.
+ * - Use SVG hit testing or CSS pointer-events: visiblePainted.
+ * - Parent: pointer-events: none; Interactive element: pointer-events: auto, cursor: pointer, correct z-index.
+ *
+ * ## SVG Object Sizing
+ * - Use preserveAspectRatio="xMidYMid meet" for SVGs.
+ * - Size SVGs with percentage width, let height auto-calculate.
+ *
+ * ## Position Reference Table
+ * | Object     | Method         | Transform           | pointer-events | Placement Pos.   | Hardpoints      |
+ * |------------|---------------|---------------------|----------------|------------------|-----------------|
+ * | Cat sprite | top, left     | translate(-50%,-50%)| auto           | Butt center      | —               |
+ * | Toy        | top, left     | translate(-50%,-50%)| auto           | Center           | —               |
+ * | Bed        | top, left     | translate(-50%,-50%)| auto           | Center of base   | —               |
+ * | Cat tree   | top, left     | translateX(-50%)    | auto           | Center of foot   | 3 (platforms)   |
+ * | Plant      | bottom, left  | none                | none           | Center of base   | —               |
+ * | Fireplace  | top, left     | none                | none           | Center of base   | —               |
+ *
+ * ## Example: Cat Tree and Cat Placement
+ * - Cat tree: placement at center of foot, hardpoints at platform centers.
+ * - Cat: placement at butt, snapped to hardpoint.
+ *
+ * ## Testing Positioning Changes
+ * 1. Visual check: object sits where expected
+ * 2. Hover check: cursor changes to pointer
+ * 3. Click check: clicking triggers handler
+ * 4. Selection check: gold glow appears when selected
+ * If hover/click don’t work, check pointer-events and z-index.
  */
 
 import { ReactNode } from 'react';
