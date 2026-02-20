@@ -1,6 +1,27 @@
 # Agent Instructions
 
-This document provides guidelines for AI agents and automated tools working with this repository.
+Guidelines for AI agents working with this repository.
+
+## Critical Rules (Read First)
+
+1. **Run checks after changes**: `npm run typecheck && npm run test:run`
+2. **Commit after each feature**: Test and commit separately before moving to the next
+3. **Visual positioning**: See [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) for room coordinates
+4. **CSS patterns**: See [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) for styling conventions
+5. **Prefer CSS Modules**: Inline styles only when all properties derive from props/state
+6. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
+7. **Update documentation**: Keep AGENTS.md, README.md, and [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) current
+8. **Use existing patterns**: Follow conventions in existing files
+
+## Supplementary Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) | Room coordinates, positioning, pointer-events |
+| [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) | CSS Modules, z-index, transitions |
+| [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) | Game mechanics, formulas, balance values |
+
+**Read these when working on related areas** - they contain detailed patterns that prevent common mistakes.
 
 ## Project Overview
 
@@ -14,15 +35,7 @@ CatBreeder is an idle/incremental game about cat breeding, built with React and 
 | **Economy** | Market trends, pricing, buying/selling cats |
 | **Environment** | Rooms, furniture, toys, cat happiness |
 | **Simulation** | Day/turn progression, events, cat needs |
-| **Collection** | Discovered variations, achievements, completion tracking |
-
-### Turn-Based Flow
-
-The game runs on a day-by-day turn system:
-1. Player makes decisions (breed, sell, decorate)
-2. Player ends turn
-3. Game simulates results (births, sales, events)
-4. Next day begins
+| **Collection** | Discovered variations, achievements |
 
 ## Tech Stack
 
@@ -37,41 +50,19 @@ The game runs on a day-by-day turn system:
 
 ```
 ├── config/              # Build and test configuration
-│   ├── esbuild.config.js
-│   └── vitest.config.ts
-├── public/              # Static assets served directly
-│   └── index.html       # HTML entry point
+├── docs/                # Detailed documentation
+├── public/              # Static assets
 ├── src/
 │   ├── app/             # React application root
-│   │   ├── index.tsx    # App shell
 │   │   ├── game/        # Core game state & turn loop
-│   │   ├── cats/        # Cat genetics, breeding, display
-│   │   ├── economy/     # Market, pricing, transactions
-│   │   ├── environment/ # Rooms, furniture, decorations
-│   │   └── ui/          # Shared UI components
-│   ├── test/            # Test setup and utilities
-│   ├── base/            # Central platform code (randomness, common utilities)
-│   ├── index.tsx        # Bootstrap/entry point
-│   └── index.css        # Global styles
-├── dist/                # Build output (gitignored)
-└── [root config files]  # package.json, tsconfig.json, etc.
+│   │   ├── cats/        # Cat genetics, breeding
+│   │   ├── economy/     # Market, pricing
+│   │   ├── environment/ # Rooms, furniture
+│   │   └── ui/          # Visual components
+│   ├── base/            # Platform utilities (random, helpers)
+│   └── test/            # Test setup
+└── dist/                # Build output (gitignored)
 ```
-
-## Important Directories
-
-| Directory | Purpose |
-|-----------|---------|
-| `src/` | All application source code |
-| `src/app/` | React application (organized by feature, not type) |
-| `src/app/game/` | Game state, turn system, save/load |
-| `src/app/cats/` | Cat types, genetics, breeding logic |
-| `src/app/economy/` | Market simulation, pricing |
-| `src/app/environment/` | Room/furniture system |
-| `src/app/ui/` | Reusable UI components |
-| `src/test/` | Test setup, mocks, and utilities |
-| `src/base/` | Central platform code (randomness, common utilities) |
-| `config/` | Build and test configuration files |
-| `public/` | Static files copied to dist |
 
 ### Feature-Based Organization
 
