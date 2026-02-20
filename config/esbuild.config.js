@@ -19,14 +19,10 @@ function openBrowser(url) {
 }
 
 /** Check if an existing dev server is responding on the port */
-async function isDevServerRunning(port) {
-  try {
-    const response = await fetch(`http://localhost:${port}/`);
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
+const isDevServerRunning = (port) =>
+  fetch(`http://localhost:${port}/`)
+    .then((res) => res.ok)
+    .catch(() => false);
 
 /** Try to start esbuild serve, incrementing port on EADDRINUSE */
 async function serveWithFallback(ctx, servedir, startPort, maxAttempts = 100) {
