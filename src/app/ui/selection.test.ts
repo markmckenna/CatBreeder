@@ -7,7 +7,7 @@ import {
   type CatSelection,
   type FurnitureSelection,
 } from './selection.ts';
-import { createMockCat } from './cats/test/helpers.ts';
+import { createMockCat } from '../cats/test/helpers.ts';
 
 function createCatSelection(catId: string): CatSelection {
   return {
