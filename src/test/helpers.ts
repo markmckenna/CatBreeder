@@ -1,6 +1,4 @@
-/**
- * Shared test utilities for creating mock game objects.
- */
+/** Test utilities for mock game objects */
 
 import type { Cat, CatPhenotype, CatGenotype } from '../app/cats/genetics.ts';
 
@@ -20,10 +18,7 @@ const DEFAULT_GENOTYPE: CatGenotype = {
   tailColor: ['O', 'O'],
 };
 
-/**
- * Create a mock cat with optional overrides.
- * Use this for tests that don't care about specific phenotype values.
- */
+/** @returns a mock cat with optional overrides */
 export function createMockCat(overrides: Partial<Cat> = {}): Cat {
   return {
     id: 'test-cat-1',
@@ -36,10 +31,7 @@ export function createMockCat(overrides: Partial<Cat> = {}): Cat {
   };
 }
 
-/**
- * Create a mock cat from a specific phenotype.
- * Automatically generates matching genotype based on dominant/recessive rules.
- */
+/** @returns a mock cat with matching genotype for the given phenotype */
 export function createMockCatFromPhenotype(
   phenotype: CatPhenotype,
   name = 'TestCat',

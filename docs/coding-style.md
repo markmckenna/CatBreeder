@@ -46,6 +46,35 @@ const isAdult = isAdultCat(cat);  // Defined in cats module
 ### Minimize Duplication
 Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers.
 
+### Concise Comments
+Prefer brief, sentential comments over verbose JSDoc. Omit `@param` tags that just repeat the parameter name, and `@returns` tags that restate the obvious. Include details only when they add clarity.
+
+```typescript
+// ❌ Verbose - restates the obvious
+/**
+ * Pick one of two items with 50/50 probability.
+ * 
+ * @param a - First option
+ * @param b - Second option  
+ * @param random - Random function (defaults to Math.random)
+ * @returns Either a or b
+ */
+export function coinFlip<T>(a: T, b: T, random = defaultRandom): T
+
+// ✅ Concise - adds value
+/** @returns either [a] or [b] with equal probability */
+export function coinFlip<T>(a: T, b: T, random = defaultRandom): T
+```
+
+When `@param` is useful, keep it brief and only for non-obvious parameters:
+```typescript
+/**
+ * @param random - source of randomness for deterministic testing
+ * @returns random number from a normal distribution
+ */
+export function normalRandom(mean = 0, stdDev = 1, random = defaultRandom): number
+```
+
 ### Transparent Utility Functions
 When a utility function accepts optional arguments, it should pass through nullish values rather than converting them:
 

@@ -1,18 +1,10 @@
-/**
- * Market pricing and economy logic.
- * 
- * Currently uses fixed demand. Trait values are static.
- * Future: Implement shifting trends, buyer cohorts, supply/demand.
- */
+/** Market pricing and economy. Fixed demand for now; future: trends, supply/demand. */
 
 import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/genetics.ts';
 import { createRandomCat, randomCatName } from '../cats/genetics.ts';
 import { defaultRandom, normalRandom } from '@/base/random.ts';
 
-/**
- * Value modifiers for each trait variant
- * Higher = more valuable
- */
+/** Value multipliers by trait variant (higher = more valuable) */
 export interface TraitValues {
   size: Record<SizePhenotype, number>;
   tailLength: Record<TailLengthPhenotype, number>;
@@ -20,27 +12,21 @@ export interface TraitValues {
   tailColor: Record<TailColorPhenotype, number>;
 }
 
-/**
- * Current market state
- */
+/** Current market state */
 export interface MarketState {
   basePrice: number;
   traitValues: TraitValues;
   // Future: trends, buyer demand, etc.
 }
 
-/**
- * A cat listed for sale
- */
+/** A cat listed for sale */
 export interface SaleListing {
   catId: string;
   askingPrice: number;
   listedOnDay: number;
 }
 
-/**
- * Transaction record
- */
+/** Transaction record */
 export interface Transaction {
   type: 'buy' | 'sell';
   catId: string;
@@ -48,10 +34,7 @@ export interface Transaction {
   day: number;
 }
 
-/**
- * Default trait values - represents current market preferences.
- * Rarer recessive traits are generally more valuable.
- */
+/** Default trait values - rarer recessive traits are more valuable */
 const DEFAULT_TRAIT_VALUES: TraitValues = {
   size: {
     small: 1.5,  // Recessive, rarer
@@ -71,14 +54,10 @@ const DEFAULT_TRAIT_VALUES: TraitValues = {
   },
 };
 
-/**
- * Daily food cost per cat
- */
+/** Daily food cost per cat */
 export const FOOD_COST_PER_CAT = 1;
 
-/**
- * Create initial market state
- */
+/** @returns initial market state */
 export function createMarketState(): MarketState {
   return {
     basePrice: 100,
@@ -86,10 +65,7 @@ export function createMarketState(): MarketState {
   };
 }
 
-/**
- * Calculate value multiplier from phenotype with optional price fluctuation.
- * When fluctuate is true, each trait gets ±10% variance (normal distribution, stdDev ~3.33%).
- */
+/** @returns value multiplier from phenotype; ±10% variance when fluctuate=true */
 function getTraitMultiplier(
   phenotype: CatPhenotype,
   traitValues: TraitValues,
@@ -113,12 +89,7 @@ function getTraitMultiplier(
   );
 }
 
-/**
- * Calculate a cat's market value.
- * @param cat - The cat to value
- * @param market - Market state with base price and trait values
- * @param options - Optional settings for fluctuation and random source
- */
+/** @returns cat's market value based on traits, happiness, and age */
 export function calculateCatValue(
   cat: Cat,
   market: MarketState,
@@ -138,9 +109,7 @@ export function calculateCatValue(
   return Math.round(value);
 }
 
-/**
- * Get a description of why a cat is valuable
- */
+/** @returns list of valuable traits for a cat */
 export function getValueBreakdown(cat: Cat, market: MarketState): { trait: string; multiplier: number }[] {
   const breakdown: { trait: string; multiplier: number }[] = [];
   const tv = market.traitValues;
@@ -154,38 +123,26 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
   return breakdown;
 }
 
-/**
- * Market premium when buying cats (20%)
- */
+/** Market premium when buying cats */
 const MARKET_BUY_PREMIUM = 0.2;
 
-/**
- * Number of cats available in market each day
- */
+/** Cats available in market each day */
 const MARKET_INVENTORY_SIZE = 3;
 
-/**
- * A cat available for purchase in the market
- */
+/** A cat available for purchase */
 export interface MarketCat {
   cat: Cat;
   price: number;
 }
 
-/**
- * Calculate purchase price for a cat (includes market premium)
- */
+/** @returns purchase price for a cat (includes market premium) */
 function calculatePurchasePrice(cat: Cat, market: MarketState): number {
   const baseValue = calculateCatValue(cat, market);
   const withPremium = baseValue * (1 + MARKET_BUY_PREMIUM);
   return Math.round(withPremium);
 }
 
-/**
- * Generate cats available for purchase in the market
- * @param market - Current market state
- * @param rng - Optional random function for deterministic generation
- */
+/** @returns cats available for purchase in the market */
 export function generateMarketInventory(
   market: MarketState,
   rng?: RandomFn

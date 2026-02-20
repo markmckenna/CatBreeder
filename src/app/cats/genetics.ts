@@ -1,14 +1,7 @@
 /**
- * Genetics and breeding logic.
- * 
- * Currently implements simple Mendelian inheritance.
- * Future: Add mutation rates, polygenic traits, evolutionary algorithms.
- * 
- * Traits use a simple allele system for Mendelian inheritance.
+ * Genetics and breeding using simple Mendelian inheritance.
  * Each trait has two alleles (one from each parent).
- * 
- * All random operations can use an injectable random function for
- * deterministic testing and savegame stability.
+ * Future: mutation rates, polygenic traits.
  */
 
 import { type RandomFn, defaultRandom, coinFlip, randomInt, pickRandom } from '@/base/random.ts';
@@ -33,9 +26,7 @@ export type TailColorAllele = 'O' | 'w';
 export type TailColorGenotype = [TailColorAllele, TailColorAllele];
 export type TailColorPhenotype = 'white' | 'orange';
 
-/**
- * Complete genotype for a cat - all genetic information
- */
+/** Complete genotype for a cat */
 export interface CatGenotype {
   size: SizeGenotype;
   tailLength: TailLengthGenotype;
@@ -43,9 +34,7 @@ export interface CatGenotype {
   tailColor: TailColorGenotype;
 }
 
-/**
- * Observable traits (what you see)
- */
+/** Observable traits */
 export interface CatPhenotype {
   size: SizePhenotype;
   tailLength: TailLengthPhenotype;
@@ -53,9 +42,7 @@ export interface CatPhenotype {
   tailColor: TailColorPhenotype;
 }
 
-/**
- * A cat in the game
- */
+/** A cat in the game */
 export interface Cat {
   id: string;
   name: string;
@@ -66,36 +53,27 @@ export interface Cat {
   favourite?: boolean; // starred cats cannot be sold
 }
 
-/**
- * Options for breeding operations
- */
+/** Options for breeding operations */
 export interface BreedingOptions {
-  /** Random function for deterministic breeding (defaults to Math.random) */
+  /** Random source for deterministic breeding */
   random?: RandomFn;
-  /** Override the generated cat ID (for testing) */
+  /** Override the generated cat ID */
   id?: string;
 }
 
-/**
- * Generate a unique cat ID
- * @param random - Optional random function for deterministic ID generation
- */
+/** @returns a unique cat ID */
 export function generateCatId(random: RandomFn = defaultRandom): string {
   // Use random for the suffix, but still use timestamp for uniqueness
   const suffix = Math.floor(random() * 2176782336).toString(36); // 36^6 possibilities
   return `cat_${Date.now()}_${suffix.padStart(6, '0')}`;
 }
 
-/**
- * Randomly select one allele from a genotype pair
- */
+/** Randomly select one allele from a genotype pair */
 function pickAllele<T>(genotype: [T, T], random: RandomFn = defaultRandom): T {
   return coinFlip(genotype[0], genotype[1], random);
 }
 
-/**
- * Breed two genotypes to produce offspring genotype
- */
+/** Breed two genotypes to produce offspring genotype */
 function breedGenotype<T>(parent1: [T, T], parent2: [T, T], random: RandomFn = defaultRandom): [T, T] {
   return [pickAllele(parent1, random), pickAllele(parent2, random)];
 }
@@ -124,14 +102,7 @@ export const phenotypeFor = (it: CatGenotype): CatPhenotype => ({
   tailColor: tailColorPhenotypeFor(it.tailColor),
 });
 
-/**
- * Breed two cats to produce offspring
- * 
- * @param parent1 - First parent cat
- * @param parent2 - Second parent cat
- * @param name - Name for the offspring
- * @param options - Optional breeding options for deterministic testing
- */
+/** @returns offspring cat from breeding two parents */
 export function breedCats(parent1: Cat, parent2: Cat, name: string, options: BreedingOptions = {}): Cat {
   const random = options.random ?? defaultRandom;
   
@@ -153,11 +124,7 @@ export function breedCats(parent1: Cat, parent2: Cat, name: string, options: Bre
   };
 }
 
-/**
- * Create a random genotype for initial cats
- * 
- * @param random - Optional random function for deterministic generation
- */
+/** @returns a random genotype for initial cats */
 export function createRandomGenotype(random: RandomFn = defaultRandom): CatGenotype {
   const randomAllele = <T>(dominant: T, recessive: T): [T, T] => {
     return [coinFlip(dominant, recessive, random), coinFlip(dominant, recessive, random)];
@@ -171,26 +138,19 @@ export function createRandomGenotype(random: RandomFn = defaultRandom): CatGenot
   };
 }
 
-/**
- * Options for creating random cats
- */
+/** Options for creating random cats */
 export interface CreateCatOptions {
-  /** Random function for deterministic generation */
+  /** Random source for deterministic generation */
   random?: RandomFn;
   /** Override the generated cat ID */
   id?: string;
-  /** Override the age (otherwise random 30-394 days) */
+  /** Override age (otherwise random 30-394 days) */
   age?: number;
   /** Override happiness (otherwise random 70-100) */
   happiness?: number;
 }
 
-/**
- * Create a cat with random genetics
- * 
- * @param name - Cat's name
- * @param options - Optional settings for deterministic generation
- */
+/** @returns a cat with random genetics */
 export function createRandomCat(name: string, options: CreateCatOptions = {}): Cat {
   const random = options.random ?? defaultRandom;
   const genotype = createRandomGenotype(random);
@@ -206,9 +166,7 @@ export function createRandomCat(name: string, options: CreateCatOptions = {}): C
   };
 }
 
-/**
- * Cat name generator for offspring
- */
+/** Cat names */
 const CAT_NAMES = [
   'Whiskers', 'Mittens', 'Shadow', 'Luna', 'Mochi',
   'Ginger', 'Oreo', 'Cleo', 'Felix', 'Simba',

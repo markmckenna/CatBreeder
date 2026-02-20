@@ -1,21 +1,11 @@
-/**
- * Trait Collection System
- * 
- * Tracks which phenotype combinations have been successfully bred.
- * There are 2^4 = 16 possible combinations of the 4 binary traits.
- */
+/** Trait Collection - tracks which phenotype combinations have been bred (2^4 = 16 total) */
 
 import type { CatPhenotype, Cat } from './genetics.ts';
 
-/**
- * Unique key for a phenotype combination.
- * Format: "size-tailLength-earShape-tailColor"
- */
+/** Key for a phenotype combination: "size-tailLength-earShape-tailColor" */
 export type TraitKey = string;
 
-/**
- * A collected trait entry - records which cat first achieved this combination
- */
+/** A collected trait - records which cat first achieved this combination */
 export interface CollectedTrait {
   key: TraitKey;
   phenotype: CatPhenotype;
@@ -35,9 +25,7 @@ export interface TraitCollection {
 export const phenotypeKeyFor = (it: CatPhenotype): TraitKey =>
   `${it.size}-${it.tailLength}-${it.earShape}-${it.tailColor}`;
 
-/**
- * Get all possible phenotype combinations
- */
+/** @returns all 16 possible phenotype combinations */
 export function getAllPhenotypeCombinations(): CatPhenotype[] {
   const sizes: Array<'small' | 'large'> = ['small', 'large'];
   const tailLengths: Array<'short' | 'long'> = ['short', 'long'];
@@ -72,12 +60,7 @@ export const getCollectedTraitInfo = (
   phenotype: CatPhenotype
 ): CollectedTrait | undefined => collection.collected.get(phenotypeKeyFor(phenotype));
 
-/**
- * Register a newly bred cat's traits in the collection.
- * Only records if this is the first cat with this combination.
- * 
- * @returns true if this was a new discovery, false if already collected
- */
+/** @returns {updated: true} if this cat's phenotype is a new discovery */
 export function registerBredCat(
   collection: TraitCollection,
   cat: Cat,
@@ -102,9 +85,7 @@ export function registerBredCat(
   };
 }
 
-/**
- * Get collection progress as a fraction
- */
+/** @returns collection progress as {collected, total} */
 export function getCollectionProgress(collection: TraitCollection): {
   collected: number;
   total: number;

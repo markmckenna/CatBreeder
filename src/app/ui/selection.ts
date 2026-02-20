@@ -1,9 +1,4 @@
-/**
- * Unified selection system for interactable objects.
- * 
- * Any object that can be hovered/selected/acted upon uses this system.
- * This provides consistent hover effects, info display, and actions.
- */
+/** Unified selection system for interactable objects (hover, select, act) */
 
 import type { Cat } from '../cats/genetics.ts';
 import type { FurnitureItemType, FurnitureItem } from '../environment/furniture.ts';

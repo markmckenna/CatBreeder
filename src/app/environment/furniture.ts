@@ -1,14 +1,9 @@
-/**
- * Furniture system for cat rooms.
- * Furniture increases carrying capacity and affects cat happiness.
- */
+/** Furniture system - affects cat capacity and happiness */
 
 // Purchasable furniture item types
 export type FurnitureItemType = 'toy' | 'bed' | 'catTree';
 
-/**
- * Definition of a furniture item available in the shop
- */
+/** Furniture item available in the shop */
 export interface FurnitureItem {
   type: FurnitureItemType;
   name: string;
@@ -16,9 +11,7 @@ export interface FurnitureItem {
   capacityBonus: number;
 }
 
-/**
- * Furniture shop inventory - available items for purchase
- */
+/** Shop inventory */
 export const SHOP_ITEMS: Record<FurnitureItemType, FurnitureItem> = {
   toy: {
     type: 'toy',
@@ -40,18 +33,14 @@ export const SHOP_ITEMS: Record<FurnitureItemType, FurnitureItem> = {
   },
 };
 
-/**
- * Player's owned furniture counts
- */
+/** Player's owned furniture counts */
 export interface OwnedFurniture {
   toys: number;
   beds: number;
   catTrees: number;
 }
 
-/**
- * Create initial furniture state (player owns nothing)
- */
+/** @returns initial furniture state (owns nothing) */
 export function createInitialFurniture(): OwnedFurniture {
   return {
     toys: 0,
@@ -60,9 +49,7 @@ export function createInitialFurniture(): OwnedFurniture {
   };
 }
 
-/**
- * Base carrying capacity (just for having a room)
- */
+/** Base capacity for having a room */
 export const BASE_CAPACITY = 2;
 
 /** Calculate total cat capacity based on owned furniture */
@@ -73,10 +60,7 @@ export const calculateCapacity = (it: OwnedFurniture): number =>
 export const getTotalFurniture = (it: OwnedFurniture): number =>
   it.toys + it.beds + (it.catTrees ?? 0);
 
-/**
- * Happiness change constants (percentages)
- * Each cat's happiness changes daily based on their experience.
- */
+/** Daily happiness changes based on cat experience */
 export const HAPPINESS_RULES = {
   /** Base daily decay when no special conditions */
   BASE_DECAY: -5,
@@ -92,9 +76,7 @@ export const HAPPINESS_RULES = {
   OVERCROWD_PENALTY_PER_CAT: -1,
 };
 
-/**
- * Get happiness status description for UI display
- */
+/** @returns happiness status for UI display */
 export function getHappinessStatus(catCount: number, furniture: OwnedFurniture): {
   status: 'happy' | 'neutral' | 'stressed';
   description: string;

@@ -1,9 +1,4 @@
-/**
- * Cat position management for the room.
- * 
- * Each position is tied to a specific room object that provides comfort.
- * Positions are percentage coordinates (x, y) within the room.
- */
+/** Cat position management. Positions are percentage coordinates (x, y) within the room. */
 
 import type { OwnedFurniture } from './furniture.ts';
 import type { RandomFn } from '@/base/random.ts';
@@ -17,7 +12,7 @@ export interface RoomSpot {
   type: SpotType;
   x: number;
   y: number;
-  /** For toys: position offset for the toy item itself */
+  /** Position offset for toy items */
   itemOffset?: { x: number; y: number };
 }
 
@@ -29,11 +24,7 @@ export interface CatPosition {
   spotId: string;
 }
 
-/**
- * Built-in room spots (always available)
- * - Rug: multiple spots on the cozy rug
- * - Bookshelf: cat can sit near the bookshelf
- */
+/** Built-in spots (rug, bookshelf) */
 const BUILTIN_SPOTS: RoomSpot[] = [
   // Rug spots (in front of fireplace)
   { id: 'rug-center', type: 'rug', x: 50, y: 80 },
@@ -46,10 +37,7 @@ const BUILTIN_SPOTS: RoomSpot[] = [
   { id: 'bookshelf', type: 'bookshelf', x: 75, y: 72 },
 ];
 
-/**
- * Toy spot definitions (when player owns toys)
- * Toys render to the right of the cat
- */
+/** Toy spots - toys render to the right of the cat */
 const TOY_SPOT_DEFS: Omit<RoomSpot, 'type'>[] = [
   { id: 'toy-1', x: 22, y: 78, itemOffset: { x: 6, y: 2 } },
   { id: 'toy-2', x: 78, y: 78, itemOffset: { x: 6, y: 2 } },
@@ -58,10 +46,7 @@ const TOY_SPOT_DEFS: Omit<RoomSpot, 'type'>[] = [
   { id: 'toy-5', x: 50, y: 92, itemOffset: { x: 6, y: 0 } },
 ];
 
-/**
- * Bed spot definitions (when player owns beds)
- * Beds render under the cat
- */
+/** Bed spots - beds render under the cat */
 const BED_SPOT_DEFS: Omit<RoomSpot, 'type'>[] = [
   { id: 'bed-1', x: 30, y: 83 },
   { id: 'bed-2', x: 70, y: 83 },
@@ -71,11 +56,8 @@ const BED_SPOT_DEFS: Omit<RoomSpot, 'type'>[] = [
 ];
 
 /**
- * Cat tree spot definitions (when player owns cat trees)
- * Each tree provides 3 spots stacked vertically
- * Cat trees positioned at top: 19%, height: 50% (element spans 19%-69%)
- * Platform cushion centers at SVG y: 22, 87, 152 (viewBox 0-210)
- * Cat position formula: 19% + (platform_y/210)*50% + ~3% body offset
+ * Cat tree spots - 3 spots per tree stacked vertically.
+ * Position formula: 19% + (platform_y/210)*50% + ~3% body offset
  */
 const CAT_TREE_SPOT_DEFS: Omit<RoomSpot, 'type'>[][] = [
   // First cat tree - left side
@@ -92,9 +74,7 @@ const CAT_TREE_SPOT_DEFS: Omit<RoomSpot, 'type'>[][] = [
   ],
 ];
 
-/**
- * Floor positions (no comfort bonus)
- */
+/** Floor spots (no comfort bonus) */
 const FLOOR_SPOTS: RoomSpot[] = [
   { id: 'floor-1', type: 'floor', x: 15, y: 85 },
   { id: 'floor-2', type: 'floor', x: 85, y: 85 },
@@ -104,10 +84,7 @@ const FLOOR_SPOTS: RoomSpot[] = [
   { id: 'floor-6', type: 'floor', x: 55, y: 90 },
 ];
 
-/**
- * Get all available spots based on furniture owned.
- * Order determines priority: catTrees > beds > toys > rug/bookshelf > floor
- */
+/** @returns all spots based on owned furniture (priority: catTrees > beds > toys > builtins > floor) */
 export function getAvailableSpots(furniture: OwnedFurniture): RoomSpot[] {
   const spots: RoomSpot[] = [];
   
@@ -140,10 +117,7 @@ export function getAvailableSpots(furniture: OwnedFurniture): RoomSpot[] {
   return spots;
 }
 
-/**
- * Assign cats to spots based on available furniture.
- * Returns positions with spot type info for happiness calculation.
- */
+/** @returns positions for cats based on available furniture */
 export function assignCatPositions(
   catIds: string[],
   furniture: OwnedFurniture,
@@ -171,10 +145,7 @@ export function assignCatPositions(
   });
 }
 
-/**
- * Get furniture item positions for rendering.
- * Returns positions where toys/beds/catTrees should be drawn.
- */
+/** Furniture positions for rendering */
 export interface FurniturePosition {
   type: 'toy' | 'bed' | 'catTree';
   index: number;
@@ -262,10 +233,7 @@ export function getFurniturePositions(
   return positions;
 }
 
-/**
- * Persistent colors for furniture items based on index.
- * These are deterministic so colors don't change.
- */
+/** Deterministic colors for furniture items by index */
 const TOY_COLORS = [
   { main: '#FF6B6B', accent: '#C62828' },  // Red
   { main: '#64B5F6', accent: '#1565C0' },  // Blue

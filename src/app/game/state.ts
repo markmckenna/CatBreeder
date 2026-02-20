@@ -1,6 +1,4 @@
-/**
- * Core game logic and state management.
- */
+/** Core game logic and state management */
 
 import type { Cat, RandomFn } from '../cats/genetics.ts';
 import { breedCats, createRandomCat, randomCatName } from '../cats/genetics.ts';
@@ -12,17 +10,13 @@ import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture
 import { createInitialFurniture, SHOP_ITEMS, calculateCapacity } from '../environment/furniture.ts';
 import { assignCatPositions, type SpotType } from '../environment/positions.ts';
 
-/**
- * Planned breeding pair for next turn
- */
+/** Planned breeding pair for next turn */
 export interface BreedingPair {
   parent1Id: string;
   parent2Id: string;
 }
 
-/**
- * Complete game state
- */
+/** Complete game state */
 export interface GameState {
   day: number;
   money: number;
@@ -50,10 +44,7 @@ export interface GameState {
   totalCatsSold: number;
 }
 
-/**
- * Actions the player can take.
- * Each action type maps to a handler function.
- */
+/** Player actions - each maps to a handler function */
 export enum ActionType {
   ADD_BREEDING_PAIR = 'ADD_BREEDING_PAIR',
   REMOVE_BREEDING_PAIR = 'REMOVE_BREEDING_PAIR',
@@ -77,9 +68,7 @@ export type GameAction =
   | { type: ActionType.SELL_FURNITURE; itemType: FurnitureItemType }
   | { type: ActionType.END_TURN };
 
-/**
- * Turn results to show the player
- */
+/** Turn results to show the player */
 export interface TurnResult {
   day: number;
   births: Cat[];
@@ -88,11 +77,7 @@ export interface TurnResult {
   events: string[];
 }
 
-/**
- * Create initial game state
- * 
- * @param rng - Optional random function for deterministic generation
- */
+/** @returns initial game state with 2 starter cats */
 export function createInitialGameState(rng?: RandomFn): GameState {
   // Start with 2 cats
   const starterCats = [
@@ -313,11 +298,7 @@ export function applyAction(state: GameState, action: GameAction): GameState {
   }
 }
 
-/**
- * Process end of turn - breeding, sales, aging
- * @param state - Current game state
- * @param rng - Optional random function for deterministic results
- */
+/** @returns new state and turn results after processing breeding, sales, aging */
 export function processTurn(
   state: GameState,
   rng?: RandomFn

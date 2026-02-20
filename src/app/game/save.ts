@@ -1,9 +1,4 @@
-/**
- * Save/Load system using localStorage.
- * 
- * Handles serialization and deserialization of game state,
- * including the random seed for reproducibility.
- */
+/** Save/Load system using localStorage */
 
 import type { GameState } from './state.ts';
 import type { TraitCollection, CollectedTrait, TraitKey } from '../cats/collection.ts';
@@ -14,9 +9,7 @@ import type { OwnedFurniture } from '../environment/furniture.ts';
 export const SAVE_KEY = 'catbreeder_save';
 export const SAVE_VERSION = 1;
 
-/**
- * Serialized save format
- */
+/** Serialized save format */
 interface SaveData {
   version: number;
   timestamp: number;
@@ -24,9 +17,7 @@ interface SaveData {
   state: SerializedGameState;
 }
 
-/**
- * State in serializable format (no Map objects)
- */
+/** State in serializable format (no Map objects) */
 interface SerializedGameState {
   day: number;
   money: number;
@@ -44,9 +35,7 @@ interface SerializedGameState {
   totalCatsSold: number;
 }
 
-/**
- * Serialize game state for storage
- */
+/** Serialize game state for storage */
 function serializeState(state: GameState): SerializedGameState {
   return {
     ...state,
@@ -56,9 +45,7 @@ function serializeState(state: GameState): SerializedGameState {
   };
 }
 
-/**
- * Deserialize state from storage
- */
+/** Deserialize state from storage */
 function deserializeState(data: SerializedGameState): GameState {
   // Ensure furniture has all expected properties (for old saves)
   const savedFurniture = data.furniture ?? { toys: 0, beds: 0, catTrees: 0 };
@@ -77,9 +64,7 @@ function deserializeState(data: SerializedGameState): GameState {
   };
 }
 
-/**
- * Save game state to localStorage
- */
+/** @returns true if save succeeded */
 export function saveGame(state: GameState, seed: number): boolean {
   try {
     const saveData: SaveData = {
@@ -97,10 +82,7 @@ export function saveGame(state: GameState, seed: number): boolean {
   }
 }
 
-/**
- * Load game state from localStorage
- * Returns null if no save exists or save is invalid
- */
+/** @returns saved state and seed, or null if no valid save exists */
 export function loadGame(): { state: GameState; seed: number } | null {
   try {
     const savedJson = localStorage.getItem(SAVE_KEY);
@@ -125,16 +107,12 @@ export function loadGame(): { state: GameState; seed: number } | null {
 /** Check if a save exists */
 export const hasSavedGame = () => localStorage.getItem(SAVE_KEY) !== null;
 
-/**
- * Delete saved game
- */
+/** Delete saved game */
 export function deleteSave() {
   localStorage.removeItem(SAVE_KEY);
 }
 
-/**
- * Save metadata for display
- */
+/** Save metadata for display */
 export interface SaveInfo {
   day: number;
   money: number;
@@ -143,9 +121,7 @@ export interface SaveInfo {
   timestamp: number;
 }
 
-/**
- * Get save metadata without loading full state
- */
+/** @returns save metadata without loading full state */
 export function getSaveInfo(): SaveInfo | null {
   try {
     const savedJson = localStorage.getItem(SAVE_KEY);
