@@ -5,7 +5,7 @@ Guidelines for AI agents working with this repository.
 ## Critical Rules (Read First)
 
 1. **Run checks after changes**: `npm run typecheck && npm run test:run`
-2. **Commit after each feature**: Test and commit separately before moving to the next
+2. **Commit after each change**: Test and commit every completed task (features, fixes, refactors) before moving on
 3. **Visual positioning**: See [docs/VISUAL_SYSTEM.md](docs/VISUAL_SYSTEM.md) for room coordinates
 4. **CSS patterns**: See [docs/CSS_PATTERNS.md](docs/CSS_PATTERNS.md) for styling conventions
 5. **Prefer CSS Modules**: Inline styles only when all properties derive from props/state
