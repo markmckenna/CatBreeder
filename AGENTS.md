@@ -13,6 +13,7 @@ Guidelines for AI agents working with this repository.
 7. **Update documentation**: Keep AGENTS.md, README.md, and [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) current
 8. **Use existing patterns**: Follow conventions in existing files
 9. **Minimize duplication**: Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers
+10. **Prefer promise chains when simpler**: Use `.then()/.catch()` over async/await when it reduces a multi-line function to a single expression
 
 ## Supplementary Documentation
 
