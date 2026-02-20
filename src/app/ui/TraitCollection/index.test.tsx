@@ -71,4 +71,23 @@ describe('TraitCollection', () => {
     expect(screen.getAllByText('small').length).toBeGreaterThan(0);
     expect(screen.getAllByText('folded').length).toBeGreaterThan(0);
   });
+
+  it('tracks hover state on uncollected traits', () => {
+    const collection = createTraitCollection();
+    render(<TraitCollection collection={collection} />);
+    
+    // Find an uncollected slot by its label and hover via its parent
+    const questionMarks = screen.getAllByText('???');
+    expect(questionMarks.length).toBe(16);
+    
+    // Get the parent element that has onMouseEnter/onMouseLeave
+    const slotParent = questionMarks[0].parentElement?.parentElement;
+    if (slotParent) {
+      fireEvent.mouseEnter(slotParent);
+      fireEvent.mouseLeave(slotParent);
+    }
+    
+    // Component should handle hover state without errors
+    expect(screen.getAllByText('???').length).toBeGreaterThan(0);
+  });
 });

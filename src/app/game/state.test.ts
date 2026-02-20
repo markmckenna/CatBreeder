@@ -376,4 +376,169 @@ describe('game state', () => {
       expect(newState.transactions[0].amount).toBe(50);
     });
   });
+
+  describe('SELL_FURNITURE action', () => {
+    it('sells a toy for half price', () => {
+      let state = createInitialGameState();
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
+      const moneyAfterBuy = state.money;
+
+      state = applyAction(state, { type: ActionType.SELL_FURNITURE, itemType: 'toy' });
+
+      expect(state.furniture.toys).toBe(0);
+      expect(state.money).toBe(moneyAfterBuy + 25); // 50% of $50
+    });
+
+    it('sells a bed for half price', () => {
+      let state = createInitialGameState();
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'bed' });
+      const moneyAfterBuy = state.money;
+
+      state = applyAction(state, { type: ActionType.SELL_FURNITURE, itemType: 'bed' });
+
+      expect(state.furniture.beds).toBe(0);
+      expect(state.money).toBe(moneyAfterBuy + 50); // 50% of $100
+    });
+
+    it('does not sell if no furniture owned', () => {
+      const state = createInitialGameState();
+
+      const newState = applyAction(state, { type: ActionType.SELL_FURNITURE, itemType: 'toy' });
+
+      expect(newState.money).toBe(state.money);
+      expect(newState.furniture.toys).toBe(0);
+    });
+
+    it('sells a cat tree for half price', () => {
+      let state = createInitialGameState();
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'catTree' });
+      const moneyAfterBuy = state.money;
+
+      state = applyAction(state, { type: ActionType.SELL_FURNITURE, itemType: 'catTree' });
+
+      expect(state.furniture.catTrees).toBe(0);
+      expect(state.money).toBe(moneyAfterBuy + 100); // 50% of $200
+    });
+
+    it('records transaction when selling furniture', () => {
+      let state = createInitialGameState();
+      state = applyAction(state, { type: ActionType.BUY_FURNITURE, itemType: 'toy' });
+      state = { ...state, transactions: [] }; // Clear buy transaction
+
+      state = applyAction(state, { type: ActionType.SELL_FURNITURE, itemType: 'toy' });
+
+      expect(state.transactions).toHaveLength(1);
+      expect(state.transactions[0].type).toBe('sell');
+      expect(state.transactions[0].amount).toBe(25);
+    });
+  });
+
+  describe('TOGGLE_FAVOURITE action', () => {
+    it('marks a cat as favourite', () => {
+      const state = createInitialGameState();
+      const cat = state.cats[0];
+      expect(cat.favourite).toBeFalsy();
+
+      const newState = applyAction(state, { type: ActionType.TOGGLE_FAVOURITE, catId: cat.id });
+
+      const updatedCat = newState.cats.find(c => c.id === cat.id);
+      expect(updatedCat?.favourite).toBe(true);
+    });
+
+    it('unmarks a favourite cat', () => {
+      let state = createInitialGameState();
+      const cat = state.cats[0];
+      state = applyAction(state, { type: ActionType.TOGGLE_FAVOURITE, catId: cat.id });
+
+      state = applyAction(state, { type: ActionType.TOGGLE_FAVOURITE, catId: cat.id });
+
+      const updatedCat = state.cats.find(c => c.id === cat.id);
+      expect(updatedCat?.favourite).toBe(false);
+    });
+
+    it('removes cat from sale when favouriting', () => {
+      let state = createInitialGameState();
+      const cat = state.cats[0];
+      state = applyAction(state, { type: ActionType.LIST_FOR_SALE, catId: cat.id });
+      expect(state.catsForSale).toContain(cat.id);
+
+      state = applyAction(state, { type: ActionType.TOGGLE_FAVOURITE, catId: cat.id });
+
+      expect(state.catsForSale).not.toContain(cat.id);
+    });
+
+    it('does nothing for non-existent cat', () => {
+      const state = createInitialGameState();
+      const newState = applyAction(state, { type: ActionType.TOGGLE_FAVOURITE, catId: 'non-existent' });
+      expect(newState).toEqual(state);
+    });
+  });
+
+  describe('UNLIST_FROM_SALE action', () => {
+    it('removes a cat from sale listing', () => {
+      let state = createInitialGameState();
+      const cat = state.cats[0];
+      state = applyAction(state, { type: ActionType.LIST_FOR_SALE, catId: cat.id });
+      expect(state.catsForSale).toContain(cat.id);
+
+      state = applyAction(state, { type: ActionType.UNLIST_FROM_SALE, catId: cat.id });
+
+      expect(state.catsForSale).not.toContain(cat.id);
+    });
+
+    it('does nothing if cat not listed', () => {
+      const state = createInitialGameState();
+      const cat = state.cats[0];
+
+      const newState = applyAction(state, { type: ActionType.UNLIST_FROM_SALE, catId: cat.id });
+
+      expect(newState.catsForSale).toEqual(state.catsForSale);
+    });
+  });
+
+  describe('REMOVE_BREEDING_PAIR action', () => {
+    it('removes a breeding pair', () => {
+      let state = createInitialGameState();
+      const [cat1, cat2] = state.cats;
+      state = applyAction(state, { 
+        type: ActionType.ADD_BREEDING_PAIR, 
+        parent1Id: cat1.id, 
+        parent2Id: cat2.id 
+      });
+      expect(state.breedingPairs).toHaveLength(1);
+
+      state = applyAction(state, { 
+        type: ActionType.REMOVE_BREEDING_PAIR, 
+        parent1Id: cat1.id, 
+        parent2Id: cat2.id 
+      });
+
+      expect(state.breedingPairs).toHaveLength(0);
+    });
+
+    it('does nothing if pair does not exist', () => {
+      const state = createInitialGameState();
+      const [cat1, cat2] = state.cats;
+
+      const newState = applyAction(state, { 
+        type: ActionType.REMOVE_BREEDING_PAIR, 
+        parent1Id: cat1.id, 
+        parent2Id: cat2.id 
+      });
+
+      expect(newState.breedingPairs).toEqual(state.breedingPairs);
+    });
+  });
+
+  describe('LIST_FOR_SALE prevents favourites', () => {
+    it('does not list favourite cats for sale', () => {
+      let state = createInitialGameState();
+      const cat = state.cats[0];
+      state = applyAction(state, { type: ActionType.TOGGLE_FAVOURITE, catId: cat.id });
+
+      state = applyAction(state, { type: ActionType.LIST_FOR_SALE, catId: cat.id });
+
+      expect(state.catsForSale).not.toContain(cat.id);
+    });
+  });
 });

@@ -128,4 +128,98 @@ describe('GameUI', () => {
     fireEvent.click(screen.getByRole('button', { name: /Cancel/ }));
     expect(screen.queryByText(/Select a mate/)).not.toBeInTheDocument();
   });
+
+  it('lists cat for sale when sell button clicked', () => {
+    renderGameUI();
+    
+    // Click the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.click(catSprites[0]);
+    
+    // Click sell button - cat should be deselected after listing
+    fireEvent.click(screen.getByRole('button', { name: /Sell/ }));
+    
+    // The cat should now appear in the pending actions shown in sidebar
+    // The "Listed for Sale" section should appear with at least one cat
+    expect(screen.getByText('🏷️ Listed for Sale')).toBeInTheDocument();
+  });
+
+  it('opens cat list panel when clicking cat stat tile', () => {
+    renderGameUI();
+    
+    // Find the cats stat tile and click it
+    const catsTile = screen.getByText('Cats').closest('[role="button"]');
+    expect(catsTile).toBeInTheDocument();
+    fireEvent.click(catsTile!);
+    
+    // Cat list panel should be visible
+    expect(screen.getByText('Your Cats')).toBeInTheDocument();
+  });
+
+  it('opens trait collection when clicking collection tile', () => {
+    renderGameUI();
+    
+    // Find the collection stat tile and click it
+    const collectionTile = screen.getByText('Collection').closest('[role="button"]');
+    expect(collectionTile).toBeInTheDocument();
+    fireEvent.click(collectionTile!);
+    
+    // Collection panel should be visible
+    expect(screen.getByText('🎨 Trait Collection')).toBeInTheDocument();
+  });
+
+  it('opens market panel when clicking Market tile', () => {
+    renderGameUI();
+    
+    // Find the market stat tile and click it
+    const marketTile = screen.getByText('Market').closest('[role="button"]');
+    expect(marketTile).toBeInTheDocument();
+    fireEvent.click(marketTile!);
+    
+    // Market panel should be visible
+    expect(screen.getByText('Cat Market')).toBeInTheDocument();
+  });
+
+  it('opens shop panel when clicking Capacity tile', () => {
+    renderGameUI();
+    
+    // Find the capacity stat tile and click it - this opens the shop
+    const capacityTile = screen.getByText('Capacity').closest('[role="button"]');
+    expect(capacityTile).toBeInTheDocument();
+    fireEvent.click(capacityTile!);
+    
+    // Shop panel should be visible
+    expect(screen.getByText('Furniture Shop')).toBeInTheDocument();
+  });
+
+  it('can breed two cats and see pending pair count', () => {
+    renderGameUI();
+    
+    // Click the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.click(catSprites[0]);
+    
+    // Click breed button to enter breed select mode
+    fireEvent.click(screen.getByRole('button', { name: /Breed/ }));
+    
+    // Click the second cat to complete breeding pair
+    fireEvent.click(catSprites[1]);
+    
+    // Should show 1 breeding pair in stats
+    expect(screen.getByText('Breeding')).toBeInTheDocument();
+    const breedingValue = screen.getByText('1');
+    expect(breedingValue).toBeInTheDocument();
+  });
+
+  it('handles hover on cats', () => {
+    renderGameUI();
+    
+    // Hover over the first cat
+    const catSprites = screen.getAllByTestId(/^cat-sprite-/);
+    fireEvent.mouseEnter(catSprites[0]);
+    fireEvent.mouseLeave(catSprites[0]);
+    
+    // No crash should occur
+    expect(catSprites[0]).toBeInTheDocument();
+  });
 });

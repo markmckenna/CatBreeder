@@ -130,4 +130,86 @@ describe('CatListPanel', () => {
     expect(screen.getByText('Age: 5 weeks')).toBeInTheDocument();
     expect(screen.getByText('Happiness: 75%')).toBeInTheDocument();
   });
+
+  it('shows star button when onToggleFavourite is provided', () => {
+    render(
+      <CatListPanel 
+        cats={[createMockCat()]} 
+        onSelectCat={() => {}} 
+        onToggleFavourite={() => {}}
+        onClose={() => {}} 
+      />
+    );
+    expect(screen.getByRole('button', { name: /Add .* to favourites/i })).toBeInTheDocument();
+  });
+
+  it('does not show star button when onToggleFavourite is not provided', () => {
+    render(
+      <CatListPanel 
+        cats={[createMockCat()]} 
+        onSelectCat={() => {}} 
+        onClose={() => {}} 
+      />
+    );
+    expect(screen.queryByRole('button', { name: /favourites/i })).not.toBeInTheDocument();
+  });
+
+  it('calls onToggleFavourite when star button is clicked', () => {
+    const onToggleFavourite = vi.fn();
+    const cat = createMockCat({ id: 'cat-123' });
+    render(
+      <CatListPanel 
+        cats={[cat]} 
+        onSelectCat={() => {}} 
+        onToggleFavourite={onToggleFavourite}
+        onClose={() => {}} 
+      />
+    );
+    const starButton = screen.getByRole('button', { name: /Add .* to favourites/i });
+    fireEvent.click(starButton);
+    expect(onToggleFavourite).toHaveBeenCalledWith('cat-123');
+  });
+
+  it('shows filled star for favourite cats', () => {
+    render(
+      <CatListPanel 
+        cats={[createMockCat({ favourite: true })]} 
+        onSelectCat={() => {}} 
+        onToggleFavourite={() => {}}
+        onClose={() => {}} 
+      />
+    );
+    expect(screen.getByRole('button', { name: /Remove .* from favourites/i })).toBeInTheDocument();
+  });
+
+  it('does not call onSelectCat when star button is clicked', () => {
+    const onSelectCat = vi.fn();
+    render(
+      <CatListPanel 
+        cats={[createMockCat()]} 
+        onSelectCat={onSelectCat} 
+        onToggleFavourite={() => {}}
+        onClose={() => {}} 
+      />
+    );
+    const starButton = screen.getByRole('button', { name: /favourites/i });
+    fireEvent.click(starButton);
+    // onSelectCat should NOT be called (stopPropagation)
+    expect(onSelectCat).not.toHaveBeenCalled();
+  });
+
+  it('selects cat when Enter key is pressed on cat card', () => {
+    const onSelectCat = vi.fn();
+    const cat = createMockCat();
+    render(
+      <CatListPanel 
+        cats={[cat]} 
+        onSelectCat={onSelectCat} 
+        onClose={() => {}} 
+      />
+    );
+    const catCard = screen.getByRole('button', { name: /Whiskers/i });
+    fireEvent.keyDown(catCard, { key: 'Enter' });
+    expect(onSelectCat).toHaveBeenCalledWith(cat);
+  });
 });
