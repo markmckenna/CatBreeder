@@ -181,17 +181,12 @@ function toggleFavourite(state: GameState, catId: string): GameState {
 
 function buyCat(state: GameState, cat: Cat, price: number): GameState {
   if (state.money < price) return state;
-  
-  // Remove cat from market inventory
-  const newInventory = state.marketInventory.filter(
-    mc => mc.cat.id !== cat.id
-  );
 
   return {
     ...state,
     money: state.money - price,
     cats: [...state.cats, cat],
-    marketInventory: newInventory,
+    marketInventory: state.marketInventory.filter(mc => mc.cat.id !== cat.id),
     transactions: [...state.transactions, {
       type: 'buy',
       catId: cat.id,
@@ -373,18 +368,14 @@ export function processTurn(
   }));
 
   // Update cat happiness based on their daily experience
-  // First, assign positions to get each cat's spot type
-  const catPositions = assignCatPositions(
-    newState.cats.map(c => c.id),
-    newState.furniture,
-    rng
+  const spotsByCat = new Map(
+    assignCatPositions(newState.cats.map(c => c.id), newState.furniture, rng)
+      .map(p => [p.catId, p.spotType])
   );
-  const spotsByCat = new Map(catPositions.map(p => [p.catId, p.spotType]));
   
   // Calculate capacity and overcrowding
-  const capacity = calculateCapacity(newState.furniture);
   const catCount = newState.cats.length;
-  const overcrowdCount = Math.max(0, catCount - capacity);
+  const overcrowdCount = Math.max(0, catCount - calculateCapacity(newState.furniture));
   const isAlone = catCount === 1;
   
   // Apply happiness changes to each cat
@@ -436,8 +427,7 @@ export function processTurn(
   if (result.births.length > 0) result.events.push(`${result.births.length} kitten(s) were born!`);
   if (newDiscoveries.length > 0) result.events.push(`🎉 New trait discovered by ${newDiscoveries.join(', ')}!`);
   if (result.sales.length > 0) {
-    const totalEarned = result.sales.reduce((sum, s) => sum + s.price, 0);
-    result.events.push(`Sold ${result.sales.length} cat(s) for $${totalEarned}!`);
+    result.events.push(`Sold ${result.sales.length} cat(s) for $${result.sales.reduce((sum, s) => sum + s.price, 0)}!`);
   }
   if (foodCost > 0) result.events.push(`Food expenses: $${foodCost}`);
 

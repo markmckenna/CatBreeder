@@ -67,14 +67,12 @@ function deserializeState(data: SerializedGameState): GameState {
 /** @returns true if save succeeded */
 export function saveGame(state: GameState, seed: number): boolean {
   try {
-    const saveData: SaveData = {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
       version: SAVE_VERSION,
       timestamp: Date.now(),
       seed,
       state: serializeState(state),
-    };
-    
-    localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+    }));
     return true;
   } catch (error) {
     console.error('Failed to save game:', error);
@@ -96,8 +94,7 @@ export function loadGame(): { state: GameState; seed: number } | null {
       // For now, just try to load anyway
     }
 
-    const state = deserializeState(saveData.state);
-    return { state, seed: saveData.seed };
+    return { state: deserializeState(saveData.state), seed: saveData.seed };
   } catch (error) {
     console.error('Failed to load game:', error);
     return null;

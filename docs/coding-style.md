@@ -147,6 +147,24 @@ export const randomCatName = (rng?: RandomFn): string => ...
 export const getRandomCatName = (rng?: RandomFn): string => ...
 ```
 
+### Inline Single-Use Variables
+If a variable is only used once and inlining it won't make the code complex, inline it:
+
+```typescript
+// ✅ Inline single-use values
+return Math.round(calculateCatValue(cat, market) * (1 + MARKET_BUY_PREMIUM));
+
+// ❌ Unnecessary intermediate variable
+const baseValue = calculateCatValue(cat, market);
+const withPremium = baseValue * (1 + MARKET_BUY_PREMIUM);
+return Math.round(withPremium);
+```
+
+Keep variables when they:
+- Add clarity to a complex expression (e.g., named multipliers with comments)
+- Are used more than once
+- Make debugging easier by breaking down a computation
+
 ### Abbreviated Parameter Names
 For concise single-line functions with typed parameters, use short symbolic names rather than verbose ones. When context is clear from the type, a single parameter can be named `it`:
 

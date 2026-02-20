@@ -136,11 +136,8 @@ export interface MarketCat {
 }
 
 /** @returns purchase price for a cat (includes market premium) */
-function calculatePurchasePrice(cat: Cat, market: MarketState): number {
-  const baseValue = calculateCatValue(cat, market);
-  const withPremium = baseValue * (1 + MARKET_BUY_PREMIUM);
-  return Math.round(withPremium);
-}
+const calculatePurchasePrice = (cat: Cat, market: MarketState) =>
+  Math.round(calculateCatValue(cat, market) * (1 + MARKET_BUY_PREMIUM));
 
 /** @returns cats available for purchase in the market */
 export function generateMarketInventory(
