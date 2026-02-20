@@ -2,9 +2,10 @@
  * Common utility functions used across the application.
  */
 
-export function capitalize(str: string): string {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+/** Capitalize first letter, lowercase rest. Passes through null/undefined. */
+export function capitalize<T extends string | null | undefined>(str: T): T {
+  if (str == null) return str;
+  return (str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()) as T;
 }
 
 export function formatCurrency(amount: number, currency = 'USD'): string {

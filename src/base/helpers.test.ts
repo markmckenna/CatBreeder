@@ -14,6 +14,14 @@ describe('helpers', () => {
     it('handles empty string', () => {
       expect(capitalize('')).toBe('');
     });
+
+    it('passes through null', () => {
+      expect(capitalize(null)).toBe(null);
+    });
+
+    it('passes through undefined', () => {
+      expect(capitalize(undefined)).toBe(undefined);
+    });
   });
 
   describe('formatCurrency', () => {
