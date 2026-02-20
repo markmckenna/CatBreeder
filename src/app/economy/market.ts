@@ -52,7 +52,7 @@ export interface Transaction {
  * Default trait values - represents current market preferences.
  * Rarer recessive traits are generally more valuable.
  */
-export const DEFAULT_TRAIT_VALUES: TraitValues = {
+const DEFAULT_TRAIT_VALUES: TraitValues = {
   size: {
     small: 1.5,  // Recessive, rarer
     large: 1.0,  // Dominant, common
@@ -90,7 +90,7 @@ export function createMarketState(): MarketState {
  * Calculate value multiplier from phenotype with optional price fluctuation.
  * When fluctuate is true, each trait gets ±10% variance (normal distribution, stdDev ~3.33%).
  */
-export function getTraitMultiplier(
+function getTraitMultiplier(
   phenotype: CatPhenotype,
   traitValues: TraitValues,
   fluctuate = false,
@@ -157,12 +157,12 @@ export function getValueBreakdown(cat: Cat, market: MarketState): { trait: strin
 /**
  * Market premium when buying cats (20%)
  */
-export const MARKET_BUY_PREMIUM = 0.2;
+const MARKET_BUY_PREMIUM = 0.2;
 
 /**
  * Number of cats available in market each day
  */
-export const MARKET_INVENTORY_SIZE = 3;
+const MARKET_INVENTORY_SIZE = 3;
 
 /**
  * A cat available for purchase in the market
@@ -175,7 +175,7 @@ export interface MarketCat {
 /**
  * Calculate purchase price for a cat (includes market premium)
  */
-export function calculatePurchasePrice(cat: Cat, market: MarketState): number {
+function calculatePurchasePrice(cat: Cat, market: MarketState): number {
   const baseValue = calculateCatValue(cat, market);
   const withPremium = baseValue * (1 + MARKET_BUY_PREMIUM);
   return Math.round(withPremium);

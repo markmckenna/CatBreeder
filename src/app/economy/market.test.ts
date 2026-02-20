@@ -2,13 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   createMarketState,
   calculateCatValue,
-  calculatePurchasePrice,
-  getTraitMultiplier,
   getValueBreakdown,
   generateMarketInventory,
-  DEFAULT_TRAIT_VALUES,
-  MARKET_BUY_PREMIUM,
-  MARKET_INVENTORY_SIZE,
 } from './market.ts';
 import type { Cat, CatPhenotype } from '../cats/genetics.ts';
 import { createSeededRandom } from '@/base/random.ts';
@@ -40,61 +35,16 @@ describe('market', () => {
       expect(market.basePrice).toBe(100);
     });
 
-    it('uses default trait values', () => {
+    it('has trait values for all phenotypes', () => {
       const market = createMarketState();
-      expect(market.traitValues).toEqual(DEFAULT_TRAIT_VALUES);
-    });
-  });
-
-  describe('getTraitMultiplier', () => {
-    it('returns 1.0 for all dominant traits', () => {
-      const phenotype: CatPhenotype = {
-        size: 'large',
-        tailLength: 'long',
-        earShape: 'pointed',
-        tailColor: 'orange',
-      };
-      expect(getTraitMultiplier(phenotype, DEFAULT_TRAIT_VALUES)).toBe(1.0);
-    });
-
-    it('returns higher multiplier for rare recessive traits', () => {
-      const commonCat: CatPhenotype = {
-        size: 'large',
-        tailLength: 'long',
-        earShape: 'pointed',
-        tailColor: 'orange',
-      };
-      const rareCat: CatPhenotype = {
-        size: 'small',
-        tailLength: 'short',
-        earShape: 'folded',
-        tailColor: 'white',
-      };
-
-      const commonMultiplier = getTraitMultiplier(commonCat, DEFAULT_TRAIT_VALUES);
-      const rareMultiplier = getTraitMultiplier(rareCat, DEFAULT_TRAIT_VALUES);
-
-      expect(rareMultiplier).toBeGreaterThan(commonMultiplier);
-    });
-
-    it('folded ears have 2x multiplier', () => {
-      const pointed: CatPhenotype = {
-        size: 'large',
-        tailLength: 'long',
-        earShape: 'pointed',
-        tailColor: 'orange',
-      };
-      const folded: CatPhenotype = {
-        size: 'large',
-        tailLength: 'long',
-        earShape: 'folded',
-        tailColor: 'orange',
-      };
-
-      const pointedMult = getTraitMultiplier(pointed, DEFAULT_TRAIT_VALUES);
-      const foldedMult = getTraitMultiplier(folded, DEFAULT_TRAIT_VALUES);
-
-      expect(foldedMult / pointedMult).toBe(2.0);
+      const tv = market.traitValues;
+      // Verify structure exists
+      expect(tv.size.small).toBeGreaterThan(0);
+      expect(tv.size.large).toBeGreaterThan(0);
+      expect(tv.earShape.folded).toBeGreaterThan(0);
+      expect(tv.earShape.pointed).toBeGreaterThan(0);
+      // Rare traits should be more valuable
+      expect(tv.earShape.folded).toBeGreaterThan(tv.earShape.pointed);
     });
   });
 
@@ -243,29 +193,12 @@ describe('market', () => {
     });
   });
 
-  describe('calculatePurchasePrice', () => {
-    const market = createMarketState();
-
-    it('includes 20% premium over sale value', () => {
-      const cat = createTestCat({}, 100);
-      const sellValue = calculateCatValue(cat, market);
-      const buyPrice = calculatePurchasePrice(cat, market);
-      
-      expect(buyPrice).toBe(Math.round(sellValue * (1 + MARKET_BUY_PREMIUM)));
-    });
-
-    it('premium is 20%', () => {
-      expect(MARKET_BUY_PREMIUM).toBe(0.2);
-    });
-  });
-
   describe('generateMarketInventory', () => {
     const market = createMarketState();
 
     it('generates 3 cats by default', () => {
       const inventory = generateMarketInventory(market);
-      expect(inventory).toHaveLength(MARKET_INVENTORY_SIZE);
-      expect(MARKET_INVENTORY_SIZE).toBe(3);
+      expect(inventory).toHaveLength(3);
     });
 
     it('each entry has cat and price', () => {
@@ -280,11 +213,13 @@ describe('market', () => {
       }
     });
 
-    it('prices include market premium', () => {
+    it('purchase prices include market premium over sell value', () => {
       const inventory = generateMarketInventory(market);
       for (const { cat, price } of inventory) {
-        const expectedPrice = calculatePurchasePrice(cat, market);
-        expect(price).toBe(expectedPrice);
+        const sellValue = calculateCatValue(cat, market);
+        // Purchase price should be higher than sell value (20% premium)
+        expect(price).toBeGreaterThan(sellValue);
+        expect(price).toBe(Math.round(sellValue * 1.2));
       }
     });
 

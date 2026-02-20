@@ -19,6 +19,30 @@ Check for unused code when:
 - Removing features
 - Reviewing existing utilities
 
+### Minimize Exports
+Only export what other modules actually need. Unexported functions are easier to refactor and signal internal implementation.
+
+```typescript
+// ✅ Internal helper - not exported
+const validateAmount = (n: number) => n >= 0;
+
+// ✅ Public API - exported
+export const transferMoney = (from: Account, to: Account, amount: number) => {
+  if (!validateAmount(amount)) throw new Error('Invalid amount');
+  // ...
+};
+```
+
+Apply the "tell, don't ask" principle: if functionality can move into a component to reduce external knowledge of its internals, move it - unless it dilutes that component's logical responsibility.
+
+```typescript
+// ❌ Caller knows too much about Cat internals
+const isAdult = cat.age >= ADULT_AGE_THRESHOLD;
+
+// ✅ Cat module owns the concept of adulthood  
+const isAdult = isAdultCat(cat);  // Defined in cats module
+```
+
 ### Minimize Duplication
 Extract shared code into utilities, avoid redundant comments that restate names, reuse test helpers.
 
