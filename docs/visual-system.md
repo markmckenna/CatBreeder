@@ -6,6 +6,7 @@ This document describes the room layout, coordinate system, and positioning patt
 
 The room uses **percentage-based positioning** relative to the container. Understanding these reference points is critical for correct placement.
 
+
 ### Vertical Layout
 
 | Element | Top % | Description |
@@ -13,7 +14,9 @@ The room uses **percentage-based positioning** relative to the container. Unders
 | Ceiling | 0% | Top of room |
 | Wall | 0-66% | Wall area (cream/wallpaper) |
 | Baseboard | 66% | Dark brown trim strip |
-| Floor | 67-100% | Wooden floor area |
+| Floor | 67-100% | Wooden floor area (legacy) |
+
+**New rule:** Anything below the **70%** line is considered “on the floor.” Avoid placing thick objects (e.g., cat trees, beds) too close to the wall/floor line—move them further onto the floor for visual realism.
 
 ### Key Reference Points
 
@@ -36,64 +39,41 @@ The room uses **percentage-based positioning** relative to the container. Unders
 
 Cat trees typically positioned at **x: 12%** (left) and **x: 88%** (right).
 
+
+## Visual Layering
+
+Objects are organized in layers (back to front):
+1. **Walls & Floor** (background SVGs)
+2. **Affixed Objects** (windows, fireplace, plants, rugs)
+3. **Placeable Furniture** (cat trees, beds, toys)
+4. **Cats** (always on top)
+
+Each layer should have a higher z-index than the one behind it. Placeable objects must never appear behind affixed objects or the floor.
+
 ## Object Positioning
+
 
 ### Objects That Sit ON the Floor
 
-Objects whose base should touch the floor use **`bottom` positioning**:
+Objects whose base should touch the floor use **`bottom` positioning**. For most objects, use `bottom: 30%` (i.e., 70% from top) or greater, depending on the object’s visual thickness. Thicker objects should be placed further from the wall/floor line.
 
-```css
-/* Object with base at floor level */
-.floorObject {
-  position: absolute;
-  bottom: 33%;  /* 100% - 67% floor = 33% from bottom */
-}
-```
 
-**Why 33%?** Floor starts at 67% from top. `bottom: 33%` means the element's bottom edge sits at `100% - 33% = 67%` from top.
+### Placement Positions and Hardpoints
 
-### Objects Positioned by Center Point
+Every placeable object must define a **placement position**: a point within the object (relative to its top-left corner) that should be aligned to the logical placement target (e.g., the floor, a platform, or a bed). For objects that can have other things placed on them (e.g., cat trees), define one or more **hardpoints**: points where another object’s placement position should snap.
 
-Cats and toys use **`top/left` with `transform: translate(-50%, -50%)`**:
+**Example:**
+- A cat tree’s placement position is at the center of its foot, slightly above the rendered base to account for unrendered thickness.
+- The cat tree defines three hardpoints, one at the center of each bed/platform.
+- Each cat’s placement position is where its butt sits.
+- When placing a cat on the cat tree, align the cat’s placement position to the chosen hardpoint.
 
-```css
-.catPosition {
-  position: absolute;
-  left: 50%;  /* x coordinate */
-  top: 75%;   /* y coordinate */
-  transform: translate(-50%, -50%);  /* Center the element on that point */
-}
-```
 
-### Cat Tree Platform Mapping
+## Hitboxes and Pointer Events
 
-Cat trees use SVG with `viewBox="0 0 90 210"`. To map platform Y positions to screen coordinates:
+### Hitbox Guidance
 
-**Formula**: `screen_y% = tree_top% + (svg_y / 210) * tree_height%`
-
-With cat tree at `top: 19%`, `height: 50%`:
-
-| Platform | SVG Y (cushion) | Screen Y | Calculation |
-|----------|-----------------|----------|-------------|
-| Top | 22 | ~24% | 19 + (22/210)*50 = 24.2% |
-| Middle | 87 | ~40% | 19 + (87/210)*50 = 39.7% |
-| Bottom | 152 | ~55% | 19 + (152/210)*50 = 55.2% |
-
-**Cat offset**: Add ~3% to account for cat sprite height (cats sit ON platforms, not at center).
-
-Final cat positions: **27%, 43%, 58%**
-
-## Pointer Events
-
-### The Layering Problem
-
-The room has multiple layers:
-1. **Background** (WallFloor SVG) - non-interactive
-2. **Room objects** (fireplace, windows) - non-interactive  
-3. **Furniture** (beds, toys, cat trees) - **interactive**
-4. **Content overlay** (cats, UI hints) - **interactive**
-
-The content overlay (`div.content`) covers the entire room. Without proper pointer-events handling, it blocks clicks to furniture beneath.
+All interactive objects must use a hover/click hitbox that matches their visible outline (SVG shape), not the SVG bounding box. This allows, for example, selecting a cat tree even if a cat is sitting on it. Use SVG hit testing or CSS `pointer-events: visiblePainted` where possible.
 
 ### Solution Pattern
 
@@ -117,10 +97,10 @@ The content overlay (`div.content`) covers the entire room. Without proper point
 
 ### Checklist for New Interactive Elements
 
-1. Parent container has `pointer-events: none`
-2. Element itself has `pointer-events: auto`
-3. Element has `cursor: pointer`
-4. Element has appropriate `z-index` (see css-patterns.md)
+1. Parent container: `pointer-events: none`
+2. Element: `pointer-events: auto`, `cursor: pointer`, correct `z-index`
+3. Hitbox: matches visible outline, not bounding box
+
 
 ## SVG Object Sizing
 
@@ -149,69 +129,22 @@ Size SVG objects with percentage width, let height auto-calculate:
 }
 ```
 
-## Common Mistakes
-
-### ❌ Using `top` When Object Should Sit on Floor
-
-```css
-/* Wrong - object floats above floor */
-.catTree {
-  top: 20%;
-  height: 50%;
-}
-```
-
-```css
-/* Correct - base sits on floor */
-.catTree {
-  top: 19%;  /* Calculated: 67% - (base_y/viewbox_height)*height */
-  height: 50%;
-}
-```
-
-### ❌ Forgetting pointer-events on Furniture
-
-```css
-/* Wrong - clicks don't register */
-.furnitureBed {
-  position: absolute;
-  cursor: pointer;
-}
-```
-
-```css
-/* Correct */
-.furnitureBed {
-  position: absolute;
-  cursor: pointer;
-  pointer-events: auto;  /* ← Required! */
-}
-```
-
-### ❌ Wrong transform for Centered vs Edge-Aligned Objects
-
-```css
-/* Centered object (cats, toys) */
-.centered {
-  transform: translate(-50%, -50%);
-}
-
-/* Left-edge aligned, horizontally centered (cat trees) */
-.catTree {
-  transform: translateX(-50%);  /* Only center horizontally */
-}
-```
-
 ## Position Reference Quick Table
 
-| Object Type | Position Method | Transform | pointer-events |
-|-------------|-----------------|-----------|----------------|
-| Cat sprite | `top`, `left` | `translate(-50%, -50%)` | `auto` |
-| Toy | `top`, `left` | `translate(-50%, -50%)` | `auto` |
-| Bed | `top`, `left` | `translate(-50%, -50%)` | `auto` |
-| Cat tree | `top`, `left` | `translateX(-50%)` | `auto` |
-| Plant | `bottom`, `left` | none | `none` |
-| Fireplace | `top`, `left` | none | `none` |
+| Object Type | Position Method | Transform | pointer-events | Placement Position | Hardpoints |
+|-------------|----------------|-----------|----------------|-------------------|------------|
+| Cat sprite | `top`, `left` | `translate(-50%, -50%)` | `auto` | Butt center | — |
+| Toy | `top`, `left` | `translate(-50%, -50%)` | `auto` | Center | — |
+| Bed | `top`, `left` | `translate(-50%, -50%)` | `auto` | Center of base | — |
+| Cat tree | `top`, `left` | `translateX(-50%)` | `auto` | Center of foot | 3 (platforms) |
+| Plant | `bottom`, `left` | none | `none` | Center of base | — |
+| Fireplace | `top`, `left` | none | `none` | Center of base | — |
+
+
+## Example: Cat Tree and Cat Placement
+
+- **Cat tree**: Placement position is at the center of the foot, slightly above the rendered base. Three hardpoints are defined at the center of each platform/bed.
+- **Cat**: Placement position is at the butt. When placing a cat on the tree, align the cat’s placement position to the chosen hardpoint.
 
 ## Testing Positioning Changes
 
