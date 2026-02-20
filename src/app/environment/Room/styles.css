@@ -25,7 +25,7 @@
   bottom: 0;
   display: flex;
   flex-direction: column;
-  z-index: 1;
+  z-index: 10; /* Above all furniture, so cats are always on top */
   pointer-events: none; /* Allow clicks to pass through to furniture beneath */
 }
 
@@ -136,11 +136,12 @@
   position: absolute;
   transform: translateX(-50%);
   /* Place base ellipse (y=202, SVG height=210) at 70% (floor line) */
-  top: calc(70% - (202/210 * 50%)); /* 50% is height, 202/210 is base offset in SVG */
+  /* height: 50% of room, so 202/210 * 50% = 48.1% from top, so top = 70% - 48.1% = 21.9% */
+  top: 21.9%;
   width: 11%;
   height: 50%;
   overflow: visible;
-  z-index: 2;
+  /* Remove z-index to allow .content/cats to be above */
   cursor: pointer;
   pointer-events: auto;
   transition: filter 0.15s ease, transform 0.15s ease;
