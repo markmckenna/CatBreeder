@@ -6,12 +6,13 @@ Guidelines for AI agents working with this repository.
 
 1. **Run checks after changes**: `npm run typecheck && npm run test:run`
 2. **Commit after each change**: Test and commit every completed task (features, fixes, refactors) before moving on
-3. **Follow coding style**: See [docs/coding-style.md](docs/coding-style.md) for conventions
-4. **Visual positioning**: See [docs/visual-system.md](docs/visual-system.md) for room coordinates
-5. **CSS patterns**: See [docs/css-patterns.md](docs/css-patterns.md) for styling conventions
-6. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
-7. **Update documentation**: Keep AGENTS.md, README.md, and docs/ current
-8. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/coding-style.md](docs/coding-style.md)
+3. **Record duration**: Include execution time in commit message body (e.g., `Duration: 2m 15s`)
+4. **Follow coding style**: See [docs/coding-style.md](docs/coding-style.md) for conventions
+5. **Visual positioning**: See [docs/visual-system.md](docs/visual-system.md) for room coordinates
+6. **CSS patterns**: See [docs/css-patterns.md](docs/css-patterns.md) for styling conventions
+7. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
+8. **Update documentation**: Keep AGENTS.md, README.md, and docs/ current
+9. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/coding-style.md](docs/coding-style.md)
 
 ## Supplementary Documentation
 
