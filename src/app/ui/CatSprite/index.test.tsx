@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CatSprite from '.';
-import { createMockCat, SMALL_FOLDED_CAT } from '@/test/helpers.ts';
+import { createMockCat, SMALL_FOLDED_CAT } from '../../cats/test/helpers.ts';
 
 const mockCat = createMockCat();
 const smallFoldedCat = SMALL_FOLDED_CAT;

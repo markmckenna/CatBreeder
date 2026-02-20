@@ -11,7 +11,7 @@ import {
   deserializeCollection,
 } from './collection.ts';
 import type { CatPhenotype } from './genetics.ts';
-import { createMockCatFromPhenotype } from '@/test/helpers.ts';
+import { createMockCatFromPhenotype } from './test/helpers.ts';
 
 describe('trait collection', () => {
   describe('phenotypeKeyFor', () => {

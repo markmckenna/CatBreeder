@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import TraitCollection from './index.tsx';
 import { createTraitCollection, registerBredCat } from '../../cats/collection.ts';
 import type { CatPhenotype } from '../../cats/genetics.ts';
-import { createMockCatFromPhenotype } from '@/test/helpers.ts';
+import { createMockCatFromPhenotype } from '../../cats/test/helpers.ts';
 
 describe('TraitCollection', () => {
   it('renders the collection grid', () => {

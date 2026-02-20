@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CatListPanel from '.';
-import { createMockCat } from '@/test/helpers.ts';
+import { createMockCat } from '../../cats/test/helpers.ts';
 
 describe('CatListPanel', () => {
   it('renders panel with title', () => {
