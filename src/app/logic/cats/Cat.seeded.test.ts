@@ -17,7 +17,7 @@ function objectGenotypeToString(obj: { size: string[]; tailLength: string[]; ear
  */
 
 import { describe, it, expect } from 'vitest';
-import { createSeededRandom } from '@/base/random.ts';
+import { createSeededRandom } from '@/core/random.ts';
 import {
   breedCats,
   createRandomCat,

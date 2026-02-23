@@ -8,7 +8,7 @@ import { createContext, useContext, useReducer, useCallback, useEffect, ReactNod
 import type { GameState, GameAction, TurnResult } from './state.ts';
 import { createInitialGameState, applyAction, processTurn } from './state.ts';
 import { saveGame, loadGame, deleteSave } from './save.ts';
-import { createSeededRandom } from '@/base/random.ts';
+import { createSeededRandom } from '@/core/random.ts';
 
 /** 
  * Fixed seed for new games - ensures consistent starting conditions.

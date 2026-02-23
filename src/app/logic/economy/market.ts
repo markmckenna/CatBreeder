@@ -2,7 +2,7 @@
 
 import type { Cat } from '../cats/Cat';
 import { createRandomCat, randomCatName, phenotypeFor } from '../cats/Cat';
-import { defaultRandom, normalRandom, type RandomFn } from '@/base/random.ts';
+import { defaultRandom, normalRandom, type RandomFn } from '@/core/random.ts';
 
 /** Value multipliers by trait variant (higher = more valuable) */
 export interface TraitValues {

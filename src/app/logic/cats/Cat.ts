@@ -1,12 +1,12 @@
 // Re-export RandomFn type for consumers
-export type { RandomFn } from '@/base/random.ts';
+export type { RandomFn } from '@/core/random.ts';
 /**
  * Genetics and breeding using simple Mendelian inheritance.
  * Each trait has two alleles (one from each parent).
  * Future: mutation rates, polygenic traits.
  */
 
-import { type RandomFn, defaultRandom, randomInt, pickRandom } from '@/base/random.ts';
+import { type RandomFn, defaultRandom, randomInt, pickRandom } from '@/core/random.ts';
 
 
 // --- Simplified Genetics Model ---

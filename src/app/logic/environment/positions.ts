@@ -1,7 +1,7 @@
 /** Cat position management. Positions are percentage coordinates (x, y) within the room. */
 
 import type { OwnedFurniture } from './furniture.ts';
-import type { RandomFn } from '@/base/random.ts';
+import type { RandomFn } from '@/core/random.ts';
 
 /** Types of spots cats can occupy */
 export type SpotType = 'rug' | 'bookshelf' | 'toy' | 'bed' | 'catTree' | 'floor';

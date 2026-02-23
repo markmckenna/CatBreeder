@@ -7,7 +7,7 @@ import {
 } from './market.ts';
 import type { Cat, CatPhenotype } from '../cats/Cat';
 
-import { createSeededRandom } from '@/base/random.ts';
+import { createSeededRandom } from '@/core/random.ts';
 
 describe('market', () => {
   // Helper to convert phenotype to genotype string (assumes homozygous for trait)
