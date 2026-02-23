@@ -1,17 +1,8 @@
-
 # Agent Instructions
-
-## 🚀 Quickstart for Agents
-
-**Do these every time:**
-- ✅ Run `npm run typecheck && npm run test:run` after every change
-- ✅ Auto-commit after each completed feature/fix/refactor (include duration in commit message)
-- ✅ Follow [docs/coding-style.md](docs/coding-style.md) for all code
-- ✅ Update docs and version numbers as needed
-- ✅ Apply style/architecture changes project-wide
 
 ## 🔥 Critical Rules (Read First)
 
+0. **Don't prompt for permission on each CLI tool usage**: proactively move forward with the task, and only ask for confirmation if it's unclear how to proceed.
 1. **Run checks after changes**: `npm run typecheck && npm run test:run` (**must do after every change!**)
 2. **Auto-commit after each change**: Test and commit every completed task (features, fixes, refactors) before moving on
 3. **Record duration**: Include execution time in commit message body (e.g., `Duration: 2m 15s`)
@@ -23,17 +14,15 @@
 9. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/coding-style.md](docs/coding-style.md)
 10. **Apply style changes project-wide**: When adding or updating coding style guidelines, proactively apply them across the existing codebase
 
-
 ## 📚 Supplementary Documentation
 
 - [docs/coding-style.md](docs/coding-style.md): Code style, architecture, naming
- - [docs/architecture.md](docs/architecture.md): Architecture (MVVM, logic/renderer separation)
+- [docs/architecture.md](docs/architecture.md): Architecture (MVVM, logic/renderer separation)
 - [docs/visual-system.md](docs/visual-system.md): Room coordinates, positioning
 - [docs/css-patterns.md](docs/css-patterns.md): CSS Modules, z-index, transitions
 - [docs/game-design.md](docs/game-design.md): Game mechanics, formulas, balance
 
 **Read these when working on related areas—they prevent common mistakes.**
-
 
 ## Project Overview
 
