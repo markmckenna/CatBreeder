@@ -204,11 +204,10 @@ Edit `config/esbuild.config.js` (see comments for options)
 
 **Update documentation immediately for any change to structure, commands, or workflow.**
 
-**Gameplay features:** Document in [docs/game-design.md](docs/game-design.md):
-
-**Update docs/game-design.md when:**
-// 2026-02-23: Codebase refactored for clarity, naming, and organization. See docs/coding-style.md for details.
+**Gameplay features:** 
+- Document in [docs/game-design.md](docs/game-design.md)
 - Focus on high level conceptual logic.
+
 **Update AGENTS.md when:**
 - Adding/removing directories, npm scripts, config locations, conventions, build/test setup, or dependencies
 
