@@ -2,18 +2,19 @@
 
 ## 🔥 Critical Rules (Read First)
 
-0. **Don't prompt for permission on each CLI tool usage**: proactively move forward with the task, and only ask for confirmation if it's unclear how to proceed.
-1. **Run checks after changes**: `npm run typecheck && npm run test:run` (**must do after every change!**)
-2. **Auto-commit after each change**: Test and commit every completed task (features, fixes, refactors) before moving on
-3. **Record duration**: Include execution time in commit message body (e.g., `Duration: 2m 15s`)
-4. **Follow coding style**: See [docs/coding-style.md](docs/coding-style.md)
-5. **Visual positioning**: See [docs/visual-system.md](docs/visual-system.md)
-6. **CSS patterns**: See [docs/css-patterns.md](docs/css-patterns.md)
-7. **Save version bumps**: Increment `SAVE_VERSION` in `src/app/game/save.ts` when changing saved state structure
-8. **Update documentation**: Keep AGENTS.md, README.md, and docs/ current
-9. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/coding-style.md](docs/coding-style.md)
-10. **Apply style changes project-wide**: When adding or updating coding style guidelines, proactively apply them across the existing codebase
-11. **Clean up after refactoring**: Whenever you're done moving files or refactoring code, make sure to clean up after yourself, deleting old copies of code, and removing unused functions.
+**Always follow these rules, step by step:**
+
+1. **Never ask for permission for CLI/tool actions.** Move forward unless clarification is needed.
+2. **After every change, run:** `npm run typecheck && npm run test:run` (always verify correctness).
+3. **Commit after each meaningful functional change.** Test, then commit every feature, fix, or refactor before starting the next.
+4. **Include execution time in commit messages.** Example: `Duration: 2m 15s`.
+5. **Follow coding style and architecture.** See [coding-style](docs/coding-style.md) and [architecture](docs/architecture.md).
+6. **Apply visual and CSS conventions.** See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
+7. **Bump SAVE_VERSION** in `src/app/game/save.ts` if saved state structure changes.
+8. **Update documentation immediately** after any change to structure, commands, or workflow. Keep AGENTS.md, README.md, and docs/ current.
+9. **Document style decisions.** Add rationale to [docs/coding-style.md](docs/coding-style.md) for new or updated style rules.
+10. **Apply style changes everywhere.** When updating guidelines, refactor the whole codebase to match.
+11. **Clean up after refactoring.** Delete old files, remove unused code, and ensure no duplicates remain.
 
 ## 📚 Supplementary Documentation
 
@@ -55,8 +56,11 @@ docs/      — Documentation
 public/    — Static assets
 src/
 	app/     — App root, features (game, cats, economy, environment, ui)
-	base/    — Platform utilities
+	core/    — Platform utilities
 	test/    — Test setup
+	css-modules.d.ts
+	index.css
+	index.tsx
 dist/      — Build output
 
 
@@ -101,28 +105,23 @@ See [docs/coding-style.md](docs/coding-style.md) for detailed coding conventions
 
 ## Workflow Guidelines
 
-**Before changes:**
-- Run `npm run typecheck` (types)
-- Run `npm run lint` (style)
-- Run `npm run test:run` (tests)
+**After every change:**
+- Run `npm run lint:fix` (auto-fix style)
+- Run `npm run build` (verify build)
+- Run `npm run test:run` (verify tests)
 
-**After changes:**
-- Run `npm run lint:fix`
-- Run `npm run test:run`
-- Run `npm run build`
-
-**Adding features:**
-- Create files in the right feature folder
-- Add tests
+**When adding features:**
+- Localize code within feature-specific folders (obeying guidelines in) [architecture](docs/architecture.md)
+- Add tests for new code
 - Export from index if shared
-- Add/update styles as needed
+- Add or update styles as needed
 
-**Adding dependencies:**
+**When adding dependencies:**
 ```bash
 npm install <package>           # Runtime
 npm install -D <package>        # Dev
 ```
-Check types, build, and tests after adding.
+After installing, always check types, build, and tests.
 
 
 ## Configuration Files
@@ -157,7 +156,7 @@ Bypass: `git commit --no-verify` or `git push --no-verify`
 3. Import in parent
 
 **New utility:**
-1. Add to `src/base/`
+1. Add to `src/core/`
 2. Add tests
 3. Export
 
@@ -169,6 +168,7 @@ Edit `config/esbuild.config.js` (see comments for options)
 
 
 ## Troubleshooting
+
 
 **TypeScript errors:**
 - Run `npm run typecheck`
@@ -188,38 +188,32 @@ Edit `config/esbuild.config.js` (see comments for options)
 
 ## Notes for Agents
 
-- Always run tests after changes (`npm run test:run`)
-- Use TypeScript only (no `.js` in `src/`)
+**Agent must always:**
+- Run tests after every change (`npm run test:run`)
+- Use TypeScript only (no `.js` files in `src/`)
 - Keep dependencies minimal
-- Write tests for new code
-- Follow existing patterns
-- Update docs (AGENTS.md, README.md, game-design.md)
-- Commit after each feature (atomic changes)
-- Bump save version on save structure changes
+- Write tests for all new code
+- Follow existing code patterns and conventions
+- Update documentation (AGENTS.md, README.md, game-design.md) after any relevant change
+- Commit after each atomic feature or fix
+- Bump save version if save structure changes
 
 
 ## Documentation Requirements
 
-**Any change to project structure, commands, or workflow must update docs.**
+**Update documentation immediately for any change to structure, commands, or workflow.**
 
-**Gameplay features:** Document in [docs/game-design.md](docs/game-design.md)
-- What each system does
-- Formulas/rules
+**Gameplay features:** Document in [docs/game-design.md](docs/game-design.md):
+- System purpose
+- Formulas and rules
 - System interactions
 
 **Update docs/game-design.md when:**
-- Adding/modifying mechanics, formulas, traits, turn flow
+- Adding or modifying game mechanics, game components, rules or logic.
+- Focus on high level conceptual logic.
 
 **Update AGENTS.md when:**
-- Adding/removing directories, npm scripts, config locations, conventions, build/test setup, dependencies
+- Adding/removing directories, npm scripts, config locations, conventions, build/test setup, or dependencies
 
 **Update README.md when:**
 - Changing getting started, commands, or build/run steps
-
-**Checklist:**
-- [ ] Structure diagram accurate
-- [ ] Commands work
-- [ ] File paths correct
-- [ ] Config locations current
-- [ ] New patterns documented
-- [ ] Game mechanics in game-design.md

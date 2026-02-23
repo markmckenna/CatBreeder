@@ -38,10 +38,6 @@ Opens http://localhost:3000
 | `npm run lint` | Check linting |
 | `npm run typecheck` | Check types |
 
-## For AI Agents
-
-See [AGENTS.md](AGENTS.md) for detailed development guidelines.
-
 ## Game Design
 
 See [docs/game-design.md](docs/game-design.md) for detailed gameplay mechanics and system documentation.
