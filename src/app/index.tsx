@@ -1,4 +1,4 @@
-import { GameProvider } from './game/GameContext.tsx';
+import { GameProvider } from './logic/game/GameContext.tsx';
 import GameUI from './ui/GameUI';
 
 function App() {

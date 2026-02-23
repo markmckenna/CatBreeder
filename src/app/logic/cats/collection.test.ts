@@ -10,10 +10,10 @@ import {
   serializeCollection,
   deserializeCollection,
 } from './collection.ts';
-// (removed duplicate CatPhenotype import)
 
 // Minimal test helper for Cat creation (inlined)
 import type { Cat, CatPhenotype } from './Cat.ts';
+
 function createMockCatFromPhenotype(
   phenotype: CatPhenotype,
   name = 'TestCat',
