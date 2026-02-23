@@ -59,12 +59,12 @@ describe('genetics', () => {
 
     describe('phenotypeFor', () => {
       it('calculates full phenotype from genotype', () => {
-        const genotype = 'SsttfOow';
+        const genotype = 'SsttffOw';
         expect(phenotypeFor(genotype)).toEqual({
           size: 'large',
           tailLength: 'short',
           earShape: 'folded',
-          tailColor: 'orange',
+          color: 'orange',
         });
       });
     });
