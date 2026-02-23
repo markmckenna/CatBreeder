@@ -5,6 +5,7 @@ import type { TraitCollection, CollectedTrait, TraitKey } from '../cats/collecti
 import type { MarketState, Transaction, MarketCat } from '../economy/market';
 import type { Cat } from '../cats/Cat';
 import type { OwnedFurniture } from '../environment/furniture';
+import { phenotypeFor } from '../cats/Cat';
 
 export const SAVE_KEY = 'catbreeder_save';
 export const SAVE_VERSION = 1;
@@ -58,6 +59,10 @@ function deserializeState(data: SerializedGameState): GameState {
   return {
     ...data,
     furniture,
+    cats: data.cats.map(cat => ({
+      ...cat,
+      phenotype: phenotypeFor(cat.genotype),
+    })),
     traitCollection: {
       collected: new Map(data.traitCollection.collected),
     } as TraitCollection,
