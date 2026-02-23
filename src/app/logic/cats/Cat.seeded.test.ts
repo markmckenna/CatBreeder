@@ -146,7 +146,7 @@ describe('Mendelian statistics', () => {
       size: { small: 0, large: 0 },
       tailLength: { short: 0, long: 0 },
       earShape: { folded: 0, pointed: 0 },
-      tailColor: { white: 0, orange: 0 },
+      color: { white: 0, orange: 0 },
     };
 
     const rng = createSeededRandom(seed);
@@ -157,7 +157,7 @@ describe('Mendelian statistics', () => {
       counts.size[phenotype.size]++;
       counts.tailLength[phenotype.tailLength]++;
       counts.earShape[phenotype.earShape]++;
-      counts.tailColor[phenotype.tailColor]++;
+      counts.color[phenotype.color]++;
     }
 
     return counts;
@@ -255,7 +255,7 @@ describe('Mendelian statistics', () => {
         700
       );
 
-      const orangeRatio = counts.tailColor.orange / TRIALS;
+      const orangeRatio = counts.color.orange / TRIALS;
       expect(orangeRatio).toBeGreaterThan(0.75 - TOLERANCE);
       expect(orangeRatio).toBeLessThan(0.75 + TOLERANCE);
     });
