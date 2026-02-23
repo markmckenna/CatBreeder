@@ -27,6 +27,7 @@
 ## 📚 Supplementary Documentation
 
 - [docs/coding-style.md](docs/coding-style.md): Code style, architecture, naming
+ - [docs/architecture.md](docs/architecture.md): Architecture (MVVM, logic/renderer separation)
 - [docs/visual-system.md](docs/visual-system.md): Room coordinates, positioning
 - [docs/css-patterns.md](docs/css-patterns.md): CSS Modules, z-index, transitions
 - [docs/game-design.md](docs/game-design.md): Game mechanics, formulas, balance
