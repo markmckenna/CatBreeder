@@ -1,3 +1,4 @@
+import { TRAITS, phenotypeFor } from '../../logic/cats/Cat.ts';
 /**
  * Main Game UI - ties together all game systems.
  * Layout: 16:9 window with 4:3 room + sidebar
@@ -300,9 +301,14 @@ function GameUI() {
                   <div className={styles.panelTitle}>🐱 {hovered.cat.name}</div>
                   <div className={styles.hoverDetails}>
                     <div>{hovered.cat.age} weeks old</div>
-                    <div>Size: {hovered.cat.phenotype.size}</div>
-                    <div>Tail: {hovered.cat.phenotype.tailLength} {hovered.cat.phenotype.tailColor}</div>
-                    <div>Ears: {hovered.cat.phenotype.earShape}</div>
+                    {(() => {
+                      const phenotype = phenotypeFor(hovered.cat.genotype);
+                      return <>
+                        <div>Size: {phenotype.size}</div>
+                        <div>Tail: {phenotype.tailLength} {phenotype.color}</div>
+                        <div>Ears: {phenotype.earShape}</div>
+                      </>;
+                    })()}
                   </div>
                   <div className={styles.hoverHint}>Click to select</div>
                 </>
@@ -354,22 +360,27 @@ function GameUI() {
                   <span className={styles.traitLabel}>Age</span>
                   <span className={styles.traitValue}>{selectedCat.age} weeks</span>
                 </div>
-                <div className={styles.traitRow}>
-                  <span className={styles.traitLabel}>Size</span>
-                  <span className={styles.traitValue}>{selectedCat.phenotype.size}</span>
-                </div>
-                <div className={styles.traitRow}>
-                  <span className={styles.traitLabel}>Tail</span>
-                  <span className={styles.traitValue}>{selectedCat.phenotype.tailLength}</span>
-                </div>
-                <div className={styles.traitRow}>
-                  <span className={styles.traitLabel}>Ears</span>
-                  <span className={styles.traitValue}>{selectedCat.phenotype.earShape}</span>
-                </div>
-                <div className={styles.traitRow}>
-                  <span className={styles.traitLabel}>Fur</span>
-                  <span className={styles.traitValue}>{selectedCat.phenotype.tailColor}</span>
-                </div>
+                {(() => {
+                  const phenotype = phenotypeFor(selectedCat.genotype);
+                  return <>
+                    <div className={styles.traitRow}>
+                      <span className={styles.traitLabel}>Size</span>
+                      <span className={styles.traitValue}>{phenotype.size}</span>
+                    </div>
+                    <div className={styles.traitRow}>
+                      <span className={styles.traitLabel}>Tail</span>
+                      <span className={styles.traitValue}>{phenotype.tailLength}</span>
+                    </div>
+                    <div className={styles.traitRow}>
+                      <span className={styles.traitLabel}>Ears</span>
+                      <span className={styles.traitValue}>{phenotype.earShape}</span>
+                    </div>
+                    <div className={styles.traitRow}>
+                      <span className={styles.traitLabel}>Fur</span>
+                      <span className={styles.traitValue}>{phenotype.color}</span>
+                    </div>
+                  </>;
+                })()}
                 <div className={styles.traitRow}>
                   <span className={styles.traitLabel}>Happiness</span>
                   <span className={styles.traitValue}>{selectedCat.happiness}%</span>
@@ -378,28 +389,23 @@ function GameUI() {
                 <div className={styles.geneticsSection}>
                   <div className={styles.geneticsTitle}>Genetics</div>
                   <div className={styles.genotypeGrid}>
-                    {[
-                      { label: 'Size', alleles: selectedCat.genotype.size, recessive: 'small' },
-                      { label: 'Tail', alleles: selectedCat.genotype.tailLength, recessive: 'short' },
-                      { label: 'Ears', alleles: selectedCat.genotype.earShape, recessive: 'folded' },
-                      { label: 'Fur', alleles: selectedCat.genotype.tailColor, recessive: 'white' },
-                    ].map(({ label, alleles, recessive }) => {
+                    {TRAITS.map(({ name, alleles }) => {
                       const status = getBreedingStatus(alleles as [string, string]);
                       return (
                         <span
-                          key={label}
+                          key={name}
                           className={`${styles.genotypeItem} ${styles[`genotype${status.charAt(0).toUpperCase() + status.slice(1)}`]}`}
                           title={
                             status === 'pure'
-                              ? `✓ Will always breed ${recessive}`
+                              ? `✓ Will always breed recessive`
                               : status === 'carrier'
-                              ? `⚠ May pass dominant gene`
-                              : `✗ Cannot breed ${recessive}`
+                              ? `⚠ May pass dominant or recessive gene`
+                              : `✗ Cannot breed recessive gene`
                           }
                         >
                           {status === 'pure' && '✓ '}
                           {status === 'carrier' && '⚠ '}
-                          {label}: {alleles.join('')}
+                          {name}: {alleles.join('')}
                         </span>
                       );
                     })}

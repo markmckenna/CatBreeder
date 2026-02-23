@@ -1,0 +1,360 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`breeding program snapshots > seed 42 produces consistent 3-generation large program 1`] = `
+[
+  {
+    "genotype": "ssttffwO",
+    "name": "Founder0",
+  },
+  {
+    "genotype": "SSTtffOO",
+    "name": "Founder1",
+  },
+  {
+    "genotype": "SsttEEwO",
+    "name": "Founder2",
+  },
+  {
+    "genotype": "sstTEfOO",
+    "name": "Founder3",
+  },
+  {
+    "genotype": "ssTtEfww",
+    "name": "Founder4",
+  },
+  {
+    "genotype": "sstTfEwO",
+    "name": "Founder5",
+  },
+  {
+    "genotype": "sSTTEEwO",
+    "name": "Founder6",
+  },
+  {
+    "genotype": "SsttffwO",
+    "name": "Founder7",
+  },
+  {
+    "genotype": "SSttEfOO",
+    "name": "Founder8",
+  },
+  {
+    "genotype": "SSTTffOO",
+    "name": "Founder9",
+  },
+]
+`;
+
+exports[`breeding program snapshots > seed 12345 produces consistent 5-generation program 1`] = `
+{
+  "generations": [
+    {
+      "cats": [
+        {
+          "genotype": "sSttffOw",
+          "name": "Founder1",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "folded",
+            "size": "large",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "sstTfEwO",
+          "name": "Founder2",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+      ],
+      "generation": 0,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "SsttfEOw",
+          "name": "Simba",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "large",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "SsttffOw",
+          "name": "Nala",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "folded",
+            "size": "large",
+            "tailLength": "short",
+          },
+        },
+      ],
+      "generation": 1,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "ssttffww",
+          "name": "Nala",
+          "phenotype": {
+            "color": "white",
+            "earShape": "folded",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "ssttEfwO",
+          "name": "Milo",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+      ],
+      "generation": 2,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "ssttfEww",
+          "name": "Gizmo",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "ssttfEww",
+          "name": "Shadow",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+      ],
+      "generation": 3,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "ssttEfww",
+          "name": "Willow",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "ssttEEww",
+          "name": "Cleo",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+      ],
+      "generation": 4,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "ssttfEww",
+          "name": "Socks",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "ssttEEww",
+          "name": "Ziggy",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+      ],
+      "generation": 5,
+    },
+  ],
+}
+`;
+
+exports[`breeding program snapshots > seed 99999 produces consistent 5-generation program 1`] = `
+{
+  "generations": [
+    {
+      "cats": [
+        {
+          "genotype": "ssTtEfOw",
+          "name": "Founder1",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+        {
+          "genotype": "ssttEfww",
+          "name": "Founder2",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+      ],
+      "generation": 0,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "ssttfEOw",
+          "name": "Whiskers",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "short",
+          },
+        },
+        {
+          "genotype": "ssTtEEOw",
+          "name": "Oreo",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+      ],
+      "generation": 1,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "sstTEEOw",
+          "name": "Whiskers",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+        {
+          "genotype": "sstTfEOw",
+          "name": "Boots",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+      ],
+      "generation": 2,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "sstTEEww",
+          "name": "Boots",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+        {
+          "genotype": "sstTEfOw",
+          "name": "Socks",
+          "phenotype": {
+            "color": "orange",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+      ],
+      "generation": 3,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "sstTEEww",
+          "name": "Milo",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+        {
+          "genotype": "ssTTEfww",
+          "name": "Nala",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+      ],
+      "generation": 4,
+    },
+    {
+      "cats": [
+        {
+          "genotype": "sstTEfww",
+          "name": "Pumpkin",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+        {
+          "genotype": "ssTTEfww",
+          "name": "Pepper",
+          "phenotype": {
+            "color": "white",
+            "earShape": "pointed",
+            "size": "small",
+            "tailLength": "long",
+          },
+        },
+      ],
+      "generation": 5,
+    },
+  ],
+}
+`;

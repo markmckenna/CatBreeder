@@ -3,6 +3,7 @@
  */
 
 import type { Cat } from '../../logic/cats/Cat.ts';
+import { phenotypeFor } from '../../logic/cats/Cat.ts';
 import CatSprite from '../CatSprite';
 import styles from './styles.css';
 
@@ -64,12 +65,17 @@ function CatListPanel({ cats, onSelectCat, onToggleFavourite, onClose }: CatList
                 </div>
                 <div className={styles.catInfo}>
                   <span className={styles.catName}>{cat.name}</span>
-                  <span className={styles.catTraits}>
-                    {cat.phenotype.size}, {cat.phenotype.tailLength} tail
-                  </span>
-                  <span className={styles.catTraits}>
-                    {cat.phenotype.earShape} ears, {cat.phenotype.tailColor} fur
-                  </span>
+                  {(() => {
+                    const phenotype = phenotypeFor(cat.genotype);
+                    return <>
+                      <span className={styles.catTraits}>
+                        {phenotype.size}, {phenotype.tailLength} tail
+                      </span>
+                      <span className={styles.catTraits}>
+                        {phenotype.earShape} ears, {phenotype.color} fur
+                      </span>
+                    </>;
+                  })()}
                   <span className={styles.catAge}>Age: {cat.age} weeks</span>
                   <span className={styles.catHappiness}>
                     Happiness: {cat.happiness}%

@@ -1,22 +1,10 @@
 /** Test utilities for mock game objects */
 
-import type { Cat, CatPhenotype, CatGenotype } from '../cats/Cat.ts';
+import type { Cat, CatPhenotype } from '../cats/Cat';
 
-/** Default phenotype for mock cats */
-const DEFAULT_PHENOTYPE: CatPhenotype = {
-  size: 'large',
-  tailLength: 'long',
-  earShape: 'pointed',
-  tailColor: 'orange',
-};
 
-/** Default genotype for mock cats */
-const DEFAULT_GENOTYPE: CatGenotype = {
-  size: ['S', 'S'],
-  tailLength: ['T', 'T'],
-  earShape: ['E', 'E'],
-  tailColor: ['O', 'O'],
-};
+/** Default genotype for mock cats (string) */
+const DEFAULT_GENOTYPE = 'SSTTEEOO'; // large, long, pointed, orange
 
 /** @returns a mock cat with optional overrides */
 export function createMockCat(overrides: Partial<Cat> = {}): Cat {
@@ -26,7 +14,6 @@ export function createMockCat(overrides: Partial<Cat> = {}): Cat {
     age: 10,
     happiness: 80,
     genotype: DEFAULT_GENOTYPE,
-    phenotype: DEFAULT_PHENOTYPE,
     ...overrides,
   };
 }
@@ -37,18 +24,21 @@ export function createMockCatFromPhenotype(
   name = 'TestCat',
   id = 'test-cat-1'
 ): Cat {
+  // Helper to convert phenotype to genotype string (assumes homozygous for trait)
+  function phenotypeToGenotype(p: CatPhenotype): string {
+    let g = '';
+    g += p.size === 'small' ? 'ss' : 'SS';
+    g += p.tailLength === 'short' ? 'tt' : 'TT';
+    g += p.earShape === 'folded' ? 'ff' : 'EE';
+    g += p.tailColor === 'white' ? 'ww' : 'OO';
+    return g;
+  }
   return {
     id,
     name,
     age: 10,
     happiness: 100,
-    genotype: {
-      size: phenotype.size === 'small' ? ['s', 's'] : ['S', 'S'],
-      tailLength: phenotype.tailLength === 'short' ? ['t', 't'] : ['T', 'T'],
-      earShape: phenotype.earShape === 'folded' ? ['f', 'f'] : ['E', 'E'],
-      tailColor: phenotype.tailColor === 'white' ? ['w', 'w'] : ['O', 'O'],
-    },
-    phenotype,
+    genotype: phenotypeToGenotype(phenotype),
   };
 }
 
@@ -56,18 +46,7 @@ export function createMockCatFromPhenotype(
 export const SMALL_FOLDED_CAT: Cat = {
   id: 'test-cat-2',
   name: 'Mittens',
-  genotype: {
-    size: ['s', 's'],
-    tailLength: ['t', 't'],
-    earShape: ['f', 'f'],
-    tailColor: ['w', 'w'],
-  },
-  phenotype: {
-    size: 'small',
-    tailLength: 'short',
-    earShape: 'folded',
-    tailColor: 'white',
-  },
+  genotype: 'ssttffww',
   age: 1,
   happiness: 90,
 };

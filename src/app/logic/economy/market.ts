@@ -1,15 +1,15 @@
 /** Market pricing and economy. Fixed demand for now; future: trends, supply/demand. */
 
-import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/Cat';
-import { createRandomCat, randomCatName } from '../cats/Cat';
-import { defaultRandom, normalRandom } from '@/base/random.ts';
+import type { Cat } from '../cats/Cat';
+import { createRandomCat, randomCatName, phenotypeFor } from '../cats/Cat';
+import { defaultRandom, normalRandom, type RandomFn } from '@/base/random.ts';
 
 /** Value multipliers by trait variant (higher = more valuable) */
 export interface TraitValues {
-  size: Record<SizePhenotype, number>;
-  tailLength: Record<TailLengthPhenotype, number>;
-  earShape: Record<EarShapePhenotype, number>;
-  tailColor: Record<TailColorPhenotype, number>;
+  size: Record<string, number>;
+  tailLength: Record<string, number>;
+  earShape: Record<string, number>;
+  color: Record<string, number>;
 }
 
 /** Current market state */
@@ -48,7 +48,7 @@ const DEFAULT_TRAIT_VALUES: TraitValues = {
     folded: 2.0, // Recessive, rare and desirable
     pointed: 1.0, // Dominant, common
   },
-  tailColor: {
+  color: {
     white: 1.4,  // Recessive, rarer
     orange: 1.0, // Dominant, common
   },
@@ -67,7 +67,7 @@ export function createMarketState(): MarketState {
 
 /** @returns value multiplier from phenotype; ±10% variance when fluctuate=true */
 function getTraitMultiplier(
-  phenotype: CatPhenotype,
+  phenotype: Record<string, string>,
   traitValues: TraitValues,
   fluctuate = false,
   random: RandomFn = defaultRandom
@@ -85,7 +85,7 @@ function getTraitMultiplier(
     applyFluctuation(traitValues.size[phenotype.size]) *
     applyFluctuation(traitValues.tailLength[phenotype.tailLength]) *
     applyFluctuation(traitValues.earShape[phenotype.earShape]) *
-    applyFluctuation(traitValues.tailColor[phenotype.tailColor])
+    applyFluctuation(traitValues.color[phenotype.tailColor])
   );
 }
 
@@ -96,7 +96,7 @@ export function calculateCatValue(
   options: { fluctuate?: boolean; random?: RandomFn } = {}
 ): number {
   const { fluctuate = false, random = defaultRandom } = options;
-  const traitMultiplier = getTraitMultiplier(cat.phenotype, market.traitValues, fluctuate, random);
+  const traitMultiplier = getTraitMultiplier(phenotypeFor(cat.genotype), market.traitValues, fluctuate, random);
   
   // Happiness directly affects value: 0% happiness = $0, 100% happiness = full price
   const happinessMultiplier = cat.happiness / 100;
@@ -113,13 +113,12 @@ export function calculateCatValue(
 export function getValueBreakdown(cat: Cat, market: MarketState): { trait: string; multiplier: number }[] {
   const breakdown: { trait: string; multiplier: number }[] = [];
   const tv = market.traitValues;
-
-  if (tv.size[cat.phenotype.size] > 1) breakdown.push({ trait: `${cat.phenotype.size} size`, multiplier: tv.size[cat.phenotype.size] });
-  if (tv.tailLength[cat.phenotype.tailLength] > 1) breakdown.push({ trait: `${cat.phenotype.tailLength} tail`, multiplier: tv.tailLength[cat.phenotype.tailLength] });
-  if (tv.earShape[cat.phenotype.earShape] > 1) breakdown.push({ trait: `${cat.phenotype.earShape} ears`, multiplier: tv.earShape[cat.phenotype.earShape] });
-  if (tv.tailColor[cat.phenotype.tailColor] > 1) breakdown.push({ trait: `${cat.phenotype.tailColor} fur`, multiplier: tv.tailColor[cat.phenotype.tailColor] });
+  const phenotype = phenotypeFor(cat.genotype);
+  if (tv.size[phenotype.size] > 1) breakdown.push({ trait: `${phenotype.size} size`, multiplier: tv.size[phenotype.size] });
+  if (tv.tailLength[phenotype.tailLength] > 1) breakdown.push({ trait: `${phenotype.tailLength} tail`, multiplier: tv.tailLength[phenotype.tailLength] });
+  if (tv.earShape[phenotype.earShape] > 1) breakdown.push({ trait: `${phenotype.earShape} ears`, multiplier: tv.earShape[phenotype.earShape] });
+  if (tv.color[phenotype.color] > 1) breakdown.push({ trait: `${phenotype.color} fur`, multiplier: tv.color[phenotype.color] });
   if (cat.age < 4) breakdown.push({ trait: 'kitten', multiplier: 1.2 });
-
   return breakdown;
 }
 

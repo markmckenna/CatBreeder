@@ -1,3 +1,12 @@
+// Helper to convert object genotype to string
+function objectGenotypeToString(obj: { size: string[]; tailLength: string[]; earShape: string[]; tailColor: string[] }): string {
+  return [
+    ...obj.size,
+    ...obj.tailLength,
+    ...obj.earShape,
+    ...obj.tailColor,
+  ].join('');
+}
 /**
  * Tests for deterministic breeding with seeded random.
  * 
@@ -16,19 +25,17 @@ import {
   randomCatName,
   phenotypeFor,
   type Cat,
-  type CatGenotype,
   type CatPhenotype,
 } from './Cat.ts';
 
 /**
  * Helper to create a cat with a specific genotype for testing
  */
-function createCatWithGenotype(name: string, genotype: CatGenotype, id: string): Cat {
+function createCatWithGenotype(name: string, genotype: string, id: string): Cat {
   return {
     id,
     name,
     genotype,
-    phenotype: phenotypeFor(genotype),
     age: 100,
     happiness: 100,
   };
@@ -37,46 +44,41 @@ function createCatWithGenotype(name: string, genotype: CatGenotype, id: string):
 describe('deterministic breeding', () => {
   describe('seeded random produces consistent results', () => {
     it('breedCats produces identical offspring with same seed', () => {
-      const parent1 = createCatWithGenotype('Mom', {
+      const parent1 = createCatWithGenotype('Mom', objectGenotypeToString({
         size: ['S', 's'],
         tailLength: ['T', 't'],
         earShape: ['E', 'f'],
         tailColor: ['O', 'w'],
-      }, 'p1');
-      
-      const parent2 = createCatWithGenotype('Dad', {
+      }), 'p1');
+      const parent2 = createCatWithGenotype('Dad', objectGenotypeToString({
         size: ['S', 's'],
         tailLength: ['T', 't'],
         earShape: ['E', 'f'],
         tailColor: ['O', 'w'],
-      }, 'p2');
-
-      // Breed with same seed twice
-      const rng1 = createSeededRandom(12345);
-      const rng2 = createSeededRandom(12345);
-      
+      }), 'p2');
+      const rng1 = createSeededRandom(1);
+      const rng2 = createSeededRandom(1);
       const offspring1 = breedCats(parent1, parent2, 'Kitten1', { random: rng1, id: 'test_cat_1' });
       const offspring2 = breedCats(parent1, parent2, 'Kitten2', { random: rng2, id: 'test_cat_2' });
 
       // Genotypes should be identical
       expect(offspring1.genotype).toEqual(offspring2.genotype);
-      expect(offspring1.phenotype).toEqual(offspring2.phenotype);
+      expect(phenotypeFor(offspring1.genotype)).toEqual(phenotypeFor(offspring2.genotype));
     });
 
     it('different seeds produce different offspring', () => {
-      const parent1 = createCatWithGenotype('Mom', {
+      const parent1 = createCatWithGenotype('Mom', objectGenotypeToString({
         size: ['S', 's'],
         tailLength: ['T', 't'],
         earShape: ['E', 'f'],
         tailColor: ['O', 'w'],
-      }, 'p1');
-      
-      const parent2 = createCatWithGenotype('Dad', {
+      }), 'p1');
+      const parent2 = createCatWithGenotype('Dad', objectGenotypeToString({
         size: ['S', 's'],
         tailLength: ['T', 't'],
         earShape: ['E', 'f'],
         tailColor: ['O', 'w'],
-      }, 'p2');
+      }), 'p2');
 
       // Collect genotypes from many different seeds
       const genotypes = new Set<string>();
@@ -132,8 +134,8 @@ describe('Mendelian statistics', () => {
   const TOLERANCE = 0.05; // Allow 5% deviation from expected ratio
 
   function countPhenotypes(
-    parent1Genotype: CatGenotype,
-    parent2Genotype: CatGenotype,
+    parent1Genotype: string,
+    parent2Genotype: string,
     trials: number,
     seed: number
   ): Record<string, Record<string, number>> {
@@ -151,10 +153,11 @@ describe('Mendelian statistics', () => {
     
     for (let i = 0; i < trials; i++) {
       const offspring = breedCats(parent1, parent2, `Kit${i}`, { random: rng, id: `k${i}` });
-      counts.size[offspring.phenotype.size]++;
-      counts.tailLength[offspring.phenotype.tailLength]++;
-      counts.earShape[offspring.phenotype.earShape]++;
-      counts.tailColor[offspring.phenotype.tailColor]++;
+      const phenotype = phenotypeFor(offspring.genotype);
+      counts.size[phenotype.size]++;
+      counts.tailLength[phenotype.tailLength]++;
+      counts.earShape[phenotype.earShape]++;
+      counts.tailColor[phenotype.tailColor]++;
     }
 
     return counts;
@@ -163,8 +166,8 @@ describe('Mendelian statistics', () => {
   describe('homozygous × homozygous crosses', () => {
     it('SS × SS → 100% large', () => {
       const counts = countPhenotypes(
-        { size: ['S', 'S'], tailLength: ['T', 'T'], earShape: ['E', 'E'], tailColor: ['O', 'O'] },
-        { size: ['S', 'S'], tailLength: ['T', 'T'], earShape: ['E', 'E'], tailColor: ['O', 'O'] },
+          objectGenotypeToString({ size: ['S', 'S'], tailLength: ['T', 'T'], earShape: ['E', 'E'], tailColor: ['O', 'O'] }),
+          objectGenotypeToString({ size: ['S', 'S'], tailLength: ['T', 'T'], earShape: ['E', 'E'], tailColor: ['O', 'O'] }),
         TRIALS,
         100
       );
@@ -175,8 +178,8 @@ describe('Mendelian statistics', () => {
 
     it('ss × ss → 100% small', () => {
       const counts = countPhenotypes(
-        { size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] },
-        { size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] },
+          objectGenotypeToString({ size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] }),
+          objectGenotypeToString({ size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] }),
         TRIALS,
         200
       );
@@ -187,8 +190,8 @@ describe('Mendelian statistics', () => {
 
     it('SS × ss → 100% large (all Ss)', () => {
       const counts = countPhenotypes(
-        { size: ['S', 'S'], tailLength: ['T', 'T'], earShape: ['E', 'E'], tailColor: ['O', 'O'] },
-        { size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] },
+          objectGenotypeToString({ size: ['S', 'S'], tailLength: ['T', 'T'], earShape: ['E', 'E'], tailColor: ['O', 'O'] }),
+          objectGenotypeToString({ size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] }),
         TRIALS,
         300
       );
@@ -202,8 +205,8 @@ describe('Mendelian statistics', () => {
   describe('heterozygous × heterozygous crosses (classic 3:1 ratio)', () => {
     it('Ss × Ss → ~75% large, ~25% small', () => {
       const counts = countPhenotypes(
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
         TRIALS,
         400
       );
@@ -220,8 +223,8 @@ describe('Mendelian statistics', () => {
 
     it('Tt × Tt → ~75% long, ~25% short', () => {
       const counts = countPhenotypes(
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
         TRIALS,
         500
       );
@@ -233,8 +236,8 @@ describe('Mendelian statistics', () => {
 
     it('Ef × Ef → ~75% pointed, ~25% folded', () => {
       const counts = countPhenotypes(
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
         TRIALS,
         600
       );
@@ -246,8 +249,8 @@ describe('Mendelian statistics', () => {
 
     it('Ow × Ow → ~75% orange, ~25% white', () => {
       const counts = countPhenotypes(
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
         TRIALS,
         700
       );
@@ -261,8 +264,8 @@ describe('Mendelian statistics', () => {
   describe('heterozygous × recessive crosses (test cross 1:1 ratio)', () => {
     it('Ss × ss → ~50% large, ~50% small', () => {
       const counts = countPhenotypes(
-        { size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] },
-        { size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] },
+          objectGenotypeToString({ size: ['S', 's'], tailLength: ['T', 't'], earShape: ['E', 'f'], tailColor: ['O', 'w'] }),
+          objectGenotypeToString({ size: ['s', 's'], tailLength: ['t', 't'], earShape: ['f', 'f'], tailColor: ['w', 'w'] }),
         TRIALS,
         800
       );
@@ -280,31 +283,30 @@ describe('Mendelian statistics', () => {
       // Expected phenotype ratios: 3 dominant : 1 recessive
       // For two independent traits: 9:3:3:1 ratio
       
-      const parent1 = createCatWithGenotype('P1', {
+      const parent1 = createCatWithGenotype('Mom', objectGenotypeToString({
         size: ['S', 's'],
         tailLength: ['T', 't'],
-        earShape: ['E', 'E'], // Keep these constant
-        tailColor: ['O', 'O'],
-      }, 'p1');
-      
-      const parent2 = createCatWithGenotype('P2', {
+        earShape: ['E', 'f'],
+        tailColor: ['O', 'w'],
+      }), 'p1');
+      const parent2 = createCatWithGenotype('Dad', objectGenotypeToString({
         size: ['S', 's'],
         tailLength: ['T', 't'],
-        earShape: ['E', 'E'],
-        tailColor: ['O', 'O'],
-      }, 'p2');
+        earShape: ['E', 'f'],
+        tailColor: ['O', 'w'],
+      }), 'p2');
 
-      const rng = createSeededRandom(900);
       const comboCounts = {
         'large-long': 0,
         'large-short': 0,
         'small-long': 0,
         'small-short': 0,
       };
-
       for (let i = 0; i < TRIALS; i++) {
+        const rng = createSeededRandom(i);
         const offspring = breedCats(parent1, parent2, `Kit${i}`, { random: rng, id: `k${i}` });
-        const key = `${offspring.phenotype.size}-${offspring.phenotype.tailLength}` as keyof typeof comboCounts;
+        const phenotype = phenotypeFor(offspring.genotype);
+        const key = `${phenotype.size}-${phenotype.tailLength}` as keyof typeof comboCounts;
         comboCounts[key]++;
       }
 
@@ -332,7 +334,7 @@ describe('breeding program snapshots', () => {
   function runBreedingProgram(seed: number, generations: number): {
     generations: Array<{
       generation: number;
-      cats: Array<{ name: string; genotype: CatGenotype; phenotype: CatPhenotype }>;
+      cats: Array<{ name: string; genotype: string; phenotype: CatPhenotype }>;
     }>;
   } {
     const rng = createSeededRandom(seed);
@@ -346,7 +348,7 @@ describe('breeding program snapshots', () => {
     
     result.generations.push({
       generation: 0,
-      cats: cats.map(c => ({ name: c.name, genotype: c.genotype, phenotype: c.phenotype })),
+      cats: cats.map(c => ({ name: c.name, genotype: c.genotype, phenotype: phenotypeFor(c.genotype) })),
     });
 
     for (let gen = 1; gen <= generations; gen++) {
@@ -377,7 +379,7 @@ describe('breeding program snapshots', () => {
       cats = newCats;
       result.generations.push({
         generation: gen,
-        cats: cats.map(c => ({ name: c.name, genotype: c.genotype, phenotype: c.phenotype })),
+        cats: cats.map(c => ({ name: c.name, genotype: c.genotype, phenotype: phenotypeFor(c.genotype) })),
       });
     }
 

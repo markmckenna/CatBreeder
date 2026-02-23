@@ -6,6 +6,7 @@
  */
 
 import { CSSProperties, useState } from 'react';
+import { phenotypeFor } from '../../logic/cats/Cat.ts';
 import type { Cat, CatPhenotype } from '../../logic/cats/Cat.ts';
 
 interface CatSpriteProps {
@@ -19,13 +20,6 @@ interface CatSpriteProps {
 // ============= Color Derivation =============
 
 /** Derive all cat colors from the body color phenotype */
-function deriveColors(phenotype: CatPhenotype) {
-  // Body color is the base - tail accent derives from it
-  const bodyColor = phenotype.tailColor === 'white' ? '#F5F5DC' : '#FFB347';
-  const tailColor = phenotype.tailColor === 'white' ? '#FFFFFF' : '#FF8C00';
-  
-  return { bodyColor, tailColor };
-}
 
 // ============= Body Part Components =============
 
@@ -192,17 +186,15 @@ function NameTag({ name }: { name: string }) {
 
 function CatSprite({ cat, selected = false, onClick, onMouseEnter, onMouseLeave }: CatSpriteProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const { phenotype } = cat;
-  
+  const phenotype = phenotypeFor(cat.genotype);
   // Kittens (under 4 weeks) are smaller with bigger eyes
   const isKitten = cat.age < 4;
   const kittenScale = isKitten ? 0.7 : 1;
-  
   // Size phenotype affects overall scale
   const scale = (phenotype.size === 'small' ? 0.8 : 1) * kittenScale;
-  
   // Derive colors from body color phenotype
-  const { bodyColor, tailColor } = deriveColors(phenotype);
+  const bodyColor = phenotype.color === 'white' ? '#F5F5DC' : '#FFB347';
+  const tailColor = phenotype.color === 'white' ? '#FFFFFF' : '#FF8C00';
 
   // Determine visual state
   const isHighlighted = selected || isHovered;

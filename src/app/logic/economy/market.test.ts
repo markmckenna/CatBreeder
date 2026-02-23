@@ -6,25 +6,23 @@ import {
   generateMarketInventory,
 } from './market.ts';
 import type { Cat, CatPhenotype } from '../cats/Cat';
+
 import { createSeededRandom } from '@/base/random.ts';
 
 describe('market', () => {
+  // Helper to convert phenotype to genotype string (assumes homozygous for trait)
+  const phenotypeToGenotype = (p: Partial<CatPhenotype>): string => {
+    let g = '';
+    g += (p.size === 'small') ? 'ss' : 'SS';
+    g += (p.tailLength === 'short') ? 'tt' : 'TT';
+    g += (p.earShape === 'folded') ? 'ff' : 'EE';
+    g += (p.tailColor === 'white') ? 'ww' : 'OO';
+    return g;
+  };
   const createTestCat = (phenotype: Partial<CatPhenotype>, happiness = 100): Cat => ({
     id: 'test-cat',
     name: 'Test',
-    genotype: {
-      size: ['S', 'S'],
-      tailLength: ['T', 'T'],
-      earShape: ['E', 'E'],
-      tailColor: ['O', 'O'],
-    },
-    phenotype: {
-      size: 'large',
-      tailLength: 'long',
-      earShape: 'pointed',
-      tailColor: 'orange',
-      ...phenotype,
-    },
+    genotype: phenotypeToGenotype(phenotype),
     age: 100,
     happiness,
   });

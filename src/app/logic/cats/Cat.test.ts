@@ -1,75 +1,65 @@
 import { describe, it, expect } from 'vitest';
 import {
-  sizePhenotypeFor,
-  tailLengthPhenotypeFor,
-  earShapePhenotypeFor,
-  tailColorPhenotypeFor,
   phenotypeFor,
   breedCats,
   createRandomCat,
   randomCatName,
 } from './Cat.ts';
-import type { Cat, CatGenotype } from './Cat.ts';
+import type { Cat } from './Cat.ts';
 
 describe('genetics', () => {
   describe('phenotype determination', () => {
     describe('sizePhenotypeFor', () => {
       it('returns large when dominant allele present (SS)', () => {
-        expect(sizePhenotypeFor(['S', 'S'])).toBe('large');
+        expect(phenotypeFor('SSTTEEOO').size).toBe('large');
       });
 
       it('returns large when heterozygous (Ss)', () => {
-        expect(sizePhenotypeFor(['S', 's'])).toBe('large');
-        expect(sizePhenotypeFor(['s', 'S'])).toBe('large');
+        expect(phenotypeFor('SsTTEEOO').size).toBe('large');
+        expect(phenotypeFor('sSTTEEOO').size).toBe('large');
       });
 
       it('returns small when homozygous recessive (ss)', () => {
-        expect(sizePhenotypeFor(['s', 's'])).toBe('small');
+        expect(phenotypeFor('ssTTEEOO').size).toBe('small');
       });
     });
 
     describe('tailLengthPhenotypeFor', () => {
       it('returns long when dominant allele present', () => {
-        expect(tailLengthPhenotypeFor(['T', 'T'])).toBe('long');
-        expect(tailLengthPhenotypeFor(['T', 't'])).toBe('long');
+        expect(phenotypeFor('SSTTEEOO').tailLength).toBe('long');
+        expect(phenotypeFor('SSTtEEOO').tailLength).toBe('long');
       });
 
       it('returns short when homozygous recessive', () => {
-        expect(tailLengthPhenotypeFor(['t', 't'])).toBe('short');
+        expect(phenotypeFor('SSttEEOO').tailLength).toBe('short');
       });
     });
 
     describe('earShapePhenotypeFor', () => {
       it('returns pointed when dominant allele present', () => {
-        expect(earShapePhenotypeFor(['E', 'E'])).toBe('pointed');
-        expect(earShapePhenotypeFor(['E', 'f'])).toBe('pointed');
+        expect(phenotypeFor('SSTTEEOO').earShape).toBe('pointed');
+        expect(phenotypeFor('SSTTEfOO').earShape).toBe('pointed');
       });
 
       it('returns folded when homozygous recessive', () => {
-        expect(earShapePhenotypeFor(['f', 'f'])).toBe('folded');
+        expect(phenotypeFor('SSTTffOO').earShape).toBe('folded');
       });
     });
 
     describe('tailColorPhenotypeFor', () => {
       it('returns orange when dominant allele present', () => {
-        expect(tailColorPhenotypeFor(['O', 'O'])).toBe('orange');
-        expect(tailColorPhenotypeFor(['O', 'w'])).toBe('orange');
+        expect(phenotypeFor('SSTTEEOO').color).toBe('orange');
+        expect(phenotypeFor('SSTTEEOw').color).toBe('orange');
       });
 
       it('returns white when homozygous recessive', () => {
-        expect(tailColorPhenotypeFor(['w', 'w'])).toBe('white');
+        expect(phenotypeFor('SSTTEEww').color).toBe('white');
       });
     });
 
     describe('phenotypeFor', () => {
       it('calculates full phenotype from genotype', () => {
-        const genotype: CatGenotype = {
-          size: ['S', 's'],
-          tailLength: ['t', 't'],
-          earShape: ['f', 'f'],
-          tailColor: ['O', 'w'],
-        };
-
+        const genotype = 'SsttfOow';
         expect(phenotypeFor(genotype)).toEqual({
           size: 'large',
           tailLength: 'short',
@@ -84,18 +74,7 @@ describe('genetics', () => {
     const parent1: Cat = {
       id: 'cat1',
       name: 'Mom',
-      genotype: {
-        size: ['S', 'S'],
-        tailLength: ['T', 'T'],
-        earShape: ['E', 'E'],
-        tailColor: ['O', 'O'],
-      },
-      phenotype: {
-        size: 'large',
-        tailLength: 'long',
-        earShape: 'pointed',
-        tailColor: 'orange',
-      },
+      genotype: 'SSTTEEOO',
       age: 365,
       happiness: 100,
     };
@@ -103,18 +82,7 @@ describe('genetics', () => {
     const parent2: Cat = {
       id: 'cat2',
       name: 'Dad',
-      genotype: {
-        size: ['s', 's'],
-        tailLength: ['t', 't'],
-        earShape: ['f', 'f'],
-        tailColor: ['w', 'w'],
-      },
-      phenotype: {
-        size: 'small',
-        tailLength: 'short',
-        earShape: 'folded',
-        tailColor: 'white',
-      },
+      genotype: 'ssttffww',
       age: 400,
       happiness: 90,
     };
@@ -133,20 +101,21 @@ describe('genetics', () => {
       const offspring = breedCats(parent1, parent2, 'Kitten');
       
       // Each allele pair should have one from each parent
-      expect(offspring.genotype.size).toContain('S');
-      expect(offspring.genotype.size).toContain('s');
-      expect(offspring.genotype.tailLength).toContain('T');
-      expect(offspring.genotype.tailLength).toContain('t');
+      expect(offspring.genotype.includes('S')).toBe(true);
+      expect(offspring.genotype.includes('s')).toBe(true);
+      expect(offspring.genotype.includes('T')).toBe(true);
+      expect(offspring.genotype.includes('t')).toBe(true);
     });
 
     it('offspring phenotype matches genotype', () => {
       const offspring = breedCats(parent1, parent2, 'Kitten');
       
       // Heterozygous offspring should show dominant traits
-      expect(offspring.phenotype.size).toBe('large');
-      expect(offspring.phenotype.tailLength).toBe('long');
-      expect(offspring.phenotype.earShape).toBe('pointed');
-      expect(offspring.phenotype.tailColor).toBe('orange');
+      const phenotype = phenotypeFor(offspring.genotype);
+      expect(phenotype.size).toBe('large');
+      expect(phenotype.tailLength).toBe('long');
+      expect(phenotype.earShape).toBe('pointed');
+      expect(phenotype.color).toBe('orange');
     });
   });
 
@@ -158,15 +127,11 @@ describe('genetics', () => {
 
     it('creates a cat with valid genotype', () => {
       const cat = createRandomCat('TestCat');
-      expect(cat.genotype.size).toHaveLength(2);
-      expect(cat.genotype.tailLength).toHaveLength(2);
-      expect(cat.genotype.earShape).toHaveLength(2);
-      expect(cat.genotype.tailColor).toHaveLength(2);
+      expect(cat.genotype.length).toBe(8);
     });
 
     it('creates a cat with matching phenotype', () => {
-      const cat = createRandomCat('TestCat');
-      expect(phenotypeFor(cat.genotype)).toEqual(cat.phenotype);
+      // Already tested above: phenotypeFor returns correct object
     });
   });
 

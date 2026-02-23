@@ -1,8 +1,9 @@
 /** Trait Collection - tracks which phenotype combinations have been bred (2^4 = 16 total) */
 
 import type { CatPhenotype, Cat } from './Cat.ts';
+import { phenotypeFor } from './Cat.ts';
 
-/** Key for a phenotype combination: "size-tailLength-earShape-tailColor" */
+/** Key for a phenotype combination: "size-tailLength-earShape-color" */
 export type TraitKey = string;
 
 /** A collected trait - records which cat first achieved this combination */
@@ -23,27 +24,25 @@ export interface TraitCollection {
 
 /** Generate a unique key for a phenotype combination */
 export const phenotypeKeyFor = (it: CatPhenotype): TraitKey =>
-  `${it.size}-${it.tailLength}-${it.earShape}-${it.tailColor}`;
+  `${it.size}-${it.tailLength}-${it.earShape}-${it.color}`;
 
 /** @returns all 16 possible phenotype combinations */
 export function getAllPhenotypeCombinations(): CatPhenotype[] {
   const sizes: Array<'small' | 'large'> = ['small', 'large'];
   const tailLengths: Array<'short' | 'long'> = ['short', 'long'];
   const earShapes: Array<'folded' | 'pointed'> = ['folded', 'pointed'];
-  const tailColors: Array<'white' | 'orange'> = ['white', 'orange'];
+  const colors: Array<'white' | 'orange'> = ['white', 'orange'];
 
   const combinations: CatPhenotype[] = [];
-  
   for (const size of sizes) {
     for (const tailLength of tailLengths) {
       for (const earShape of earShapes) {
-        for (const tailColor of tailColors) {
-          combinations.push({ size, tailLength, earShape, tailColor });
+        for (const color of colors) {
+          combinations.push({ size, tailLength, earShape, color });
         }
       }
     }
   }
-
   return combinations;
 }
 
@@ -66,14 +65,14 @@ export function registerBredCat(
   cat: Cat,
   day: number
 ): { updated: boolean; collection: TraitCollection } {
-  const key = phenotypeKeyFor(cat.phenotype);
+  const key = phenotypeKeyFor(phenotypeFor(cat.genotype));
   
   if (collection.collected.has(key)) return { updated: false, collection };
 
   const newCollected = new Map(collection.collected);
   newCollected.set(key, {
     key,
-    phenotype: cat.phenotype,
+    phenotype: phenotypeFor(cat.genotype),
     catId: cat.id,
     catName: cat.name,
     day,

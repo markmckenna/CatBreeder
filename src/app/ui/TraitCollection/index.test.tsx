@@ -16,7 +16,7 @@ describe('TraitCollection', () => {
 
   it('shows collected traits', () => {
     let collection = createTraitCollection();
-    const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', tailColor: 'white' };
+    const phenotype: CatPhenotype = { size: 'small', tailLength: 'short', earShape: 'folded', color: 'white' };
     const cat = createMockCatFromPhenotype(phenotype, 'Snowball', 'cat_1');
     
     const result = registerBredCat(collection, cat, 5);
