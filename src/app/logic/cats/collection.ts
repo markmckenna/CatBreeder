@@ -1,6 +1,6 @@
 /** Trait Collection - tracks which phenotype combinations have been bred (2^4 = 16 total) */
 
-import type { CatPhenotype, Cat } from './genetics.ts';
+import type { CatPhenotype, Cat } from './Cat.ts';
 
 /** Key for a phenotype combination: "size-tailLength-earShape-tailColor" */
 export type TraitKey = string;

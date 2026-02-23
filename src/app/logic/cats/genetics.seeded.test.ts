@@ -18,7 +18,7 @@ import {
   type Cat,
   type CatGenotype,
   type CatPhenotype,
-} from './genetics.ts';
+} from './Cat.ts';
 
 /**
  * Helper to create a cat with a specific genotype for testing

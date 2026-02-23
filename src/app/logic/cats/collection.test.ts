@@ -10,8 +10,29 @@ import {
   serializeCollection,
   deserializeCollection,
 } from './collection.ts';
-import type { CatPhenotype } from './genetics.ts';
-import { createMockCatFromPhenotype } from './test/helpers.ts';
+// (removed duplicate CatPhenotype import)
+
+// Minimal test helper for Cat creation (inlined)
+import type { Cat, CatPhenotype } from './Cat.ts';
+function createMockCatFromPhenotype(
+  phenotype: CatPhenotype,
+  name = 'TestCat',
+  id = 'test-cat-1'
+): Cat {
+  return {
+    id,
+    name,
+    genotype: {
+      size: ['S', 'S'],
+      tailLength: ['T', 'T'],
+      earShape: ['E', 'E'],
+      tailColor: ['O', 'O'],
+    },
+    phenotype,
+    age: 100,
+    happiness: 100,
+  };
+}
 
 describe('trait collection', () => {
   describe('phenotypeKeyFor', () => {

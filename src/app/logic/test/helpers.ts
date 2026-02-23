@@ -1,6 +1,6 @@
 /** Test utilities for mock game objects */
 
-import type { Cat, CatPhenotype, CatGenotype } from '../genetics.ts';
+import type { Cat, CatPhenotype, CatGenotype } from '../cats/Cat.ts';
 
 /** Default phenotype for mock cats */
 const DEFAULT_PHENOTYPE: CatPhenotype = {

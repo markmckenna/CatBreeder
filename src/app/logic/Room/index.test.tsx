@@ -5,7 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Room from '.';
-import type { FurniturePosition } from '../positions.ts';
+import type { FurniturePosition } from '../environment/positions.ts';
 
 describe('Room', () => {
   it('renders room container', () => {

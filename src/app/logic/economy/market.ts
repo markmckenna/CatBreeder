@@ -1,7 +1,7 @@
 /** Market pricing and economy. Fixed demand for now; future: trends, supply/demand. */
 
-import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/genetics.ts';
-import { createRandomCat, randomCatName } from '../cats/genetics.ts';
+import type { Cat, CatPhenotype, SizePhenotype, TailLengthPhenotype, EarShapePhenotype, TailColorPhenotype, RandomFn } from '../cats/Cat';
+import { createRandomCat, randomCatName } from '../cats/Cat';
 import { defaultRandom, normalRandom } from '@/base/random.ts';
 
 /** Value multipliers by trait variant (higher = more valuable) */

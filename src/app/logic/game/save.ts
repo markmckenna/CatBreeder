@@ -1,10 +1,10 @@
 /** Save/Load system using localStorage */
 
 import type { GameState } from './state.ts';
-import type { TraitCollection, CollectedTrait, TraitKey } from '../cats/collection.ts';
-import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
-import type { Cat } from '../cats/genetics.ts';
-import type { OwnedFurniture } from '../environment/furniture.ts';
+import type { TraitCollection, CollectedTrait, TraitKey } from '../cats/collection';
+import type { MarketState, Transaction, MarketCat } from '../economy/market';
+import type { Cat } from '../cats/Cat';
+import type { OwnedFurniture } from '../environment/furniture';
 
 export const SAVE_KEY = 'catbreeder_save';
 export const SAVE_VERSION = 1;

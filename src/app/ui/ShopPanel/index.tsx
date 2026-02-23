@@ -3,7 +3,7 @@
  * Shows available items with prices and allows purchase/sale.
  */
 
-import { SHOP_ITEMS, FurnitureItemType, OwnedFurniture, calculateCapacity } from '../../environment/furniture.ts';
+import { SHOP_ITEMS, FurnitureItemType, OwnedFurniture, calculateCapacity } from '../../logic/environment/furniture.ts';
 import { formatMoney } from '../format.ts';
 
 interface ShopPanelProps {

@@ -65,9 +65,9 @@
  */
 
 import { ReactNode } from 'react';
-import type { OwnedFurniture, FurnitureItemType } from '../furniture.ts';
-import { SHOP_ITEMS } from '../furniture.ts';
-import { getToyColor, getBedColor, type FurniturePosition } from '../positions.ts';
+import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture.ts';
+import { SHOP_ITEMS } from '../environment/furniture.ts';
+import { getToyColor, getBedColor, type FurniturePosition } from '../environment/positions.ts';
 import type { FurnitureSelection } from '../../ui/selection.ts';
 import styles from './styles.css';
 

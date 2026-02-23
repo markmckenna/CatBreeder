@@ -5,7 +5,7 @@ import {
   getValueBreakdown,
   generateMarketInventory,
 } from './market.ts';
-import type { Cat, CatPhenotype } from '../cats/genetics.ts';
+import type { Cat, CatPhenotype } from '../cats/Cat';
 import { createSeededRandom } from '@/base/random.ts';
 
 describe('market', () => {

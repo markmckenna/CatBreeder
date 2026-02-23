@@ -1,14 +1,14 @@
 /** Core game logic and state management */
 
-import type { Cat, RandomFn } from '../cats/genetics.ts';
-import { breedCats, createRandomCat, randomCatName } from '../cats/genetics.ts';
-import type { MarketState, Transaction, MarketCat } from '../economy/market.ts';
-import { createMarketState, calculateCatValue, generateMarketInventory, FOOD_COST_PER_CAT } from '../economy/market.ts';
-import type { TraitCollection } from '../cats/collection.ts';
-import { createTraitCollection, registerBredCat } from '../cats/collection.ts';
-import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture.ts';
-import { createInitialFurniture, SHOP_ITEMS, calculateCapacity } from '../environment/furniture.ts';
-import { assignCatPositions, type SpotType } from '../environment/positions.ts';
+import type { Cat, RandomFn } from '../cats/Cat';
+import { breedCats, createRandomCat, randomCatName } from '../cats/Cat';
+import type { MarketState, Transaction, MarketCat } from '../economy/market';
+import { createMarketState, calculateCatValue, generateMarketInventory, FOOD_COST_PER_CAT } from '../economy/market';
+import type { TraitCollection } from '../cats/collection';
+import { createTraitCollection, registerBredCat } from '../cats/collection';
+import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture';
+import { createInitialFurniture, SHOP_ITEMS, calculateCapacity } from '../environment/furniture';
+import { assignCatPositions, type SpotType } from '../environment/positions';
 
 /** Planned breeding pair for next turn */
 export interface BreedingPair {

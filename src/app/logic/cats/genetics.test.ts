@@ -8,8 +8,8 @@ import {
   breedCats,
   createRandomCat,
   randomCatName,
-} from './genetics.ts';
-import type { Cat, CatGenotype } from './genetics.ts';
+} from './Cat.ts';
+import type { Cat, CatGenotype } from './Cat.ts';
 
 describe('genetics', () => {
   describe('phenotype determination', () => {

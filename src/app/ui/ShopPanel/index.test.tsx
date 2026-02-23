@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ShopPanel from './index.tsx';
-import type { OwnedFurniture } from '../../environment/furniture.ts';
+import type { OwnedFurniture } from '../../logic/environment/furniture.ts';
 
 describe('ShopPanel', () => {
   const defaultProps = {

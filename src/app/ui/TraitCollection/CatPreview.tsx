@@ -6,7 +6,7 @@
  */
 
 import { CSSProperties } from 'react';
-import type { CatPhenotype } from '../../cats/genetics.ts';
+import type { CatPhenotype } from '../../logic/cats/Cat.ts';
 
 interface CatPreviewProps {
   phenotype: CatPhenotype;

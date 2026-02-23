@@ -2,7 +2,7 @@
  * CatListPanel - View all owned cats in a scrollable list.
  */
 
-import type { Cat } from '../../cats/genetics.ts';
+import type { Cat } from '../../logic/cats/Cat.ts';
 import CatSprite from '../CatSprite';
 import styles from './styles.css';
 

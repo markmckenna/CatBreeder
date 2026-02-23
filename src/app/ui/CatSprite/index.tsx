@@ -6,7 +6,7 @@
  */
 
 import { CSSProperties, useState } from 'react';
-import type { Cat, CatPhenotype } from '../../cats/genetics.ts';
+import type { Cat, CatPhenotype } from '../../logic/cats/Cat.ts';
 
 interface CatSpriteProps {
   cat: Cat;

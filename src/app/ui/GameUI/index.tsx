@@ -4,20 +4,20 @@
  */
 
 import { useState, useMemo } from 'react';
-import { useGame } from '../../game/GameContext.tsx';
-import { ActionType } from '../../game/state.ts';
-import Room from '../../environment/Room';
+import { useGame } from '../../logic/game/GameContext.tsx';
+import { ActionType } from '../../logic/game/state.ts';
+import Room from '../../logic/Room';
 import CatSprite from '../CatSprite';
 import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
 import ShopPanel from '../ShopPanel';
 import CatListPanel from '../CatListPanel';
-import { calculateCatValue, createMarketState, getValueBreakdown } from '../../economy/market.ts';
-import type { MarketCat } from '../../economy/market.ts';
-import { getCollectionProgress } from '../../cats/collection.ts';
-import { calculateCapacity, FurnitureItemType } from '../../environment/furniture.ts';
-import { assignCatPositions, getFurniturePositions } from '../../environment/positions.ts';
-import type { Cat } from '../../cats/genetics.ts';
+import { calculateCatValue, createMarketState, getValueBreakdown } from '../../logic/economy/market.ts';
+import type { MarketCat } from '../../logic/economy/market.ts';
+import { getCollectionProgress } from '../../logic/cats/collection.ts';
+import { calculateCapacity, FurnitureItemType } from '../../logic/environment/furniture.ts';
+import { assignCatPositions, getFurniturePositions } from '../../logic/environment/positions.ts';
+import type { Cat } from '../../logic/cats/Cat.ts';
 import type { Selectable, CatSelection } from '../selection.ts';
 import { isCatSelection, isFurnitureSelection, isSameSelectable } from '../selection.ts';
 import styles from './styles.css';

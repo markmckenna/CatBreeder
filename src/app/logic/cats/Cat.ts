@@ -166,17 +166,13 @@ export function createRandomCat(name: string, options: CreateCatOptions = {}): C
   };
 }
 
-/** Cat names */
-const CAT_NAMES = [
-  'Whiskers', 'Mittens', 'Shadow', 'Luna', 'Mochi',
-  'Ginger', 'Oreo', 'Cleo', 'Felix', 'Simba',
-  'Nala', 'Oliver', 'Bella', 'Max', 'Chloe',
-  'Tiger', 'Smokey', 'Patches', 'Pumpkin', 'Snowball',
-];
 
-/** Get a random cat name from the predefined list */
+// Cat names are now externalized to a JSON file for easier editing and localization
+import catNames from './catNames.json';
+
+/** Get a random cat name from the externalized list */
 export const randomCatName = (random: RandomFn = defaultRandom) =>
-  pickRandom(CAT_NAMES, random);
+  pickRandom(catNames, random);
 
 // Re-export RandomFn type for consumers
 export type { RandomFn };

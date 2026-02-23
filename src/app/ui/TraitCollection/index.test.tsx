@@ -1,9 +1,28 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TraitCollection from './index.tsx';
-import { createTraitCollection, registerBredCat } from '../../cats/collection.ts';
-import type { CatPhenotype } from '../../cats/genetics.ts';
-import { createMockCatFromPhenotype } from '../../cats/test/helpers.ts';
+import { createTraitCollection, registerBredCat } from '../../logic/cats/collection.ts';
+import type { Cat, CatPhenotype } from '../../logic/cats/Cat.ts';
+// Minimal test helper for Cat creation (inlined)
+function createMockCatFromPhenotype(
+  phenotype: CatPhenotype,
+  name = 'TestCat',
+  id = 'test-cat-1'
+): Cat {
+  return {
+    id,
+    name,
+    genotype: {
+      size: ['S', 'S'],
+      tailLength: ['T', 'T'],
+      earShape: ['E', 'E'],
+      tailColor: ['O', 'O'],
+    },
+    phenotype,
+    age: 100,
+    happiness: 100,
+  };
+}
 
 describe('TraitCollection', () => {
   it('renders the collection grid', () => {

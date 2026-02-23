@@ -7,7 +7,30 @@ import {
   type CatSelection,
   type FurnitureSelection,
 } from './selection.ts';
-import { createMockCat } from '../cats/test/helpers.ts';
+
+// Minimal test helper for Cat creation (inlined)
+import type { Cat } from '../logic/cats/Cat.ts';
+function createMockCat(overrides: Partial<Cat> = {}): Cat {
+  return {
+    id: 'test-cat-1',
+    name: 'Whiskers',
+    age: 10,
+    happiness: 80,
+    genotype: {
+      size: ['S', 'S'],
+      tailLength: ['T', 'T'],
+      earShape: ['E', 'E'],
+      tailColor: ['O', 'O'],
+    },
+    phenotype: {
+      size: 'large',
+      tailLength: 'long',
+      earShape: 'pointed',
+      tailColor: 'orange',
+    },
+    ...overrides,
+  };
+}
 
 function createCatSelection(catId: string): CatSelection {
   return {
