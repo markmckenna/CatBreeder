@@ -6,14 +6,15 @@
 
 1. **Never ask for permission for CLI/tool actions.** Move forward unless clarification is needed.
 2. **After every change, run:** `npm run typecheck && npm run test:run` (always verify correctness). Make sure all tests pass.
-3. **Commit after each prompt.** When the prompt has completed, stage and commit relevant changes.  Include execution time in commit messages. Example: `Duration: 2m 15s`.
-5. **Follow coding style and architecture.** See [coding-style](docs/coding-style.md) and [architecture](docs/architecture.md).
-6. **Apply visual and CSS conventions.** See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
-7. **Bump SAVE_VERSION** in `src/app/game/save.ts` if saved state structure changes.
-8. **Update documentation immediately** after any change to structure, commands, or workflow. Keep AGENTS.md, README.md, and docs/ current.
-9. **Document style decisions.** Add rationale to [docs/coding-style.md](docs/coding-style.md) for new or updated style rules.
-10. **Apply style changes everywhere.** When updating guidelines, refactor the whole codebase to match.
-11. **Clean up after refactoring.** Delete old files, remove unused code, and ensure no duplicates remain.
+3. **Follow coding style and architecture.** See [coding-style](docs/coding-style.md) and [architecture](docs/architecture.md).
+4. **Use a TODO list.** Write your full plan into the TODO list. 
+5. **Apply visual and CSS conventions.** See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
+6. **Bump SAVE_VERSION** in `src/app/game/save.ts` if saved state structure changes.
+7. **Update documentation immediately** after any change to structure, commands, or workflow. Keep AGENTS.md, README.md, and docs/ current.
+8. **Document style decisions.** Add rationale to [docs/coding-style.md](docs/coding-style.md) for new or updated style rules.
+9. **Apply style changes everywhere.** When updating guidelines, refactor the whole codebase to match.
+10. **Clean up after refactoring.** Delete old files, remove unused code, and ensure no duplicates remain.
+11. **Commit after each prompt.** When the prompt has completed, stage and commit relevant changes.  Include execution time in commit messages. Example: `Duration: 2m 15s`.
 
 ## 📚 Supplementary Documentation
 
@@ -185,18 +186,18 @@ Edit `config/esbuild.config.js` (see comments for options)
 - Check for circular deps
 
 
-## Notes for Agents
+## Task Organization
 
-**Agent must always:**
-- Run tests after every change (`npm run test:run`)
-- Use TypeScript only (no `.js` files in `src/`)
-- Keep dependencies minimal
-- Write tests for all new code
-- When writing or editing unit tests, follow [docs/testing.md](docs/testing.md) for guidelines on high quality test authoring.
-- Follow existing code patterns and conventions
-- Update documentation (AGENTS.md, README.md, game-design.md) after any relevant change
-- Commit after each atomic feature or fix
-- Bump save version if save structure changes
+- Always use a TODO list to plan and organize your work.
+- TODO list tasks should be done in order.
+- As actions are discovered (like tests to fix, files to update, etc), proactively add them to the TODO list.
+
+**TODO list template:**
+[ ] Write high quality unit tests (see [docs/testing.md](docs/testing.md)) for all new code
+[ ] Run the build (`npm build`), and fix all build failures.
+[ ] Run tests (`npm run test:run`), and fix all failing tests.
+[ ] Update all relevant documentation (`AGENTS.md`, `README.md`, everything in `/docs`, comments in specific code files) for all modifications.
+[ ] Commit changes to Git, once everything above passes.
 
 
 ## Documentation Requirements
