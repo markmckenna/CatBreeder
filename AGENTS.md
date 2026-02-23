@@ -13,6 +13,7 @@
 8. **Update documentation**: Keep AGENTS.md, README.md, and docs/ current
 9. **Document style decisions**: When making code changes based on style/architecture principles, add the rationale to [docs/coding-style.md](docs/coding-style.md)
 10. **Apply style changes project-wide**: When adding or updating coding style guidelines, proactively apply them across the existing codebase
+11. **Clean up after refactoring**: Whenever you're done moving files or refactoring code, make sure to clean up after yourself, deleting old copies of code, and removing unused functions.
 
 ## 📚 Supplementary Documentation
 
