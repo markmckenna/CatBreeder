@@ -30,7 +30,7 @@ export function createMockCatFromPhenotype(
     g += p.size === 'small' ? 'ss' : 'SS';
     g += p.tailLength === 'short' ? 'tt' : 'TT';
     g += p.earShape === 'folded' ? 'ff' : 'EE';
-    g += p.tailColor === 'white' ? 'ww' : 'OO';
+    g += p.color === 'white' ? 'ww' : 'OO';
     return g;
   }
   return {

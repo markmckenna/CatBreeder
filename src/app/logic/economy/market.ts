@@ -85,7 +85,7 @@ function getTraitMultiplier(
     applyFluctuation(traitValues.size[phenotype.size]) *
     applyFluctuation(traitValues.tailLength[phenotype.tailLength]) *
     applyFluctuation(traitValues.earShape[phenotype.earShape]) *
-    applyFluctuation(traitValues.color[phenotype.tailColor])
+    applyFluctuation(traitValues.color[phenotype.color])
   );
 }
 
