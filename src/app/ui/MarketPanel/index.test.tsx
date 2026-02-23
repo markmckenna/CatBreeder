@@ -11,18 +11,7 @@ import type { Cat } from '../../logic/cats/Cat.ts';
 const createTestCat = (id: string, name: string): Cat => ({
   id,
   name,
-  genotype: {
-    size: ['S', 'S'],
-    tailLength: ['T', 'T'],
-    earShape: ['E', 'E'],
-    tailColor: ['O', 'O'],
-  },
-  phenotype: {
-    size: 'large',
-    tailLength: 'long',
-    earShape: 'pointed',
-    tailColor: 'orange',
-  },
+  genotype: 'SSTTEEOO',
   age: 100,
   happiness: 100,
 });

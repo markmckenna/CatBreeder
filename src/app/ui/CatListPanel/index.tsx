@@ -1,7 +1,3 @@
-/**
- * CatListPanel - View all owned cats in a scrollable list.
- */
-
 import type { Cat } from '../../logic/cats/Cat.ts';
 import { phenotypeFor } from '../../logic/cats/Cat.ts';
 import CatSprite from '../CatSprite';

@@ -56,49 +56,46 @@ export function generateCatId(random: RandomFn = defaultRandom): string {
   return `cat_${Date.now()}_${suffix.padStart(6, '0')}`;
 }
 
-/** Randomly select one allele from a genotype pair */
-
-
-/** Breed two genotypes to produce offspring genotype */
-
-
+// ...existing code...
 
 /** Derive phenotype from genotype string */
 export function phenotypeFor(genotype: GenotypeString): CatPhenotype {
-  const result: CatPhenotype = {};
-  let i = 0;
+  const phenotype: CatPhenotype = {};
+  let traitIndex = 0;
   for (const trait of TRAITS) {
-    const a1 = genotype[i];
-    const a2 = genotype[i + 1];
-    // If either allele is dominant, use dominant phenotype, else recessive
-    if (a1 === trait.dominant || a2 === trait.dominant) {
-      result[trait.name] = trait.phenotypes[0];
+    const allele1 = genotype[traitIndex];
+    const allele2 = genotype[traitIndex + 1];
+    if (allele1 === trait.dominant || allele2 === trait.dominant) {
+      phenotype[trait.name] = trait.phenotypes[0];
     } else {
-      result[trait.name] = trait.phenotypes[1];
+      phenotype[trait.name] = trait.phenotypes[1];
     }
-    i += 2;
+    traitIndex += 2;
   }
-  return result;
+  return phenotype;
 }
 
 
 /** @returns offspring cat from breeding two parents */
 export function breedCats(parent1: Cat, parent2: Cat, name: string, options: BreedingOptions = {}): Cat {
   const random = options.random ?? defaultRandom;
-  let newGenotype = '';
-  for (let t = 0; t < TRAITS.length; ++t) {
-    const i = t * 2;
-    // Each parent contributes one allele per trait
-    const alleles = [parent1.genotype[i], parent1.genotype[i+1], parent2.genotype[i], parent2.genotype[i+1]];
-    // Randomly pick one from each parent
-    const a1 = pickRandom([alleles[0], alleles[1]], random);
-    const a2 = pickRandom([alleles[2], alleles[3]], random);
-    newGenotype += a1 + a2;
+  let offspringGenotype = '';
+  for (let traitIdx = 0; traitIdx < TRAITS.length; ++traitIdx) {
+    const traitIndex = traitIdx * 2;
+    const parentAlleles = [
+      parent1.genotype[traitIndex],
+      parent1.genotype[traitIndex + 1],
+      parent2.genotype[traitIndex],
+      parent2.genotype[traitIndex + 1],
+    ];
+    const allele1 = pickRandom([parentAlleles[0], parentAlleles[1]], random);
+    const allele2 = pickRandom([parentAlleles[2], parentAlleles[3]], random);
+    offspringGenotype += allele1 + allele2;
   }
   return {
     id: options.id ?? generateCatId(random),
     name,
-    genotype: newGenotype,
+    genotype: offspringGenotype,
     age: 0,
     happiness: 100,
     favourite: false,
@@ -108,12 +105,12 @@ export function breedCats(parent1: Cat, parent2: Cat, name: string, options: Bre
 
 /** @returns a random genotype string for initial cats */
 export function createRandomGenotype(random: RandomFn = defaultRandom): GenotypeString {
-  let g = '';
+  let genotypeString = '';
   for (const trait of TRAITS) {
-    g += pickRandom(trait.alleles, random);
-    g += pickRandom(trait.alleles, random);
+    genotypeString += pickRandom(trait.alleles, random);
+    genotypeString += pickRandom(trait.alleles, random);
   }
-  return g;
+  return genotypeString;
 }
 
 /** Options for creating random cats */
@@ -147,8 +144,6 @@ export function createRandomCat(name: string, options: CreateCatOptions = {}): C
 // Cat names are now externalized to a JSON file for easier editing and localization
 import catNames from './catNames.json'; // Ensure this file exists and is valid
 
-/** Get a random cat name from the externalized list */
-
-
+// ...existing code...
 export const randomCatName = (random: RandomFn = defaultRandom) =>
   pickRandom(catNames, random);

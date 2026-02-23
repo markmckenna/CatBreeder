@@ -1,9 +1,5 @@
-import { TRAITS, phenotypeFor } from '../../logic/cats/Cat.ts';
-/**
- * Main Game UI - ties together all game systems.
- * Layout: 16:9 window with 4:3 room + sidebar
- */
 
+// Game UI ties together all game systems. Layout: 16:9 window with 4:3 room + sidebar
 import { useState, useMemo } from 'react';
 import { useGame } from '../../logic/game/GameContext.tsx';
 import { ActionType } from '../../logic/game/state.ts';
@@ -13,6 +9,10 @@ import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
 import ShopPanel from '../ShopPanel';
 import CatListPanel from '../CatListPanel';
+import styles from './styles.css';
+
+// Logic imports
+import { TRAITS, phenotypeFor } from '../../logic/cats/Cat.ts';
 import { calculateCatValue, createMarketState, getValueBreakdown } from '../../logic/economy/market.ts';
 import type { MarketCat } from '../../logic/economy/market.ts';
 import { getCollectionProgress } from '../../logic/cats/collection.ts';
@@ -21,7 +21,6 @@ import { assignCatPositions, getFurniturePositions } from '../../logic/environme
 import type { Cat } from '../../logic/cats/Cat.ts';
 import type { Selectable, CatSelection } from '../selection.ts';
 import { isCatSelection, isFurnitureSelection, isSameSelectable } from '../selection.ts';
-import styles from './styles.css';
 
 /**
  * Get breeding prediction for an allele pair

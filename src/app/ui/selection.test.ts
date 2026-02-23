@@ -4,51 +4,38 @@ import {
   isFurnitureSelection,
   getSelectableId,
   isSameSelectable,
-  type CatSelection,
-  type FurnitureSelection,
 } from './selection.ts';
 
 // Minimal test helper for Cat creation (inlined)
-import type { Cat } from '../logic/cats/Cat.ts';
-function createMockCat(overrides: Partial<Cat> = {}): Cat {
-  return {
-    id: 'test-cat-1',
-    name: 'Whiskers',
-    age: 10,
-    happiness: 80,
-    genotype: {
-      size: ['S', 'S'],
-      tailLength: ['T', 'T'],
-      earShape: ['E', 'E'],
-      tailColor: ['O', 'O'],
-    },
-    phenotype: {
-      size: 'large',
-      tailLength: 'long',
-      earShape: 'pointed',
-      tailColor: 'orange',
-    },
-    ...overrides,
-  };
-}
-
-function createCatSelection(catId: string): CatSelection {
-  return {
-    type: 'cat',
-    cat: createMockCat({ id: catId }),
-  };
-}
-
-function createFurnitureSelection(type: 'bed' | 'catTree' | 'toy', index: number): FurnitureSelection {
-  return {
-    type: 'furniture',
-    furnitureType: type,
-    item: { type, name: type, price: 100, capacityBonus: 1 },
-    index,
-  };
-}
+// ...existing code...
 
 describe('selection', () => {
+  // Inline test helpers
+  function createMockCat(overrides = {}) {
+    return {
+      id: 'test-cat-1',
+      name: 'Whiskers',
+      age: 10,
+      happiness: 80,
+      genotype: 'SSTTEEOO',
+      favourite: false,
+      ...overrides,
+    };
+  }
+  function createCatSelection(catId: string): import('./selection.ts').CatSelection {
+    return {
+      type: "cat",
+      cat: createMockCat({ id: catId }),
+    };
+  }
+  function createFurnitureSelection(type: 'bed' | 'catTree' | 'toy', index: number): import('./selection.ts').FurnitureSelection {
+    return {
+      type: "furniture",
+      furnitureType: type,
+      item: { type, name: type, price: 100, capacityBonus: 1 },
+      index,
+    };
+  }
   describe('isCatSelection', () => {
     it('returns true for cat selections', () => {
       const selection = createCatSelection('cat-1');

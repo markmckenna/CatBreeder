@@ -1,7 +1,3 @@
-/**
- * MarketPanel - Browse and purchase cats from the daily market.
- */
-
 import type { MarketCat } from '../../logic/economy/market.ts';
 import { phenotypeFor } from '../../logic/cats/Cat.ts';
 import { formatMoney } from '../format.ts';
