@@ -21,4 +21,4 @@ You must operate as a stateful agent. To prevent stalls and memory loss during l
       - Explicitly state: "Resuming from [Task Name] based on .github/agent-memory.md state."
   4. Finalization
       - Once the entire list is complete, run a final global check: `npm run lint && npm test`.
-      - Only after all tests pass, delete the `.github/agent-memory.md` (or rename it to `DONE.md`) and report task completion.
+      - Only after all tests pass, remove all entries from the `.github/agent-memory.md` and report task completion.
