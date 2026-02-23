@@ -5,9 +5,8 @@
 **Always follow these rules, step by step:**
 
 1. **Never ask for permission for CLI/tool actions.** Move forward unless clarification is needed.
-2. **After every change, run:** `npm run typecheck && npm run test:run` (always verify correctness).
-3. **Commit after each meaningful functional change.** Test, then commit every feature, fix, or refactor before starting the next.
-4. **Include execution time in commit messages.** Example: `Duration: 2m 15s`.
+2. **After every change, run:** `npm run typecheck && npm run test:run` (always verify correctness). Make sure all tests pass.
+3. **Commit after each prompt.** When the prompt has completed, stage and commit relevant changes.  Include execution time in commit messages. Example: `Duration: 2m 15s`.
 5. **Follow coding style and architecture.** See [coding-style](docs/coding-style.md) and [architecture](docs/architecture.md).
 6. **Apply visual and CSS conventions.** See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
 7. **Bump SAVE_VERSION** in `src/app/game/save.ts` if saved state structure changes.
@@ -193,6 +192,7 @@ Edit `config/esbuild.config.js` (see comments for options)
 - Use TypeScript only (no `.js` files in `src/`)
 - Keep dependencies minimal
 - Write tests for all new code
+- When writing or editing unit tests, follow [docs/testing.md](docs/testing.md) for guidelines on high quality test authoring.
 - Follow existing code patterns and conventions
 - Update documentation (AGENTS.md, README.md, game-design.md) after any relevant change
 - Commit after each atomic feature or fix
