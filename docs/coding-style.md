@@ -6,7 +6,7 @@ Agent-oriented code and architecture conventions for CatBreeder. Document ration
 ## General Principles
 
 ### Eliminate Unused Code
-Remove unused functions, variables, imports, and dead code. Don't keep utilities "just in case"—recreate them if needed.
+Remove unused functions, variables, imports, and dead code. Don't keep utilities "just in case": recreate them if needed. Don't just comment out code; delete it.
 
 ### Minimize Exports
 Export only what's needed by other modules. Prefer internal helpers. Move logic into the owning module when possible ("tell, don't ask").
