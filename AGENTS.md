@@ -10,13 +10,15 @@ If the user request is "resume" or "continue" or "try again", check the previous
 
 ## 🔥 Critical Rules
 
+- At the start of every plan/cycle, you must read and apply the full contents of the [Operating Contract](docs/operating-contract.md).
+- At the start of every task, if the task requires code changes, you must read and apply the full contents of the [Development Process](docs/development-process.md) and [Coding Style](docs/coding-style.md), unless you've already read them in this session.
+- At the start of every task, if the task requires refactoring, you must read and apply the full contents of the [Refactoring Process](docs/refactoring-process.md), unless you've already read it in this session.
+- At the start of every task, if the task requires refactoring, you must read and apply the full contents of the [Development Process](docs/development-process.md).
+- At the start of every task, if the task requires architectural changes, you must read and apply the full contents of the [Architecture](docs/architecture.md).
+- If you cannot read a referenced file, halt and notify the user.
+- Before marking any plan/cycle complete, confirm that all steps required by these documents have been followed.
 - Never ask for permission for CLI/tool actions. Move forward unless clarification is needed.
 - You must keep working until the problem is solved, and all items in the TODO list are checked off.
-- You must always obey the core [Operating Contract](docs/operating-contract.md).
-- All code creation activities must follow the [Development Process](docs/development-process.md).
-- All refactoring actions must follow the [Refactoring Process](docs/refactoring-process.md).
-- All structural or architectural changes must follow the [Architecture](docs/architecture.md).
-- All code must follow the [Coding Style](docs/coding-style.md).
 - Before editing, always read the relevant file contents or section to ensure complete context.
 - If a patch is not applied correctly, attempt to reapply it.
 
