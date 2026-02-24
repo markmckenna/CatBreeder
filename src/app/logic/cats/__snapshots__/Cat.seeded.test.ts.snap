@@ -77,7 +77,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "SsttfEOw",
-          "name": "Simba",
+          "name": "Pepper",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -87,7 +87,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
         },
         {
           "genotype": "SsttffOw",
-          "name": "Nala",
+          "name": "Clover",
           "phenotype": {
             "color": "orange",
             "earShape": "folded",
@@ -102,7 +102,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "ssttffww",
-          "name": "Nala",
+          "name": "Jasper",
           "phenotype": {
             "color": "white",
             "earShape": "folded",
@@ -112,7 +112,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
         },
         {
           "genotype": "ssttEfwO",
-          "name": "Milo",
+          "name": "Olive",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -127,7 +127,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "ssttfEww",
-          "name": "Gizmo",
+          "name": "Cobalt",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -137,7 +137,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
         },
         {
           "genotype": "ssttfEww",
-          "name": "Shadow",
+          "name": "Willow",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -152,7 +152,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "ssttEfww",
-          "name": "Willow",
+          "name": "Echo",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -162,7 +162,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
         },
         {
           "genotype": "ssttEEww",
-          "name": "Cleo",
+          "name": "Cinnamon",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -177,7 +177,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "ssttfEww",
-          "name": "Socks",
+          "name": "Raven",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -187,7 +187,7 @@ exports[`breeding program snapshots > seed 12345 produces consistent 5-generatio
         },
         {
           "genotype": "ssttEEww",
-          "name": "Ziggy",
+          "name": "Scout",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -234,7 +234,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "ssttfEOw",
-          "name": "Whiskers",
+          "name": "Luna",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -244,7 +244,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
         },
         {
           "genotype": "ssTtEEOw",
-          "name": "Oreo",
+          "name": "Bubbles",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -259,7 +259,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "sstTEEOw",
-          "name": "Whiskers",
+          "name": "Shadow",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -269,7 +269,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
         },
         {
           "genotype": "sstTfEOw",
-          "name": "Boots",
+          "name": "Rocco",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -284,7 +284,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "sstTEEww",
-          "name": "Boots",
+          "name": "Benny",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -294,7 +294,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
         },
         {
           "genotype": "sstTEfOw",
-          "name": "Socks",
+          "name": "Pebble",
           "phenotype": {
             "color": "orange",
             "earShape": "pointed",
@@ -309,7 +309,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "sstTEEww",
-          "name": "Milo",
+          "name": "Hazel",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -319,7 +319,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
         },
         {
           "genotype": "ssTTEfww",
-          "name": "Nala",
+          "name": "Saffron",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -334,7 +334,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
       "cats": [
         {
           "genotype": "sstTEfww",
-          "name": "Pumpkin",
+          "name": "Mocha",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
@@ -344,7 +344,7 @@ exports[`breeding program snapshots > seed 99999 produces consistent 5-generatio
         },
         {
           "genotype": "ssTTEfww",
-          "name": "Pepper",
+          "name": "Marble",
           "phenotype": {
             "color": "white",
             "earShape": "pointed",
