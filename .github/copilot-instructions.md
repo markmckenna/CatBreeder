@@ -1,1 +1,1 @@
-At the start of every cycle, you must read and apply the full contents of the [AGENTS.md](../AGENTS.md).
+At the start of every cycle, you must read and apply the full contents of the [AGENTS.md](../AGENTS.md). Every rule in that document, and all of its subsidiary documents, is important.

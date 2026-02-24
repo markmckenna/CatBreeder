@@ -17,11 +17,13 @@ For every user request, follow this exact loop:
 -   If no plan exists, create one.
 -   Break work into small, atomic TODO items.
 -   Ensure exactly one item is marked as `active`.
+-   Briefly summarize for the user what the plan looks like.
 
 Do not begin implementation without an active plan item.
 
 ### Step 2 --- Execute Exactly One Active Item
 
+-   Notify the user that you are starting to work on the currently active TODO.
 -   Perform work only for the currently active TODO.
 -   Do not work on multiple items simultaneously.
 -   Do not preemptively complete future steps.
@@ -36,6 +38,7 @@ Immediately after execution:
 
 Then:
 
+-   Summarize for the user what actions were taken to complete the TODO.
 -   Select the next TODO and mark it `active`.
 
 Plan updates are required after every code change.
