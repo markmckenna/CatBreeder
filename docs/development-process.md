@@ -7,7 +7,7 @@ All feature work and bug fixes must follow a strict test -> implement -> verify 
 No code may be committed without a sufficient number of automated unit tests verifying that the code works as written.
 
 
-### Execution Cycle
+## Execution Cycle
 
 When implementing or modifying behavior:
 
@@ -30,13 +30,13 @@ If tests fail unexpectedly:
 - Resolve before continuing feature work.
 
 
-### Integration with 5-Step Plan Loop
+## Integration with 5-Step Plan Loop
 
 When TDD mode is active, each plan item involving code must be decomposed into:
 -   Write failing test
 -   Implement minimal fix
 -   Run full suite
--   Refactor (optional)
+-   Refactor (optional) using the rules in [Refactoring Process](./refactoring-process.md).
 
 Each of these must be separate TODO items.
 

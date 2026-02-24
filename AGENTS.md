@@ -3,12 +3,12 @@
 
 ## 🔥 Critical Rules
 
-1. Code must conform with all relevant documentation in the `docs` folder (see documentation index below).
 1. Never ask for permission for CLI/tool actions. Move forward unless clarification is needed.
 1. Apply visual and CSS conventions. See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
-1. **Apply style changes everywhere.** When updating guidelines, refactor the whole codebase to match.
-1. **Clean up after refactoring.** Delete old files, remove unused code, and ensure no duplicates remain.
-1. **Commit after each prompt.** When the prompt has completed, stage and commit relevant changes.  Include execution time in commit messages. Example: `Duration: 2m 15s`.
+1. All code creation activities must follow [Development Process](docs/development-process.md).
+1. All refactoring actions must follow [Refactoring Process](docs/refactoring-process.md).
+1. All structural or architectural changes must follow [Architecture](docs/architecture.md).
+1. All code must follow [Coding Style](docs/coding-style.md).
 
 
 ## 📚 Documentation
@@ -17,7 +17,7 @@
 - [Development Process](docs/development-process.md): Mandatory process to use when authoring code.
 - [Refactoring Process](docs/refactoring-process.md): Mandatory process to use when refactoring code.
 - [Coding Style](docs/coding-style.md): Mandatory styles and conventions to use when authoring or refactoring code.
-- [Architectures](docs/architecture.md): Mandatory architectural rules to obey when organizing code.
+- [Architecture](docs/architecture.md): Mandatory architectural rules to obey when organizing code.
 - [Visual System](docs/visual-system.md): Rules describing the visual design system.
 - [CSS Patterns](docs/css-patterns.md): How to organize and use styles in this project.
 - [Game Design](docs/game-design.md): How the game is supposed to work.
