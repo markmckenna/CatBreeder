@@ -11,6 +11,9 @@ Remove unused functions, variables, imports, and dead code. Don't keep utilities
 ### Minimize Exports
 Export only what's needed by other modules. Prefer internal helpers. Move logic into the owning module when possible ("tell, don't ask").
 
+### Centralize Exports
+Export from `index.ts` to clearly identify what components of a module are public, and what are internal.
+
 ### Minimize Duplication
 Extract shared code, avoid redundant comments, reuse test helpers.
 
