@@ -1,1 +1,1 @@
-Follow the rules defined in [AGENTS.md](../AGENTS.md) at all times, including any rules defined in relevant sub-documents linked from there.
+At the start of every cycle, you must read and apply the full contents of the [AGENTS.md](../AGENTS.md).
