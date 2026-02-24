@@ -40,7 +40,7 @@ describe('Cat', () => {
 
 - Place tests next to the code they cover (e.g., `Cat.ts` and `Cat.test.ts`).
 - Use [docs/coding-style.md](coding-style.md) for naming, structure, and import conventions.
-- Run tests frequently: `npm test` (watch mode) or `npm run test:run` (CI mode).
+- Run tests frequently: `npm test`
 - Prefer Vitest and React Testing Library for all new tests.
 - Add tests for all new code and when fixing bugs.
 - Review and refactor tests as code evolves.

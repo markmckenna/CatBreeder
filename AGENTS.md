@@ -4,11 +4,11 @@
 ## 🔥 Critical Rules
 
 1. Never ask for permission for CLI/tool actions. Move forward unless clarification is needed.
-1. Apply visual and CSS conventions. See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
-1. All code creation activities must follow [Development Process](docs/development-process.md).
-1. All refactoring actions must follow [Refactoring Process](docs/refactoring-process.md).
-1. All structural or architectural changes must follow [Architecture](docs/architecture.md).
-1. All code must follow [Coding Style](docs/coding-style.md).
+2. Apply visual and CSS conventions. See [docs/visual-system.md](docs/visual-system.md) and [docs/css-patterns.md](docs/css-patterns.md).
+3. All code creation activities must follow [Development Process](docs/development-process.md).
+4. All refactoring actions must follow [Refactoring Process](docs/refactoring-process.md).
+5. All structural or architectural changes must follow [Architecture](docs/architecture.md).
+6. All code must follow [Coding Style](docs/coding-style.md).
 
 
 ## 📚 Documentation
@@ -68,13 +68,7 @@ npm run preview      # Serve production build locally
 
 ### Testing
 ```bash
-npm test             # Run tests in watch mode
-npm run test:run     # Run tests once (CI mode)
-npm run test:coverage # Run tests with coverage report
-```
-
-### Code Quality
-```bash
+npm test     		 # Run tests
 npm run lint         # Check for linting errors
 npm run lint:fix     # Auto-fix linting errors
 npm run typecheck    # Run TypeScript type checking
@@ -105,8 +99,8 @@ npm run typecheck    # Run TypeScript type checking
 - Install missing `@types/*`
 
 **Test failures:**
-- Run `npm test` (watch mode)
-- Check `src/test/setup.ts`
+- Run `npm test`
+- Check `src/test.ts`
 - Verify mocks
 
 **Build failures:**
