@@ -1,0 +1,4 @@
+- Canonical policy, architecture, process, and standards live in `AGENTS.md` and `docs/*.md` (especially `docs/memory-strategy.md`).
+- Keep Serena memory tactical only: quick lessons, pitfalls, and execution shortcuts; avoid duplicating canonical text.
+- Serena in this workspace now auto-activates project from cwd via `.vscode/mcp.json` (`--project-from-cwd`).
+- Prefer Serena symbol tools for code analysis/refactors; use full-file reads mainly for non-code docs/config files.
