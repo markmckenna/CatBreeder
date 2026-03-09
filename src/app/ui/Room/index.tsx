@@ -65,11 +65,121 @@
  */
 
 import { ReactNode } from 'react';
-import type { OwnedFurniture, FurnitureItemType } from '../../logic/environment';
+import type { OwnedFurniture, FurnitureItemType, Room as SceneRoom, SceneObject, Container } from '../../logic/environment';
 import { SHOP_ITEMS } from '../../logic/environment';
 import { getToyColor, getBedColor, type FurniturePosition } from '../../logic/environment';
 import type { FurnitureSelection } from '../selection.ts';
 import styles from './styles.css';
+
+// ============= Visual Positioning Constants =============
+
+/**
+ * Mount point definitions for each furniture type.
+ * These define where child objects attach within the parent (visually).
+ * All values are percentages (0-100) within the parent's local coordinate space.
+ */
+export const MOUNT_POINTS = {
+  /** Where cats attach on cat tree platforms (local %, relative to tree) */
+  catTreePlatforms: [
+    { x: 50, y: 10 }, // Top platform
+    { x: 50, y: 50 }, // Mid platform
+    { x: 50, y: 90 }, // Bottom platform
+  ],
+  /** Where a cat mounts to a bed */
+  bed: { x: 50, y: 20 },
+  /** Where a cat mounts to a rug */
+  rug: { x: 50, y: 20 },
+  /** Where a toy mounts to a cat (near front paw) */
+  catPaw: { x: 70, y: 60 },
+  /** Where furniture mounts to room floor */
+  roomFloor: { x: 50, y: 100 },
+};
+
+/**
+ * Base positions for furniture and room objects (in world coordinates).
+ * These are the anchor points from which children positions are calculated.
+ * All coordinates are percentages (0-100) of the room viewport.
+ */
+export const BASE_POSITIONS = {
+  catTree: [
+    { x: 12, y: 65 },  // Left cat tree
+    { x: 88, y: 65 },  // Right cat tree
+  ],
+  bed: [
+    { x: 30, y: 83 },
+    { x: 70, y: 83 },
+    { x: 18, y: 90 },
+    { x: 82, y: 90 },
+    { x: 50, y: 94 },
+  ],
+  rug: [
+    { x: 50, y: 80 },
+    { x: 40, y: 82 },
+    { x: 60, y: 82 },
+    { x: 44, y: 86 },
+    { x: 56, y: 86 },
+  ],
+  toy: [
+    { x: 22, y: 78, itemOffset: { x: 6, y: 2 } },
+    { x: 78, y: 78, itemOffset: { x: 6, y: 2 } },
+    { x: 35, y: 88, itemOffset: { x: -6, y: 2 } },
+    { x: 65, y: 88, itemOffset: { x: 6, y: 2 } },
+    { x: 50, y: 92, itemOffset: { x: 6, y: 0 } },
+  ],
+};
+
+/**
+ * Compute the world position of a scene object by recursively traversing up the hierarchy.
+ * Each child's world position = parent's world position adjusted by child's basePoint in parent's coordinate space.
+ *
+ * @param obj Object to get world position for
+ * @param parent Optional parent container (if not provided, assumes obj is root)
+ * @returns World coordinates (x, y) as percentages
+ */
+export function getWorldPosition(
+  obj: SceneObject,
+  parent?: Container
+): { x: number; y: number } {
+  if (!parent) {
+    // Object is at root level
+    return { x: obj.x, y: obj.y };
+  }
+
+  // Get parent's world position
+  const parentWorld = { x: parent.x, y: parent.y };
+
+  // Convert child's basePoint (parent-local) to world coordinates
+  const localX = (obj.basePoint.x / 100) * 100;
+  const localY = (obj.basePoint.y / 100) * 100;
+
+  return {
+    x: parentWorld.x + localX - 50,
+    y: parentWorld.y + localY - 50,
+  };
+}
+
+/**
+ * Convert world coordinates to parent-local coordinates.
+ *
+ * @param worldPos World position (x, y) as percentages
+ * @param parent Parent container
+ * @returns Local coordinates (x, y) relative to parent
+ */
+export function getLocalPosition(
+  worldPos: { x: number; y: number },
+  parent: Container
+): { x: number; y: number } {
+  const parentWorld = { x: parent.x, y: parent.y };
+  const dx = worldPos.x - parentWorld.x;
+  const dy = worldPos.y - parentWorld.y;
+
+  return {
+    x: (dx + 50) * (100 / 100),
+    y: (dy + 50) * (100 / 100),
+  };
+}
+
+// ============= Room Component =============
 
 export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
 
@@ -96,7 +206,8 @@ export interface Furniture {
 interface RoomProps {
   style?: RoomStyle;
   furniture?: OwnedFurniture;
-  furniturePositions?: FurniturePosition[];
+  sceneTree?: SceneRoom;
+  furniturePositions?: FurniturePosition[]; // Deprecated: use sceneTree instead
   selectedFurniture?: FurnitureSelection | null;
   onFurnitureClick?: (selection: FurnitureSelection) => void;
   onFurnitureHover?: (selection: FurnitureSelection | null) => void;
@@ -419,6 +530,41 @@ function CatTreeItem({ x, index, selected, onClick, onMouseEnter, onMouseLeave }
   );
 }
 
+/** Extract furniture positions from scene tree for rendering */
+function extractFurniturePositions(sceneTree?: SceneRoom): FurniturePosition[] {
+  if (!sceneTree) return [];
+
+  const positions: FurniturePosition[] = [];
+
+  // Traverse room children to find furniture
+  for (const child of sceneTree.children) {
+    if (child.type === 'catTree') {
+      positions.push({
+        type: 'catTree',
+        index: child.index,
+        x: child.x,
+        y: child.y,
+      });
+    } else if (child.type === 'bed') {
+      positions.push({
+        type: 'bed',
+        index: child.index,
+        x: child.x,
+        y: child.y,
+      });
+    } else if (child.type === 'toy') {
+      positions.push({
+        type: 'toy',
+        index: 0, // Toys don't have an index in the old system, but we could track it
+        x: child.x,
+        y: child.y,
+      });
+    }
+  }
+
+  return positions;
+}
+
 function FurnitureLayer({ positions, selectedFurniture, onFurnitureClick, onFurnitureHover }: { 
   positions: FurniturePosition[]; 
   selectedFurniture?: FurnitureSelection | null;
@@ -493,7 +639,10 @@ function FurnitureLayer({ positions, selectedFurniture, onFurnitureClick, onFurn
 
 // ============= Main Room Component =============
 
-function Room({ furniturePositions, selectedFurniture, onFurnitureClick, onFurnitureHover, children }: RoomProps) {
+function Room({ sceneTree, furniturePositions, selectedFurniture, onFurnitureClick, onFurnitureHover, children }: RoomProps) {
+  // Use furniturePositions if provided (for backward compatibility), otherwise extract from sceneTree
+  const furniture = furniturePositions || extractFurniturePositions(sceneTree);
+
   return (
     <div className={styles.roomContainer} data-testid="room">
       {/* Background layer (z-index: 0) */}
@@ -508,9 +657,9 @@ function Room({ furniturePositions, selectedFurniture, onFurnitureClick, onFurni
       <Rug />
 
       {/* Placeable furniture (z-index: 2) */}
-      {furniturePositions && furniturePositions.length > 0 && (
+      {furniture && furniture.length > 0 && (
         <FurnitureLayer 
-          positions={furniturePositions} 
+          positions={furniture} 
           selectedFurniture={selectedFurniture}
           onFurnitureClick={onFurnitureClick} 
           onFurnitureHover={onFurnitureHover} 

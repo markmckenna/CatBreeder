@@ -8,7 +8,8 @@ import type { TraitCollection } from '../cats/collection';
 import { createTraitCollection, registerBredCat } from '../cats/collection';
 import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture';
 import { createInitialFurniture, SHOP_ITEMS, calculateCapacity } from '../environment/furniture';
-import { assignCatPositions, type SpotType } from '../environment/positions';
+import { buildSceneTree, getCatSpotType } from '../environment';
+import type { SpotType } from '../environment/positions';
 
 /** Planned breeding pair for next turn */
 export interface BreedingPair {
@@ -368,9 +369,12 @@ export function processTurn(
   }));
 
   // Update cat happiness based on their daily experience
+  const sceneTree = buildSceneTree(newState.cats, newState.furniture, rng);
   const spotsByCat = new Map(
-    assignCatPositions(newState.cats.map(c => c.id), newState.furniture, rng)
-      .map(p => [p.catId, p.spotType])
+    newState.cats.map(cat => [
+      cat.id,
+      getCatSpotType(sceneTree, cat.id) ?? 'floor'
+    ])
   );
   
   // Calculate capacity and overcrowding

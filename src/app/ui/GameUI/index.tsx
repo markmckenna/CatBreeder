@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useGame } from '../game/GameContext.tsx';
 import { ActionType } from '../../logic/game';
-import Room from '../Room';
+import Room, { MOUNT_POINTS, BASE_POSITIONS } from '../Room';
 import CatSprite from '../CatSprite';
 import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
@@ -18,10 +18,35 @@ import { calculateCatValue, getValueBreakdown, createMarketState } from '../../l
 import type { MarketCat } from '../../logic/economy';
 import { getCollectionProgress } from '../../logic/cats';
 import { calculateCapacity, FurnitureItemType } from '../../logic/environment';
-import { assignCatPositions, getFurniturePositions } from '../../logic/environment';
+import { buildSceneTree, type Room as SceneRoom, type Container, type SceneCat } from '../../logic/environment';
 import type { Selectable, CatSelection } from '../selection.ts';
 import { isCatSelection, isFurnitureSelection, isSameSelectable } from '../selection.ts';
 import { getBreedingStatus } from '../game/genetics.ts';
+
+/** Extract cat positions from scene tree */
+function extractCatPositions(sceneTree?: SceneRoom): Map<string, { x: number; y: number }> {
+  const positions = new Map<string, { x: number; y: number }>();
+  
+  if (!sceneTree) return positions;
+
+  // Recursively traverse tree to find all cats
+  const traverse = (container: Container) => {
+    if (!container.children) return;
+    
+    for (const child of container.children) {
+      if (child.type === 'cat') {
+        const cat = child as SceneCat;
+        positions.set(cat.catId, { x: child.x, y: child.y });
+      } else if (child.type === 'catTree' || child.type === 'bed' || child.type === 'rug') {
+        // Recursively traverse containers
+        traverse(child as Container);
+      }
+    }
+  };
+
+  traverse(sceneTree);
+  return positions;
+}
 
 function GameUI() {
   const { state, dispatch, endTurn, lastTurnResult } = useGame();
@@ -38,13 +63,13 @@ function GameUI() {
   const [showCatList, setShowCatList] = useState(false);
 
   const market = useMemo(() => createMarketState(), []);
-  const catPositions = useMemo(
-    () => assignCatPositions(state.cats.map(c => c.id), state.furniture),
+  const sceneTree = useMemo<SceneRoom>(
+    () => buildSceneTree(state.cats, state.furniture, undefined, { MOUNT_POINTS, BASE_POSITIONS }),
     [state.cats, state.furniture]
   );
-  const furniturePositions = useMemo(
-    () => getFurniturePositions(catPositions, state.furniture),
-    [catPositions, state.furniture]
+  const catPositions = useMemo(
+    () => extractCatPositions(sceneTree),
+    [sceneTree]
   );
   const collectionProgress = getCollectionProgress(state.traitCollection);
 
@@ -168,7 +193,7 @@ function GameUI() {
           <div className={styles.roomInner}>
             <Room 
               furniture={state.furniture} 
-              furniturePositions={furniturePositions}
+              sceneTree={sceneTree}
               selectedFurniture={selectedFurniture}
               onFurnitureClick={handleSelect}
               onFurnitureHover={setHovered}
@@ -181,7 +206,7 @@ function GameUI() {
               {/* Cats positioned on the floor */}
               <div className={styles.catArea}>
                 {state.cats.map((cat) => {
-                  const pos = catPositions.find(p => p.catId === cat.id);
+                  const pos = catPositions.get(cat.id) ?? { x: 50, y: 70 };
                   const isBreedingFirst = breedingFirstCat?.id === cat.id;
                   const isSelected = selectedCat?.id === cat.id;
                   const catSelection: CatSelection = { type: 'cat', cat };
@@ -190,8 +215,8 @@ function GameUI() {
                       key={cat.id}
                       className={styles.catPosition}
                       style={{
-                        left: `${pos?.x ?? 50}%`,
-                        top: `${pos?.y ?? 70}%`,
+                        left: `${pos.x}%`,
+                        top: `${pos.y}%`,
                       }}
                     >
                       <CatSprite

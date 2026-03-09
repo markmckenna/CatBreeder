@@ -10,3 +10,16 @@ export { SHOP_ITEMS, calculateCapacity, HAPPINESS_RULES, getHappinessStatus } fr
 
 export type { SpotType, FurniturePosition, CatPosition, RoomSpot } from './positions.ts';
 export { assignCatPositions, getFurniturePositions, getToyColor, getBedColor } from './positions.ts';
+
+export type {
+  SceneObject,
+  Container,
+  Room,
+  RoomChild,
+  CatTree,
+  Bed,
+  Rug,
+  SceneCat,
+  SceneToy,
+} from './hierarchy.ts';
+export { buildSceneTree, getCatSpotType } from './hierarchy.ts';
