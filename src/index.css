@@ -1,3 +1,7 @@
+/* Import theme and base styles */
+@import './app/ui/theme.css';
+@import './app/ui/base.css';
+
 * {
   box-sizing: border-box;
   margin: 0;

@@ -1,5 +1,5 @@
-import type { MarketCat } from '../../logic/economy/market.ts';
-import { phenotypeFor } from '../../logic/cats/Cat.ts';
+import type { MarketCat } from '../../logic/economy';
+import { phenotypeFor } from '../../logic/cats';
 import { formatMoney } from '../format.ts';
 import CatSprite from '../CatSprite';
 import styles from './styles.css';

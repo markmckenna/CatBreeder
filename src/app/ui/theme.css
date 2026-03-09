@@ -1,0 +1,104 @@
+/**
+ * CSS Theme System - Central design tokens.
+ * 
+ * Defines color palette, spacing, typography, and z-index layering.
+ * All components should reference these variables instead of hardcoding values.
+ */
+
+:root {
+  /* === Colors === */
+  
+  /* Primary palette */
+  --color-primary: #8b4513;
+  --color-primary-light: #a0522d;
+  --color-primary-dark: #654321;
+  
+  /* UI colors */
+  --color-background: #f5f5dc;
+  --color-surface: #fff;
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* Text colors */
+  --color-text: #333;
+  --color-text-secondary: #666;
+  --color-text-light: #999;
+  --color-text-on-primary: #fff;
+  
+  /* Semantic colors */
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-error: #f44336;
+  --color-info: #2196f3;
+  
+  /* Borders */
+  --color-border: #ccc;
+  --color-border-light: #e0e0e0;
+  
+  /* Interactive states */
+  --color-hover: rgba(0, 0, 0, 0.05);
+  --color-active: rgba(0, 0, 0, 0.1);
+  --color-focus: #2196f3;
+  --color-selected: rgba(255, 215, 0, 0.3);
+  
+  /* === Spacing === */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  --spacing-xxl: 3rem;    /* 48px */
+  
+  /* === Typography === */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-md: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-xxl: 1.5rem;   /* 24px */
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* === Borders & Radius === */
+  --border-width: 1px;
+  --border-width-thick: 2px;
+  
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-full: 9999px;
+  
+  /* === Shadows === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.2);
+  
+  /* === Z-index layers === */
+  --z-index-base: 0;
+  --z-index-furniture: 10;
+  --z-index-cats: 20;
+  --z-index-ui: 30;
+  --z-index-panel: 40;
+  --z-index-modal: 50;
+  --z-index-overlay: 60;
+  --z-index-tooltip: 70;
+  
+  /* === Transitions === */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+  
+  /* === Layout === */
+  --sidebar-width: 300px;
+  --panel-max-width: 500px;
+}

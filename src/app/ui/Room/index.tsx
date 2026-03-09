@@ -65,10 +65,10 @@
  */
 
 import { ReactNode } from 'react';
-import type { OwnedFurniture, FurnitureItemType } from '../environment/furniture.ts';
-import { SHOP_ITEMS } from '../environment/furniture.ts';
-import { getToyColor, getBedColor, type FurniturePosition } from '../environment/positions.ts';
-import type { FurnitureSelection } from '../../ui/selection.ts';
+import type { OwnedFurniture, FurnitureItemType } from '../../logic/environment';
+import { SHOP_ITEMS } from '../../logic/environment';
+import { getToyColor, getBedColor, type FurniturePosition } from '../../logic/environment';
+import type { FurnitureSelection } from '../selection.ts';
 import styles from './styles.css';
 
 export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
@@ -76,7 +76,7 @@ export type RoomStyle = 'cozy' | 'modern' | 'rustic' | 'luxury';
 export type FurnitureType = 'bed' | 'scratcher' | 'window' | 'plant' | 'toy';
 
 // Re-export for convenience
-export type { FurnitureSelection } from '../../ui/selection.ts';
+export type { FurnitureSelection } from '../selection.ts';
 
 export interface RoomData {
   id: string;

@@ -7,14 +7,14 @@
  */
 
 import { useState } from 'react';
-import type { CatPhenotype } from '../../logic/cats/Cat.ts';
-import type { TraitCollection as TraitCollectionType } from '../../logic/cats/collection.ts';
+import type { CatPhenotype } from '../../logic/cats';
+import type { TraitCollection as TraitCollectionType } from '../../logic/cats';
 import {
   getAllPhenotypeCombinations,
   phenotypeKeyFor,
   getCollectedTraitInfo,
   getCollectionProgress,
-} from '../../logic/cats/collection.ts';
+} from '../../logic/cats';
 import CatPreview from './CatPreview.tsx';
 import styles from './styles.css';
 

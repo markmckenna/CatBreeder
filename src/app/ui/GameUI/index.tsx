@@ -1,9 +1,9 @@
 
 // Game UI ties together all game systems. Layout: 16:9 window with 4:3 room + sidebar
 import { useState, useMemo } from 'react';
-import { useGame } from '../../logic/game/GameContext.tsx';
-import { ActionType } from '../../logic/game/state.ts';
-import Room from '../../logic/Room';
+import { useGame } from '../game/GameContext.tsx';
+import { ActionType } from '../../logic/game';
+import Room from '../Room';
 import CatSprite from '../CatSprite';
 import TraitCollection from '../TraitCollection';
 import MarketPanel from '../MarketPanel';
@@ -12,30 +12,16 @@ import CatListPanel from '../CatListPanel';
 import styles from './styles.css';
 
 // Logic imports
-import { TRAITS, phenotypeFor } from '../../logic/cats/Cat.ts';
-import { calculateCatValue, createMarketState, getValueBreakdown } from '../../logic/economy/market.ts';
-import type { MarketCat } from '../../logic/economy/market.ts';
-import { getCollectionProgress } from '../../logic/cats/collection.ts';
-import { calculateCapacity, FurnitureItemType } from '../../logic/environment/furniture.ts';
-import { assignCatPositions, getFurniturePositions } from '../../logic/environment/positions.ts';
-import type { Cat } from '../../logic/cats/Cat.ts';
+import { TRAITS, phenotypeFor } from '../../logic/cats';
+import type { Cat } from '../../logic/cats';
+import { calculateCatValue, getValueBreakdown, createMarketState } from '../../logic/economy';
+import type { MarketCat } from '../../logic/economy';
+import { getCollectionProgress } from '../../logic/cats';
+import { calculateCapacity, FurnitureItemType } from '../../logic/environment';
+import { assignCatPositions, getFurniturePositions } from '../../logic/environment';
 import type { Selectable, CatSelection } from '../selection.ts';
 import { isCatSelection, isFurnitureSelection, isSameSelectable } from '../selection.ts';
-
-/**
- * Get breeding prediction for an allele pair
- * Returns: 'pure' (homozygous recessive - breeds true)
- *          'carrier' (heterozygous - may pass dominant)
- *          'dominant' (homozygous dominant)
- */
-function getBreedingStatus(alleles: [string, string]): 'pure' | 'carrier' | 'dominant' {
-  const [a, b] = alleles;
-  const isLower = (s: string) => s === s.toLowerCase();
-  
-  if (isLower(a) && isLower(b)) return 'pure';      // e.g., 'ss' - both recessive
-  if (isLower(a) || isLower(b)) return 'carrier';   // e.g., 'Ss' - one of each
-  return 'dominant';                                 // e.g., 'SS' - both dominant
-}
+import { getBreedingStatus } from '../game/genetics.ts';
 
 function GameUI() {
   const { state, dispatch, endTurn, lastTurnResult } = useGame();

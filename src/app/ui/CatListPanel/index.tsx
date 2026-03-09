@@ -1,5 +1,5 @@
-import type { Cat } from '../../logic/cats/Cat.ts';
-import { phenotypeFor } from '../../logic/cats/Cat.ts';
+import type { Cat } from '../../logic/cats';
+import { phenotypeFor } from '../../logic/cats';
 import CatSprite from '../CatSprite';
 import styles from './styles.css';
 

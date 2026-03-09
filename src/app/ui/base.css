@@ -1,0 +1,224 @@
+/**
+ * Base CSS - Shared utility classes and common patterns.
+ * 
+ * Reusable classes for overlays, panels, modals, and common layouts.
+ * Import after theme.css to use CSS variables.
+ */
+
+/* === Overlays === */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-overlay);
+  z-index: var(--z-index-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === Panels === */
+
+.panel {
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-lg);
+  max-width: var(--panel-max-width);
+}
+
+.panel-header {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text);
+}
+
+.panel-body {
+  color: var(--color-text);
+}
+
+.panel-footer {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: var(--border-width) solid var(--color-border-light);
+}
+
+/* === Modals === */
+
+.modal {
+  composes: panel;
+  z-index: var(--z-index-modal);
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-overlay {
+  composes: overlay;
+}
+
+/* === Buttons === */
+
+.button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button-primary {
+  composes: button;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+.button-secondary {
+  composes: button;
+  background-color: var(--color-border-light);
+  color: var(--color-text);
+}
+
+.button-danger {
+  composes: button;
+  background-color: var(--color-error);
+  color: var(--color-text-on-primary);
+}
+
+.button-success {
+  composes: button;
+  background-color: var(--color-success);
+  color: var(--color-text-on-primary);
+}
+
+/* === Lists === */
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--color-border-light);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:hover {
+  background-color: var(--color-hover);
+}
+
+.list-item-selected {
+  composes: list-item;
+  background-color: var(--color-selected);
+}
+
+/* === Forms === */
+
+.input {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+/* === Layout utilities === */
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  composes: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  composes: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  composes: flex;
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+/* === Text utilities === */
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.text-muted {
+  color: var(--color-text-secondary);
+}
+
+.text-small {
+  font-size: var(--font-size-sm);
+}
+
+/* === Spacing utilities === */
+
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }

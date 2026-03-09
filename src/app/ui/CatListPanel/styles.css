@@ -4,117 +4,117 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--color-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: var(--z-index-modal);
 }
 
 .panel {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
+  background: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
   max-width: 600px;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #eee;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: var(--border-width-thick) solid var(--color-border-light);
 }
 
 .title {
   margin: 0;
-  font-size: 1.5rem;
-  color: #2c3e50;
+  font-size: var(--font-size-xl);
+  color: var(--color-text);
 }
 
 .catCount {
   margin-left: auto;
-  font-weight: 600;
-  color: #3498db;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-info);
 }
 
 .closeButton {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-size-xxl);
   cursor: pointer;
-  color: #95a5a6;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
+  color: var(--color-text-light);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
 }
 
 .closeButton:hover {
-  background: #f1f1f1;
-  color: #7f8c8d;
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
 }
 
 .emptyMessage {
   text-align: center;
-  padding: 40px;
-  color: #95a5a6;
+  padding: var(--spacing-xxl);
+  color: var(--color-text-light);
   font-style: italic;
 }
 
 .catGrid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .catCard {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-background);
+  border-radius: var(--border-radius-md);
+  border: var(--border-width) solid var(--color-border-light);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .catCard:hover {
-  background: #e9ecef;
-  border-color: #3498db;
+  background: var(--color-hover);
+  border-color: var(--color-info);
 }
 
 .starButton {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: var(--list-item-icon-size);
+  height: var(--list-item-icon-size);
   border: none;
   background: transparent;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.2s;
-  color: #bdc3c7;
+  border-radius: var(--border-radius-full);
+  transition: all var(--transition-fast);
+  color: var(--color-text-light);
 }
 
 .starButton:hover {
-  background: #f1f1f1;
+  background: var(--color-hover);
   transform: scale(1.2);
 }
 
 .starButton.starActive {
-  color: #f39c12;
+  color: var(--color-warning);
 }
 
 .catPreview {
   flex-shrink: 0;
-  width: 70px;
-  height: 60px;
+  width: var(--cat-preview-width);
+  height: var(--cat-preview-height);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,28 +123,28 @@
 .catInfo {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--spacing-xs);
   flex: 1;
 }
 
 .catName {
-  font-weight: 600;
-  color: #2c3e50;
-  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
 }
 
 .catTraits {
-  color: #7f8c8d;
-  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .catAge {
-  color: #95a5a6;
-  font-size: 0.8rem;
+  color: var(--color-text-light);
+  font-size: var(--font-size-xs);
 }
 
 .catHappiness {
-  color: #27ae60;
-  font-size: 0.8rem;
-  font-weight: 500;
+  color: var(--color-success);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }

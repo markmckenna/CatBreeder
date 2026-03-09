@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { GameProvider } from '../../logic/game/GameContext.tsx';
+import { GameProvider } from '../game/GameContext.tsx';
 import GameUI from '.';
 
 function renderGameUI() {

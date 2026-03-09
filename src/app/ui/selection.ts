@@ -1,7 +1,7 @@
 /** Unified selection system for interactable objects (hover, select, act) */
 
-import type { Cat } from '../logic/cats/Cat';
-import type { FurnitureItemType, FurnitureItem } from '../logic/environment/furniture.ts';
+import type { Cat } from '../logic/cats';
+import type { FurnitureItemType, FurnitureItem } from '../logic/environment';
 
 /** Types of selectable objects */
 export type SelectableType = 'cat' | 'furniture';

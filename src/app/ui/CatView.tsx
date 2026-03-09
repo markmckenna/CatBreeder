@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Cat } from '../logic/cats/Cat.ts';
-import { phenotypeFor } from '../logic/cats/Cat.ts';
+import type { Cat } from '../logic/cats';
+import { phenotypeFor } from '../logic/cats';
 
 // Example renderer for a Cat model
 export interface CatViewProps {

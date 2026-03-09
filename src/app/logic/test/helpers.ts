@@ -2,9 +2,21 @@
 
 import type { Cat, CatPhenotype } from '../cats/Cat';
 
-
 /** Default genotype for mock cats (string) */
 const DEFAULT_GENOTYPE = 'SSTTEEOO'; // large, long, pointed, orange
+
+/**
+ * Convert phenotype to genotype string (assumes homozygous for trait).
+ * Useful for creating test cats with specific visible traits.
+ */
+export function phenotypeToGenotype(p: Partial<CatPhenotype>): string {
+  let g = '';
+  g += (p.size === 'small') ? 'ss' : 'SS';
+  g += (p.tailLength === 'short') ? 'tt' : 'TT';
+  g += (p.earShape === 'folded') ? 'ff' : 'EE';
+  g += (p.color === 'white') ? 'ww' : 'OO';
+  return g;
+}
 
 /** @returns a mock cat with optional overrides */
 export function createMockCat(overrides: Partial<Cat> = {}): Cat {
@@ -24,15 +36,6 @@ export function createMockCatFromPhenotype(
   name = 'TestCat',
   id = 'test-cat-1'
 ): Cat {
-  // Helper to convert phenotype to genotype string (assumes homozygous for trait)
-  function phenotypeToGenotype(p: CatPhenotype): string {
-    let g = '';
-    g += p.size === 'small' ? 'ss' : 'SS';
-    g += p.tailLength === 'short' ? 'tt' : 'TT';
-    g += p.earShape === 'folded' ? 'ff' : 'EE';
-    g += p.color === 'white' ? 'ww' : 'OO';
-    return g;
-  }
   return {
     id,
     name,

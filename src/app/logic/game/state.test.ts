@@ -7,11 +7,7 @@ import {
   getAvailableForSale,
   ActionType,
 } from './state.ts';
-
-// Local helpers to avoid upstream dependency coupling
-function makeTestCat(id = 'cat1', name = 'TestCat', age = 10, happiness = 100) {
-  return { id, name, genotype: 'SSTTEEOO', age, happiness };
-}
+import { createMockCat } from '../test';
 
 describe('game state', () => {
   describe('createInitialGameState', () => {
@@ -41,7 +37,7 @@ describe('game state', () => {
   describe('applyAction', () => {
     describe('ADD_BREEDING_PAIR', () => {
       it('adds a breeding pair', () => {
-        const state = { ...createInitialGameState(), cats: [makeTestCat('cat1'), makeTestCat('cat2')] };
+        const state = { ...createInitialGameState(), cats: [createMockCat({ id: 'cat1', name: 'TestCat' }), createMockCat({ id: 'cat2', name: 'TestCat' })] };
         const [cat1, cat2] = state.cats;
         const newState = applyAction(state, {
           type: ActionType.ADD_BREEDING_PAIR,
@@ -136,7 +132,7 @@ describe('game state', () => {
     });
 
     it('produces offspring from breeding pairs', () => {
-      const state = { ...createInitialGameState(), cats: [makeTestCat('cat1'), makeTestCat('cat2')] };
+      const state = { ...createInitialGameState(), cats: [createMockCat({ id: 'cat1', name: 'TestCat' }), createMockCat({ id: 'cat2', name: 'TestCat' })] };
       const [cat1, cat2] = state.cats;
       const stateWithPair = applyAction(state, {
         type: ActionType.ADD_BREEDING_PAIR,
@@ -150,7 +146,7 @@ describe('game state', () => {
     });
 
     it('sells listed cats and earns money', () => {
-      const state = { ...createInitialGameState(), cats: [makeTestCat('cat1'), makeTestCat('cat2')] };
+      const state = { ...createInitialGameState(), cats: [createMockCat({ id: 'cat1', name: 'TestCat' }), createMockCat({ id: 'cat2', name: 'TestCat' })] };
       const cat = state.cats[0];
       const initialMoney = state.money;
       const stateWithSale = applyAction(state, {

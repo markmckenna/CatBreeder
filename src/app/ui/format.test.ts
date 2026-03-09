@@ -10,4 +10,9 @@ describe('formatMoney', () => {
     expect(formatMoney(1000)).toBe('$1,000');
     expect(formatMoney(1000000)).toBe('$1,000,000');
   });
+
+  it('returns dash for null or undefined', () => {
+    expect(formatMoney(null)).toBe('$—');
+    expect(formatMoney(undefined)).toBe('$—');
+  });
 });

@@ -10,14 +10,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: var(--z-index-modal);
 }
 
 .modal {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border: 2px solid #3a4a6a;
-  border-radius: 12px;
-  padding: 20px;
+  border: var(--border-width-thick) solid #3a4a6a;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
@@ -26,22 +26,22 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #3a4a6a;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: var(--border-width) solid #3a4a6a;
 }
 
 .title {
   margin: 0;
-  font-size: 1.4rem;
-  color: #e0e0e0;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-inverse);
 }
 
 .progress {
-  font-size: 1rem;
-  color: #4CAF50;
-  font-weight: 600;
+  font-size: var(--font-size-md);
+  color: var(--color-success);
+  font-weight: var(--font-weight-bold);
 }
 
 .closeButton {
@@ -49,39 +49,39 @@
   background: transparent;
   border: none;
   color: #8892b0;
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
 }
 
 .closeButton:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #e0e0e0;
+  color: var(--color-text-inverse);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .slot {
   background: rgba(0, 0, 0, 0.3);
-  border: 2px solid #3a4a6a;
-  border-radius: 8px;
-  padding: 12px;
+  border: var(--border-width-thick) solid #3a4a6a;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   min-width: 100px;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .slot.collected {
-  border-color: #4CAF50;
+  border-color: var(--color-success);
   background: rgba(76, 175, 80, 0.1);
 }
 
@@ -90,7 +90,7 @@
 }
 
 .slot.uncollected:hover {
-  border-color: #FFA726;
+  border-color: var(--color-warning);
   background: rgba(255, 167, 38, 0.1);
 }
 
@@ -98,43 +98,43 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  min-height: 32px;
+  gap: var(--spacing-xs);
+  min-height: var(--list-item-icon-size);
 }
 
 .catName {
-  font-weight: 600;
-  color: #e0e0e0;
-  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-sm);
 }
 
 .dayLabel {
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   color: #8892b0;
 }
 
 .uncollectedLabel {
   color: #5a5a7a;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 }
 
 .traitList {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--spacing-xs);
   justify-content: center;
-  font-size: 0.65rem;
+  font-size: var(--font-size-xs);
   color: #8892b0;
 }
 
 .traitList span {
   background: rgba(0, 0, 0, 0.3);
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
 }
 
 .rareTrait {
-  color: #FFA726 !important;
+  color: var(--color-warning) !important;
   background: rgba(255, 167, 38, 0.15) !important;
 }
 

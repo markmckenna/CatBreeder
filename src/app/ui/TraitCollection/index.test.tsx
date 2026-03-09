@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TraitCollection from './index.tsx';
-import { createTraitCollection, registerBredCat } from '../../logic/cats/collection.ts';
-import type { CatPhenotype } from '../../logic/cats/Cat.ts';
-import { createMockCatFromPhenotype } from '../../logic/test/helpers.ts';
+import { createTraitCollection, registerBredCat } from '../../logic/cats';
+import type { CatPhenotype } from '../../logic/cats';
+import { createMockCatFromPhenotype } from '../../logic/test';
 
 describe('TraitCollection', () => {
   it('renders the collection grid', () => {

@@ -6,19 +6,11 @@ import {
   generateMarketInventory,
 } from './market.ts';
 import type { Cat, CatPhenotype } from '../cats/Cat';
-
+import { phenotypeToGenotype } from '../test';
 import { createSeededRandom } from '@/core/random.ts';
 
 describe('market', () => {
-  // Helper to convert phenotype to genotype string (assumes homozygous for trait)
-  const phenotypeToGenotype = (p: Partial<CatPhenotype>): string => {
-    let g = '';
-    g += (p.size === 'small') ? 'ss' : 'SS';
-    g += (p.tailLength === 'short') ? 'tt' : 'TT';
-    g += (p.earShape === 'folded') ? 'ff' : 'EE';
-    g += (p.tailColor === 'white') ? 'ww' : 'OO';
-    return g;
-  };
+  // Helper to create test cats with specific phenotypes
   const createTestCat = (phenotype: Partial<CatPhenotype>, happiness = 100): Cat => ({
     id: 'test-cat',
     name: 'Test',

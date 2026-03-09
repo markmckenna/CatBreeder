@@ -5,8 +5,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import MarketPanel from './index.tsx';
-import type { MarketCat } from '../../logic/economy/market.ts';
-import type { Cat } from '../../logic/cats/Cat.ts';
+import type { MarketCat } from '../../logic/economy';
+import type { Cat } from '../../logic/cats';
 
 const createTestCat = (id: string, name: string): Cat => ({
   id,
