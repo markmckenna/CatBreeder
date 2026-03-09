@@ -95,3 +95,32 @@ A task is only complete when:
 -   Commit message meets the required format.
 
 If any condition fails, the task is incomplete.
+
+
+## Milestone Completion Protocol
+
+Use milestone completion when a substantial work unit is finished.
+
+### Milestone Declaration
+
+- A milestone may be declared complete by either the user or the agent.
+- Milestones should represent substantial progress (feature slice, bugfix set, refactor batch, or process/policy delivery).
+
+### Mandatory Milestone Steps
+
+1. Confirm plan state is accurate (completed items marked done; deferred items explicitly justified).
+2. Commit all changes related to that milestone.
+3. Ensure the commit message records:
+    - What was completed and where
+    - Why the work was performed
+    - Total elapsed time for the milestone
+    - Total token usage for the milestone
+4. Distill relevant outcomes into long-term knowledge stores:
+    - Canonical updates in `docs/*.md` and/or `AGENTS.md`
+    - Distilled notes in Serena memory and `/memories/*`
+5. Start the next milestone in a fresh session after handoff notes are saved.
+
+### Measurement Guidance
+
+- Prefer exact elapsed time and exact token counts when available.
+- If exact values are unavailable, provide clearly labeled estimates.

@@ -11,6 +11,26 @@
 - **For code analysis**: Prefer Serena symbol tools (reference memory findings about 77% token reduction)
 
 
+## Milestone Completion (Required)
+
+- **Milestone declaration**: Either the user or the agent may declare a milestone complete when substantial scoped work is finished.
+- **Substantial work definition**: A milestone should represent a meaningful delivery slice (feature, bugfix set, refactor batch, or policy/process update), not a trivial single-line tweak.
+- **Completion sequence (mandatory)**:
+  1. Ensure the active plan is reconciled (all relevant items `done` or explicitly deferred).
+  2. Commit all milestone-related changes.
+  3. Use a structured commit message that includes:
+	  - What was completed (concise summary + key files/areas)
+	  - Why it was done (goal/outcome)
+	  - How long the milestone took end-to-end
+	  - How many tokens were spent during the milestone
+  4. Distill and store relevant learnings in the correct place:
+	  - Canonical policy/process updates in `docs/*.md` and/or `AGENTS.md`
+	  - Concise operational takeaways in Serena memory and `/memories/*`
+  5. Restart with a fresh session after milestone handoff is captured.
+- **Metrics quality rule**: If exact token/time metrics are unavailable, include the best available measurement or estimate and label it clearly as estimated.
+- **Scope rule**: Milestone commits must not bundle unrelated changes.
+
+
 ## Memory Management Rules
 
 ### Canonical vs Distilled (Required)
